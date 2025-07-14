@@ -7,7 +7,7 @@ public class Post
     public string Body { get; set; }
     public DateTime Created { get; set; } =  DateTime.Now;
     public DateTime Updated { get; set; } = DateTime.Now;
-    public string Category { get; set; }
-
+    
+    public ICollection<Category> Categories { get; set; } = new List<Category>();
     public long UserId { get; set; }
 }
