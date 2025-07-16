@@ -8,12 +8,16 @@ var connectionString = builder
     .Configuration
     .GetConnectionString("DefaultConnection");
 
-builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme)
-    .AddIdentityCookies();
-builder.Services.AddAuthorization();
-
 builder.Services.AddDbContext<AppDbContext>(x=>
     x.UseSqlServer(connectionString));
+
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<AppDbContext>();
+
+builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme)
+    .AddIdentityCookies();
+
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 app.MapGet("/", () => new {message = "OK"});
