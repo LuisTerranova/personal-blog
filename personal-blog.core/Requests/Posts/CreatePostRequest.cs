@@ -9,6 +9,6 @@ public class CreatePostRequest : BaseRequest
     public string Title { get; set; }
     [Required(ErrorMessage = "Article body is required")]
     public string Body { get; set; }
-    [Required(ErrorMessage = "Select at least one category")]
-    public List<int> CategoryIds { get; set; } = [];
+    [Required(ErrorMessage = "Enter at least one category")]
+    public int CategoryId { get; set; }
 }
