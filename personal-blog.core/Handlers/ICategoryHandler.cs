@@ -9,7 +9,7 @@ public interface ICategoryHandler
 {
     Task<Response<Category?>> CreateAsync(CreateCategoryRequest request, ClaimsPrincipal user);
     Task<Response<Category?>> DeleteAsync(DeleteCategoryRequest request, ClaimsPrincipal user);
-    Task<Response<Category?>> GetAllAsync(GetAllCategoriesRequest request, ClaimsPrincipal user);
-    Task<Response<Category?>> GetAsync(GetCategoryByIdRequest request, ClaimsPrincipal user);
+    Task<PagedResponse<List<Category>?>> GetAllAsync(GetAllCategoriesRequest request, ClaimsPrincipal user);
+    Task<Response<Category?>> GetByIdAsync(GetCategoryByIdRequest request, ClaimsPrincipal user);
     Task<Response<Category?>> UpdateAsync(UpdateCategoryRequest request, ClaimsPrincipal user);
 }

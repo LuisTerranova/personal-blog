@@ -1,3 +1,3 @@
 namespace personal_blog.core.Requests.Categories;
 
-public class GetAllCategoriesRequest;
+public class GetAllCategoriesRequest : PagedRequest;
