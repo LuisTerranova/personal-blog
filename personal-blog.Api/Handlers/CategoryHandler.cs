@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using personal_blog.Api.Data;
 using personal_blog.core.Common.Helpers;
