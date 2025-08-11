@@ -4,7 +4,7 @@ using personal_blog.core.Responses;
 
 namespace personal_blog.Api.Common.Helpers;
 
-public static class CheckAdminHelper
+public static class CheckRoleHelper
 {
     public static async Task<Response<bool>> CheckAdminAsync(ClaimsPrincipal user,
         UserManager<IdentityUser> userManager)
@@ -21,6 +21,6 @@ public static class CheckAdminHelper
             return new Response<bool>(false, "Forbidden: Only Admin users can create a category", 403);
         
         
-        return new Response<bool>(true, "User is authorized");
+        return new Response<bool>(true, "User is authorized", 200);
     }
 }
