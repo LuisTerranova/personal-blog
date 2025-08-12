@@ -22,6 +22,8 @@
 
   <ItemGroup>
     <Folder Include="Data\Scripts\" />
+    <Folder Include="Endpoints\AccountEndpoints\" />
+    <Folder Include="Endpoints\ProjectEndpoints\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
 
