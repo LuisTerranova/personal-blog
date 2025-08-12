@@ -53,62 +53,65 @@ public class PostHandler(AppDbContext context) : IPostHandler
         }
     }
 
-    public async Task<PagedResponse<List<Category>?>> GetAllAsync(GetAllCategoriesRequest request)
+    public async Task<PagedResponse<List<Post>?>> GetAllAsync(GetAllPostsRequest request)
     {
         try
         {
-            var categories = await context.Categories
+            var posts = await context.Posts
                 .AsNoTracking()
                 .Skip(request.PageNumber - 1)
                 .Take(request.PageSize)
                 .ToListAsync();
 
-            var totalCount = categories.Count;
+            var totalCount = posts
+                .Count;
             return totalCount == 0
-                ? new PagedResponse<List<Category>?>(null, "Categories not found", 400)
-                : new PagedResponse<List<Category>?>(categories, totalCount);
+                ? new PagedResponse<List<Post>?>(null, "Posts not found", 400)
+                : new PagedResponse<List<Post>?>(posts, totalCount);
         }
         catch 
         {
-            return new PagedResponse<List<Category>?>(null, "Error while retrieving categories", 400);
+            return new PagedResponse<List<Post>?>(null, "Error while retrieving posts", 400);
         }
     }
-
-    public async Task<Response<Category?>> GetByIdAsync(GetCategoryByIdRequest request)
+    
+    public async Task<Response<Post?>> GetByIdAsync(GetPostByIdRequest request)
     {
         try
         {
-            var category = await context.Categories
+            var post = await context.Posts
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Id == request.Id);
 
-            return category == null
-                ? new Response<Category?>(null, "Category not found", 404)
-                : new Response<Category?>(category, "Category retrieved successfully");
+            return post == null
+                ? new Response<Post?>(null, "Post not found", 404)
+                : new Response<Post?>(post, "Post retrieved successfully");
         }
         catch
         {
-            return new Response<Category?>(null, "Error retrieving category", 400 );
+            return new Response<Post?>(null, "Error retrieving post", 400 );
         }
     }
 
-    public async Task<Response<Category?>> UpdateAsync(UpdateCategoryRequest request)
+    public async Task<Response<Post?>> UpdateAsync(UpdatePostRequest request)
     {
         try
         {
-            var category = await context.Categories.FirstOrDefaultAsync(c => c.Id == request.Id);
-            if (category == null)
-                return new Response<Category?>(null, "Category not found", 404);
+            var post = await context.Posts
+                .FirstOrDefaultAsync(c => c.Id == request.Id);
+            if (post == null)
+                return new Response<Post?>(null, "Post not found", 404);
 
-            category.Title = request.Title;
-            category.Slug = SlugGenHelper.GenerateSlug(request.Title);
+            post.Title = request.Title;
+            post.Body = request.Body;
+            post.CategoryId = request.CategoryId;
 
             await context.SaveChangesAsync();
-            return new Response<Category?>(category, "Category updated successfully");
+            return new Response<Post?>(post, "Post updated successfully");
         }
         catch
         {
-            return new Response<Category?>(null, "Error updating category", 400);
+            return new Response<Post?>(null, "Error updating post", 400);
         }
     }
 }

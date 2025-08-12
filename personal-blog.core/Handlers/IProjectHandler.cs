@@ -9,6 +9,6 @@ public interface IProjectHandler
 {
     Task<Response<Project?>> CreateAsync(CreateProjectRequest request);
     Task<Response<Project?>> DeleteAsync(DeleteProjectRequest request);
-    Task<Response<Project?>> GetAllAsync(GetAllProjectsRequest request);
+    Task<PagedResponse<List<Project>?>> GetAllAsync(GetAllProjectsRequest request);
     Task<Response<Project?>> UpdateAsync(UpdateProjectRequest request);
 }
