@@ -8,14 +8,18 @@ namespace personal_blog.Api.Endpoints.PostEndpoints;
 public class GetPostByIdEndpoint : IEndpoint
 {
     public static void Map(IEndpointRouteBuilder app) 
-        => app.MapGet("/", HandleAsync)
-            .AddEndpointFilter<AdminAuthorizationEndpointFilter>()
+        => app.MapGet("/{id}", HandleAsync)
+            .AddEndpointFilter<RoleAuthorizationEndpointFilter>()
             .WithName("Posts : GetPostById")
             .WithSummary("Get a post by id")
             .WithOrder(4);
 
-    private static async Task<IResult> HandleAsync(IPostHandler handler, GetPostByIdRequest request)
+    private static async Task<IResult> HandleAsync(IPostHandler handler, int id)
     {
+        var request = new GetPostByIdRequest
+        {
+            Id = id
+        };
         var result = await handler.GetByIdAsync(request);
         return result.IsSuccess 
             ? TypedResults.Ok() 

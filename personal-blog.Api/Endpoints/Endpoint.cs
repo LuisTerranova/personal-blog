@@ -1,7 +1,7 @@
 using personal_blog.Api.Common.Api;
-using personal_blog.Api.Common.Filters;
 using personal_blog.Api.Endpoints.CategoryEndpoints;
 using personal_blog.Api.Endpoints.PostEndpoints;
+using personal_blog.Api.Endpoints.ProjectEndpoints;
 
 namespace personal_blog.Api.Endpoints;
 
@@ -25,6 +25,12 @@ public static class Endpoint
             .MapEndpoint<GetAllPostsEndpoint>()
             .MapEndpoint<GetPostByIdEndpoint>()
             .MapEndpoint<UpdatePostEndpoint>();
+        endpoints.MapGroup("v1/projects")
+            .WithTags("Projects")
+            .MapEndpoint<CreateProjectEndpoint>()
+            .MapEndpoint<DeleteProjectEndpoint>()
+            .MapEndpoint<GetAllProjectsEndpoint>()
+            .MapEndpoint<UpdateProjectEndpoint>();
     }
 
     private static IEndpointRouteBuilder MapEndpoint<TEndpoint>(this IEndpointRouteBuilder app)

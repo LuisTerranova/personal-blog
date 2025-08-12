@@ -2,24 +2,24 @@ using personal_blog.Api.Common.Api;
 using personal_blog.Api.Common.Filters;
 using personal_blog.core;
 using personal_blog.core.Handlers;
-using personal_blog.core.Requests.Posts;
+using personal_blog.core.Requests.Projects;
 
-namespace personal_blog.Api.Endpoints.PostEndpoints;
+namespace personal_blog.Api.Endpoints.ProjectEndpoints;
 
-public class GetAllPostsEndpoint : IEndpoint
+public class GetAllProjectsEndpoint : IEndpoint
 {
     public static void Map(IEndpointRouteBuilder app) 
         => app.MapGet("/", HandleAsync)
             .AddEndpointFilter<RoleAuthorizationEndpointFilter>()
-            .WithName("Posts : GetAllPosts")
-            .WithSummary("Gets all posts")
+            .WithName("Projects : GetAllProjects")
+            .WithSummary("Gets all projects")
             .WithOrder(3);
 
-    private static async Task<IResult> HandleAsync(IPostHandler handler, 
+    private static async Task<IResult> HandleAsync(IProjectHandler handler, 
         int pageNumber = Configuration.DefaultPageNumber,
         int pageSize = Configuration.DefaultPageSize)
     {
-        var request = new GetAllPostsRequest
+        var request = new GetAllProjectsRequest
         {
             PageNumber = pageNumber,
             PageSize = pageSize

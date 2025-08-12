@@ -8,14 +8,18 @@ namespace personal_blog.Api.Endpoints.PostEndpoints;
 public class DeletePostEndpoint : IEndpoint
 {
     public static void Map(IEndpointRouteBuilder app) 
-        => app.MapDelete("/", HandleAsync)
-            .AddEndpointFilter<AdminAuthorizationEndpointFilter>()
+        => app.MapDelete("/{id}", HandleAsync)
+            .AddEndpointFilter<RoleAuthorizationEndpointFilter>()
             .WithName("Posts : Delete")
             .WithSummary("Deletes a post")
             .WithOrder(2);
 
-    private static async Task<IResult> HandleAsync(IPostHandler handler, DeletePostRequest request)
+    private static async Task<IResult> HandleAsync(IPostHandler handler, int id)
     {
+        var request = new DeletePostRequest
+        {
+            Id = id
+        };
         var result = await handler.DeleteAsync(request);
         return result.IsSuccess 
             ? TypedResults.Ok() 

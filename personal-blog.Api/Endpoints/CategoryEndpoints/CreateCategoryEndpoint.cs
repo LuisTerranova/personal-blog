@@ -9,7 +9,7 @@ public class CreateCategoryEndpoint : IEndpoint
 {
     public static void Map(IEndpointRouteBuilder app) 
         => app.MapPost("/", HandleAsync)
-            .AddEndpointFilter<AdminAuthorizationEndpointFilter>()
+            .AddEndpointFilter<RoleAuthorizationEndpointFilter>()
             .WithName("Categories : Create")
             .WithSummary("Creates a new category")
             .WithOrder(1);

@@ -3,7 +3,7 @@ using personal_blog.Api.Common.Helpers;
 
 namespace personal_blog.Api.Common.Filters;
 
-public class AdminAuthorizationEndpointFilter : IEndpointFilter
+public class RoleAuthorizationEndpointFilter : IEndpointFilter
 {
     public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
     {

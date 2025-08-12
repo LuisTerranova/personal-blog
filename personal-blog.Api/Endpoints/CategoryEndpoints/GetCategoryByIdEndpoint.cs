@@ -8,14 +8,18 @@ namespace personal_blog.Api.Endpoints.CategoryEndpoints;
 public class GetCategoryByIdEndpoint : IEndpoint
 {
     public static void Map(IEndpointRouteBuilder app) 
-        => app.MapGet("/", HandleAsync)
-            .AddEndpointFilter<AdminAuthorizationEndpointFilter>()
+        => app.MapGet("/{id}", HandleAsync)
+            .AddEndpointFilter<RoleAuthorizationEndpointFilter>()
             .WithName("Categories : GetById")
             .WithSummary("Get a category by its id")
             .WithOrder(4);
 
-    private static async Task<IResult> HandleAsync(ICategoryHandler handler, GetCategoryByIdRequest request)
+    private static async Task<IResult> HandleAsync(ICategoryHandler handler, int id)
     {
+        var request = new GetCategoryByIdRequest
+        {
+            Id = id
+        };
         var result = await handler.GetByIdAsync(request);
         return result.IsSuccess 
             ? TypedResults.Ok() 

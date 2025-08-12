@@ -1,6 +1,6 @@
 namespace personal_blog.core.Requests.Categories;
 
-public class UpdateCategoryRequest
+public class UpdateCategoryRequest : BaseRequest
 {
     public int Id { get; set; }
     public string Title { get; set; }

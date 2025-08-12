@@ -1,6 +1,6 @@
 namespace personal_blog.core.Requests.Categories;
 
-public class GetCategoryByIdRequest
+public class GetCategoryByIdRequest : BaseRequest
 {
     public int Id { get; set; }
 }
