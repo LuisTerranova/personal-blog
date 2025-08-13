@@ -22,7 +22,7 @@ public class GetPostByIdEndpoint : IEndpoint
         };
         var result = await handler.GetByIdAsync(request);
         return result.IsSuccess 
-            ? TypedResults.Ok() 
-            : TypedResults.NotFound();
+            ? TypedResults.Ok(result) 
+            : TypedResults.NotFound(result);
     }
 }

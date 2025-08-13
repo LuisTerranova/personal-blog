@@ -18,7 +18,8 @@ public class ProjectHandler(AppDbContext context) : IProjectHandler
                 Title = request.Title,
                 Description = request.Description,
                 ImageUrl = request.ImageUrl,
-                RepoLink = request.RepoLink
+                RepoLink = request.RepoLink,
+                UserId = request.UserId,
             };
 
             await context.Projects.AddAsync(project);
@@ -36,7 +37,7 @@ public class ProjectHandler(AppDbContext context) : IProjectHandler
         try
         {
             var project = await context.Projects
-                .FirstOrDefaultAsync(c => c.Id == request.Id);
+                .FirstOrDefaultAsync(p => p.Id == request.Id);
 
             if (project == null)
                 return new Response<Project?>(null, "Project not found", 404);
@@ -79,7 +80,8 @@ public class ProjectHandler(AppDbContext context) : IProjectHandler
         try
         {
             var project = await context.Projects
-                .FirstOrDefaultAsync(c => c.Id == request.Id);
+                .FirstOrDefaultAsync(p => p.Id == request.Id
+                && p.UserId == request.UserId);
             if (project == null)
                 return new Response<Project?>(null, "Project not found", 404);
             

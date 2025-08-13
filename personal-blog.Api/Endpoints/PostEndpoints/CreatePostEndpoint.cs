@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using personal_blog.Api.Common.Api;
 using personal_blog.Api.Common.Filters;
 using personal_blog.core.Handlers;
@@ -14,11 +15,16 @@ public class CreatePostEndpoint : IEndpoint
                 .WithSummary("Creates a new post")
                 .WithOrder(1);
 
-    private static async Task<IResult> HandleAsync(IPostHandler handler, CreatePostRequest request)
+    private static async Task<IResult> HandleAsync(IPostHandler handler, CreatePostRequest request,
+        ClaimsPrincipal user)
     {
+        var userIdString = user.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userIdString == null || !long.TryParse(userIdString, out var userId)) return TypedResults.Unauthorized();
+        
+        request.UserId = userId;
         var result = await handler.CreateAsync(request);
         return result.IsSuccess 
-            ? TypedResults.Created() 
-            : TypedResults.BadRequest();
+            ? TypedResults.Created($"/{result.Data.Id}", result) 
+            : TypedResults.BadRequest(result);
     }
 }

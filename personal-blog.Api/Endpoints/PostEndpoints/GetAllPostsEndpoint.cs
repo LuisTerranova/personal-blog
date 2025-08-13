@@ -26,7 +26,7 @@ public class GetAllPostsEndpoint : IEndpoint
         };
         var result = await handler.GetAllAsync(request);
         return result.IsSuccess 
-            ? TypedResults.Ok() 
-            : TypedResults.NotFound();
+            ? TypedResults.Ok(result) 
+            : TypedResults.NotFound(result);
     }
 }

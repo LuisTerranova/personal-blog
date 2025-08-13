@@ -19,7 +19,8 @@ public class PostHandler(AppDbContext context) : IPostHandler
            {
                 Title = request.Title,
                 Body = request.Body,
-                CategoryId = request.CategoryId
+                CategoryId = request.CategoryId,
+                UserId = request.UserId,
            };
 
            await context.Posts.AddAsync(post);
@@ -37,7 +38,8 @@ public class PostHandler(AppDbContext context) : IPostHandler
         try
         {
             var post = await context.Posts
-                .FirstOrDefaultAsync(c => c.Id == request.Id);
+                .FirstOrDefaultAsync(p => p.Id == request.Id
+                && p.UserId == request.UserId);
 
             if (post == null)
                 return new Response<Post?>(null, "Post not found", 404);
@@ -81,7 +83,7 @@ public class PostHandler(AppDbContext context) : IPostHandler
         {
             var post = await context.Posts
                 .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.Id == request.Id);
+                .FirstOrDefaultAsync(p => p.Id == request.Id);
 
             return post == null
                 ? new Response<Post?>(null, "Post not found", 404)
@@ -98,7 +100,8 @@ public class PostHandler(AppDbContext context) : IPostHandler
         try
         {
             var post = await context.Posts
-                .FirstOrDefaultAsync(c => c.Id == request.Id);
+                .FirstOrDefaultAsync(p => p.Id == request.Id
+                && p.UserId == request.UserId);
             if (post == null)
                 return new Response<Post?>(null, "Post not found", 404);
 
