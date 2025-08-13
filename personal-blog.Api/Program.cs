@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using personal_blog.Api.Data;
 using personal_blog.Api.Endpoints;
 using personal_blog.Api.Handlers;
+using personal_blog.Api.Models;
 using personal_blog.core.Handlers;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,8 +19,9 @@ builder.Services.AddTransient<IProjectHandler, ProjectHandler>();
 builder.Services.AddDbContext<AppDbContext>(x=>
     x.UseSqlServer(connectionString));
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-    .AddEntityFrameworkStores<AppDbContext>();
+builder.Services.AddIdentity<ApplicationUser, IdentityRole<long>>()
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddAuthorization();
 

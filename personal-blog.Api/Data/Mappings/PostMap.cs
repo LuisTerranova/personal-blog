@@ -32,12 +32,16 @@ public class PostMap : IEntityTypeConfiguration<Post>
             .HasColumnType("INTEGER")
             .IsRequired();
         
-        builder.Property(p => p.UserId)
-            .HasColumnType("BIGINT")
-            .IsRequired();
-
         builder.HasOne(p => p.Category)
             .WithMany(c => c.Posts)
             .HasForeignKey(p => p.CategoryId);;
+        
+        builder.Property(p => p.UserId)
+            .HasColumnType("BIGINT")
+            .IsRequired();
+        
+        builder.HasOne(p => p.User)
+            .WithMany(u => u.Posts)
+            .HasForeignKey(p => p.UserId);
     }
 }

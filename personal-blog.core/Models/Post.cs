@@ -1,3 +1,5 @@
+using personal_blog.Api.Models;
+
 namespace personal_blog.core.Models;
 
 public class Post
@@ -11,4 +13,5 @@ public class Post
     public Category Category { get; set; }
     public int CategoryId { get; set; }
     public long UserId { get; set; }
+    public ApplicationUser User { get; set; }
 }

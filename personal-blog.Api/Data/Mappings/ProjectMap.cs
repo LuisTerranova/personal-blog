@@ -30,5 +30,13 @@ public class ProjectMap : IEntityTypeConfiguration<Project>
             .HasColumnType("NVARCHAR")
             .HasMaxLength(2000)
             .IsRequired();
+        
+        builder.Property(p => p.UserId)
+            .HasColumnType("BIGINT")
+            .IsRequired();
+        
+        builder.HasOne(p => p.User)
+            .WithMany(u => u.Projects)
+            .HasForeignKey(p => p.UserId);
     }
 }
