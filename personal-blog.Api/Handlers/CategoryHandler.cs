@@ -15,12 +15,17 @@ public class CategoryHandler(AppDbContext context) : ICategoryHandler
         try
         {
            var slug = SlugGenHelper.GenerateSlug(request.Title);
+           
            var category = new Category
            {
-                Title = request.Title,
-                Slug = slug
+               UserId = request.UserId,
+               Title = request.Title,
+               Slug = slug
            };
-
+           
+           if (context.Categories.Any(c => c.Slug == slug))
+               return new Response<Category?>(null, "Category already exists", 409);
+           
            await context.Categories.AddAsync(category);
            await context.SaveChangesAsync();
            return new Response<Category?>(category, "Category created successfully", 201);
@@ -35,7 +40,9 @@ public class CategoryHandler(AppDbContext context) : ICategoryHandler
     {
         try
         {
+            var userId = request.UserId;
             var category = await context.Categories
+                .Where(c => c.UserId == userId)
                 .FirstOrDefaultAsync(c => c.Id == request.Id);
 
             if (category == null)
@@ -95,7 +102,10 @@ public class CategoryHandler(AppDbContext context) : ICategoryHandler
     {
         try
         {
-            var category = await context.Categories.FirstOrDefaultAsync(c => c.Id == request.Id);
+            var userId = request.UserId;
+            var category = await context.Categories
+                .Where(c => c.UserId == userId)
+                .FirstOrDefaultAsync(c => c.Id == request.Id);
             if (category == null)
                 return new Response<Category?>(null, "Category not found", 404);
 

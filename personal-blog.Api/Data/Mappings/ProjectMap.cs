@@ -36,7 +36,7 @@ public class ProjectMap : IEntityTypeConfiguration<Project>
             .IsRequired();
         
         builder.HasOne(p => p.User)
-            .WithMany(u => u.Projects)
+            .WithMany()
             .HasForeignKey(p => p.UserId);
     }
 }

@@ -41,7 +41,7 @@ public class PostMap : IEntityTypeConfiguration<Post>
             .IsRequired();
         
         builder.HasOne(p => p.User)
-            .WithMany(u => u.Posts)
+            .WithMany()
             .HasForeignKey(p => p.UserId);
     }
 }

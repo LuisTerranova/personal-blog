@@ -1,19 +1,33 @@
 using Microsoft.AspNetCore.Identity;
-using personal_blog.Api.Common.Helpers;
+using personal_blog.Api.Models;
 
-namespace personal_blog.Api.Common.Filters;
+namespace personal_blog.Api.Common.Api.Filters;
 
-public class RoleAuthorizationEndpointFilter : IEndpointFilter
+public class RoleAuthorizationEndpointFilter(string requiredRole) : IEndpointFilter
 {
     public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
     {
-        var userManager = context.HttpContext.RequestServices.GetRequiredService<UserManager<IdentityUser>>();
         var user = context.HttpContext.User;
+        
+        if (user.Identity?.IsAuthenticated != true)
+        {
+            return Results.Unauthorized(); 
+        }
+        
+        var userManager = context.HttpContext.RequestServices.GetRequiredService<UserManager<ApplicationUser>>();
+        var applicationUser = await userManager.GetUserAsync(user);
 
-        var authResponse = await CheckRoleHelper.CheckAdminAsync(user, userManager);
+        if (applicationUser == null)
+        {
+            return Results.Unauthorized(); 
+        }
 
-        if (!authResponse.IsSuccess)
-            return Results.Problem(detail: authResponse.Message, statusCode: authResponse.StatusCode);
+        var roles = await userManager.GetRolesAsync(applicationUser);
+
+        if (!roles.Contains(requiredRole))
+        {
+            return Results.Forbid(); 
+        }
         
         return await next(context);
     }

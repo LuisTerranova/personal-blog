@@ -1,5 +1,5 @@
 using personal_blog.Api.Common.Api;
-using personal_blog.Api.Common.Filters;
+using personal_blog.Api.Common.Api.Filters;
 using personal_blog.core.Handlers;
 using personal_blog.core.Requests.Categories;
 
@@ -9,7 +9,6 @@ public class GetCategoryByIdEndpoint : IEndpoint
 {
     public static void Map(IEndpointRouteBuilder app) 
         => app.MapGet("/{id}", HandleAsync)
-            .AddEndpointFilter<RoleAuthorizationEndpointFilter>()
             .WithName("Categories : GetById")
             .WithSummary("Get a category by its id")
             .WithOrder(4);
@@ -22,7 +21,7 @@ public class GetCategoryByIdEndpoint : IEndpoint
         };
         var result = await handler.GetByIdAsync(request);
         return result.IsSuccess 
-            ? TypedResults.Ok() 
-            : TypedResults.NotFound();
+            ? TypedResults.Ok(result) 
+            : TypedResults.NotFound(result);
     }
 }

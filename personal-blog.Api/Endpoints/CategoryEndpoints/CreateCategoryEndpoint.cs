@@ -1,5 +1,10 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
 using personal_blog.Api.Common.Api;
-using personal_blog.Api.Common.Filters;
+using personal_blog.Api.Common.Api.Filters;
+using personal_blog.Api.Common.Api.Helpers;
+using personal_blog.Api.Models;
+using personal_blog.core.DTOs;
 using personal_blog.core.Handlers;
 using personal_blog.core.Requests.Categories;
 
@@ -9,16 +14,32 @@ public class CreateCategoryEndpoint : IEndpoint
 {
     public static void Map(IEndpointRouteBuilder app) 
         => app.MapPost("/", HandleAsync)
-            .AddEndpointFilter<RoleAuthorizationEndpointFilter>()
+            .RequireRole("admin")
+            .WithValidation<CreateCategoryRequest>()
             .WithName("Categories : Create")
             .WithSummary("Creates a new category")
             .WithOrder(1);
 
-    private static async Task<IResult> HandleAsync(ICategoryHandler handler, CreateCategoryRequest request)
+    private static async Task<IResult> HandleAsync(ICategoryHandler handler
+        ,CreateCategoryRequest request
+        ,UserManager<ApplicationUser> userManager
+        ,ClaimsPrincipal principal
+        ,HttpRequest httpRequest)
     {
+        var user = await userManager.GetUserAsync(principal);
+        
+        request.UserId = user!.Id;
         var result = await handler.CreateAsync(request);
-        return result.IsSuccess 
-            ? TypedResults.Created() 
-            : TypedResults.BadRequest();
+
+        if (!result.IsSuccess) return TypedResults.BadRequest(result.Message);
+        var responseDto = new ResponseDto
+        {
+            Id = result.Data!.Id,
+            Title = result.Data.Title,
+            Message = result.Message,
+            StatusCode = result.StatusCode
+        };   
+        var location = LocationHelper.Location(httpRequest, "category", responseDto.Id);
+        return TypedResults.Created(location, responseDto);
     }
 }

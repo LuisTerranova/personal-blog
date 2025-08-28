@@ -1,5 +1,8 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
 using personal_blog.Api.Common.Api;
-using personal_blog.Api.Common.Filters;
+using personal_blog.Api.Common.Api.Filters;
+using personal_blog.Api.Models;
 using personal_blog.core.Handlers;
 using personal_blog.core.Requests.Categories;
 
@@ -9,17 +12,25 @@ public class UpdateCategoryEndpoint : IEndpoint
 {
     public static void Map(IEndpointRouteBuilder app) 
         => app.MapPut("/{id}", HandleAsync)
-            .AddEndpointFilter<RoleAuthorizationEndpointFilter>()
+            .RequireRole("admin")
+            .WithValidation<UpdateCategoryRequest>()
             .WithName("Categories : Update")
             .WithSummary("Updates a category")
             .WithOrder(5);
 
-    private static async Task<IResult> HandleAsync(ICategoryHandler handler, UpdateCategoryRequest request, int id)
+    private static async Task<IResult> HandleAsync(ICategoryHandler handler
+        , UpdateCategoryRequest request
+        , ClaimsPrincipal principal
+        , UserManager<ApplicationUser> userManager
+        , int id)
     {
+        var user =  await userManager.GetUserAsync(principal);
+
+        request.UserId = user!.Id;
         request.Id = id;
         var result = await handler.UpdateAsync(request);
         return result.IsSuccess 
-            ? TypedResults.Ok() 
+            ? TypedResults.Ok($"/{result.Data.Id}") 
             : TypedResults.BadRequest();
     }
 }

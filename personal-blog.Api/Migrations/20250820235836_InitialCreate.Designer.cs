@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using personal_blog.Api.Data;
 
@@ -11,9 +12,11 @@ using personal_blog.Api.Data;
 namespace personal_blog.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250820235836_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -236,9 +239,6 @@ namespace personal_blog.Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("PostId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Slug")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -249,12 +249,7 @@ namespace personal_blog.Api.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("NVARCHAR");
 
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Categories", (string)null);
                 });
@@ -395,17 +390,6 @@ namespace personal_blog.Api.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("personal_blog.core.Models.Category", b =>
-                {
-                    b.HasOne("personal_blog.Api.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("personal_blog.core.Models.Post", b =>
                 {
                     b.HasOne("personal_blog.core.Models.Category", "Category")
@@ -415,7 +399,7 @@ namespace personal_blog.Api.Migrations
                         .IsRequired();
 
                     b.HasOne("personal_blog.Api.Models.ApplicationUser", "User")
-                        .WithMany()
+                        .WithMany("Posts")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -428,7 +412,7 @@ namespace personal_blog.Api.Migrations
             modelBuilder.Entity("personal_blog.core.Models.Project", b =>
                 {
                     b.HasOne("personal_blog.Api.Models.ApplicationUser", "User")
-                        .WithMany()
+                        .WithMany("Projects")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -438,6 +422,10 @@ namespace personal_blog.Api.Migrations
 
             modelBuilder.Entity("personal_blog.Api.Models.ApplicationUser", b =>
                 {
+                    b.Navigation("Posts");
+
+                    b.Navigation("Projects");
+
                     b.Navigation("Roles");
                 });
 

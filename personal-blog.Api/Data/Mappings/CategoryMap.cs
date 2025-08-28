@@ -24,5 +24,10 @@ public class CategoryMap : IEntityTypeConfiguration<Category>
         builder.HasMany(c => c.Posts)
             .WithOne(p => p.Category)
             .OnDelete(DeleteBehavior.Cascade);
+        
+        builder.HasOne(c => c.User)
+            .WithMany()
+            .HasForeignKey(c => c.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
     }   
 }

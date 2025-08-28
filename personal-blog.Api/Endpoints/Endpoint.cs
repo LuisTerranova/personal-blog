@@ -1,7 +1,9 @@
 using personal_blog.Api.Common.Api;
+using personal_blog.Api.Endpoints.AccountEndpoints;
 using personal_blog.Api.Endpoints.CategoryEndpoints;
 using personal_blog.Api.Endpoints.PostEndpoints;
 using personal_blog.Api.Endpoints.ProjectEndpoints;
+using personal_blog.Api.Models;
 
 namespace personal_blog.Api.Endpoints;
 
@@ -31,6 +33,8 @@ public static class Endpoint
             .MapEndpoint<DeleteProjectEndpoint>()
             .MapEndpoint<GetAllProjectsEndpoint>()
             .MapEndpoint<UpdateProjectEndpoint>();
+        endpoints.MapGroup("v1/identity").MapIdentityApi<ApplicationUser>();
+        endpoints.MapGroup("v1/logout").MapEndpoint<LogoutEndpoint>();
     }
 
     private static IEndpointRouteBuilder MapEndpoint<TEndpoint>(this IEndpointRouteBuilder app)

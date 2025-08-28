@@ -5,7 +5,6 @@ namespace personal_blog.Api.Models;
 
 public class ApplicationUser : IdentityUser<long>
 {
+    public override long Id { get; set; }
     public List<IdentityRole<long>>? Roles { get; set; }
-    public List<Post>? Posts { get; set; }
-    public List<Project>?  Projects { get; set; }
 }
