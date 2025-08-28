@@ -19,11 +19,10 @@ public class DeleteCategoryEndpoint : IEndpoint
             .WithOrder(2);
 
     private static async Task<IResult> HandleAsync(ICategoryHandler handler
-        , int id
-        , ClaimsPrincipal principal
-        , UserManager<ApplicationUser> userManager)
+        ,int id
+        ,HttpContext httpContext)
     {
-        var user =  await userManager.GetUserAsync(principal);
+        var user = httpContext.Items["ApplicationUser"] as ApplicationUser;  ;
         
         var request = new DeleteCategoryRequest
         {

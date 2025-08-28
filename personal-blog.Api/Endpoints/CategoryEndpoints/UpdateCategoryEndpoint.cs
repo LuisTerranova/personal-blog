@@ -20,11 +20,10 @@ public class UpdateCategoryEndpoint : IEndpoint
 
     private static async Task<IResult> HandleAsync(ICategoryHandler handler
         , UpdateCategoryRequest request
-        , ClaimsPrincipal principal
-        , UserManager<ApplicationUser> userManager
+        , HttpContext httpContext
         , int id)
     {
-        var user =  await userManager.GetUserAsync(principal);
+        var user = httpContext.Items["ApplicationUser"] as ApplicationUser;
 
         request.UserId = user!.Id;
         request.Id = id;

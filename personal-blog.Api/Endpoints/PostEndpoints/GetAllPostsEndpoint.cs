@@ -10,7 +10,6 @@ public class GetAllPostsEndpoint : IEndpoint
 {
     public static void Map(IEndpointRouteBuilder app) 
         => app.MapGet("/", HandleAsync)
-            .AddEndpointFilter<RoleAuthorizationEndpointFilter>()
             .WithName("Posts : GetAllPosts")
             .WithSummary("Gets all posts")
             .WithOrder(3);

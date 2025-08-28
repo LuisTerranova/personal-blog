@@ -9,7 +9,6 @@ public class GetPostByIdEndpoint : IEndpoint
 {
     public static void Map(IEndpointRouteBuilder app) 
         => app.MapGet("/{id}", HandleAsync)
-            .AddEndpointFilter<RoleAuthorizationEndpointFilter>()
             .WithName("Posts : GetPostById")
             .WithSummary("Get a post by id")
             .WithOrder(4);

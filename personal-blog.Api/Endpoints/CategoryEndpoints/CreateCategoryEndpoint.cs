@@ -22,11 +22,10 @@ public class CreateCategoryEndpoint : IEndpoint
 
     private static async Task<IResult> HandleAsync(ICategoryHandler handler
         ,CreateCategoryRequest request
-        ,UserManager<ApplicationUser> userManager
-        ,ClaimsPrincipal principal
+        ,HttpContext httpContext
         ,HttpRequest httpRequest)
     {
-        var user = await userManager.GetUserAsync(principal);
+        var user = httpContext.Items["ApplicationUser"] as ApplicationUser;
         
         request.UserId = user!.Id;
         var result = await handler.CreateAsync(request);

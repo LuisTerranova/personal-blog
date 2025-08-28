@@ -28,6 +28,7 @@ public class RoleAuthorizationEndpointFilter(string requiredRole) : IEndpointFil
         {
             return Results.Forbid(); 
         }
+        context.HttpContext.Items["ApplicationUser"] = applicationUser;
         
         return await next(context);
     }
