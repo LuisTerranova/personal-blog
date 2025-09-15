@@ -1,3 +1,4 @@
+using Azure.Core.Pipeline;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using personal_blog.Api.ApiTesting;
@@ -21,9 +22,20 @@ builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
 
 builder.Services.AddDbContext<AppDbContext>(x => { x.UseSqlServer(connectionString); });
+
 builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
     .AddRoles<IdentityRole<long>>()
     .AddEntityFrameworkStores<AppDbContext>();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("BlazorApp", policy =>
+    {
+        policy.WithOrigins("http://localhost:5124", "https://localhost:5124")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(x =>
@@ -65,6 +77,7 @@ if (app.Environment.IsDevelopment())
 }
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseCors("BlazorApp");
 app.MapGet("/", () => new {message = "OK"});
 app.MapIdentityApi<ApplicationUser>();
 app.MapEndpoints();

@@ -1,7 +1,7 @@
 @page "/posts"
 @using personal_blog.core.Models
 @using personal_blog.spa.Client.Components
-@inject HttpClient Http
+@inject IHttpClientFactory HttpclientFactory
 
 <MudLayout>
     @if (_errorMessage != null)
@@ -19,12 +19,14 @@
 @code {
     private List<Post> _posts = [];
     private string? _errorMessage;
+    private HttpClient _apiClient;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            _posts = await Http.GetFromJsonAsync<List<Post>>("http://localhost:5177/v1/posts") ?? new List<Post>();
+            _apiClient = HttpclientFactory.CreateClient("Api");
+            _posts = await _apiClient.GetFromJsonAsync<List<Post>>("v1/posts") ?? new List<Post>();
         }
         catch (HttpRequestException ex)
         {
