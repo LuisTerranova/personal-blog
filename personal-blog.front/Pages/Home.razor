@@ -1,0 +1,48 @@
+@page "/"
+@using personal_blog.core.Models
+@using personal_blog.front.Components
+@inject HttpClient Http
+
+<MudContainer Class="my-10 d-flex align-center justify-center" Style="min-height: 85vh;">
+    <MudPaper Class="pa-10 align-items-center" Style="background-color: #EBE9E1">
+        <MudText Typo="Typo.h1" Color="Color.Primary" Align="Align.Center">
+            Welcome to the Trash Tech Blog!
+        </MudText>
+        <MudText Typo="Typo.h5" Class="pa-1 ma-2" Color="Color.Primary" Align="Align.Center">
+            Either you are a wanderer
+            that wants to read tech content, or a recruiter that
+            is interested in hiring. None of the less, here are some
+            featured posts for you.
+        </MudText>
+        @if (_errorMessage != null)
+        {
+            <MudAlert Severity="Severity.Error" Class="mb-5">@_errorMessage</MudAlert>
+        }
+        else
+        {
+            <PostCard Posts="_featuredPosts"/>
+        }
+    </MudPaper>
+</MudContainer>
+
+@code {
+    private List<Post>? _featuredPosts;
+    private string? _errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _featuredPosts = await Http.GetFromJsonAsync<List<Post>?>("v1/posts/featured");
+        }
+        catch (HttpRequestException ex)
+        {
+            _errorMessage = $"An error occurred while fetching posts: {ex.Message}";
+        }
+        catch
+        {
+            _errorMessage = "An unexpected error occurred. Please try again later.";
+        }
+    }
+
+}

@@ -20,4 +20,9 @@
     <ProjectReference Include="..\..\personal-blog.core\personal-blog.core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Components\" />
+    <Folder Include="Pages\" />
+  </ItemGroup>
+
 </Project>
