@@ -8,7 +8,7 @@ namespace personal_blog.Api.Endpoints.PostEndpoints;
 public class GetPostByIdEndpoint : IEndpoint
 {
     public static void Map(IEndpointRouteBuilder app) 
-        => app.MapGet("/{id}", HandleAsync)
+        => app.MapGet("/{id:int}", HandleAsync)
             .WithName("Posts : GetPostById")
             .WithSummary("Get a post by id")
             .WithOrder(4);

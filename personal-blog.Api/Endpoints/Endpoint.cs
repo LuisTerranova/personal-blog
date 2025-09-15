@@ -4,6 +4,7 @@ using personal_blog.Api.Endpoints.CategoryEndpoints;
 using personal_blog.Api.Endpoints.PostEndpoints;
 using personal_blog.Api.Endpoints.ProjectEndpoints;
 using personal_blog.Api.Models;
+using personal_blog.core.Requests.Posts;
 
 namespace personal_blog.Api.Endpoints;
 
@@ -25,6 +26,7 @@ public static class Endpoint
             .MapEndpoint<CreatePostEndpoint>()
             .MapEndpoint<DeletePostEndpoint>()
             .MapEndpoint<GetAllPostsEndpoint>()
+            .MapEndpoint<GetFeaturedPostsEndpoint>()
             .MapEndpoint<GetPostByIdEndpoint>()
             .MapEndpoint<UpdatePostEndpoint>();
         endpoints.MapGroup("v1/projects")

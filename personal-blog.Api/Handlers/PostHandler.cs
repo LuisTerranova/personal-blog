@@ -95,6 +95,26 @@ public class PostHandler(AppDbContext context) : IPostHandler
         }
     }
 
+    public async Task<PagedResponse<List<Post>?>> GetFeaturedAsync(GetFeaturedPostsRequest request)
+    {
+        try
+        {
+            var featuredPosts = await context.Posts
+                .AsNoTracking()
+                .OrderByDescending(p => p.Created)
+                .Take(3)
+                .ToListAsync();
+            
+            return featuredPosts == null
+                ? new PagedResponse<List<Post>?>(null, "Posts not found", 404)
+                : new PagedResponse<List<Post>?>(featuredPosts, "Posts retrieved successfully");
+        }
+        catch
+        {
+            return new PagedResponse<List<Post>?>(null, "Error while retrieving posts", 400);
+        }
+    }
+
     public async Task<Response<Post?>> UpdateAsync(UpdatePostRequest request)
     {
         try

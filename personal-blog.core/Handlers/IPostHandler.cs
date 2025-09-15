@@ -10,5 +10,6 @@ public interface IPostHandler
     Task<Response<Post?>> DeleteAsync(DeletePostRequest request);
     Task<PagedResponse<List<Post>?>> GetAllAsync(GetAllPostsRequest request);
     Task<Response<Post?>> GetByIdAsync(GetPostByIdRequest request);
+    Task<PagedResponse<List<Post>?>> GetFeaturedAsync(GetFeaturedPostsRequest request);
     Task<Response<Post?>> UpdateAsync(UpdatePostRequest request);
 }

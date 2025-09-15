@@ -19,13 +19,12 @@
 @code {
     private List<Post> _posts = [];
     private string? _errorMessage;
-    private HttpClient _apiClient;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            _posts = await _apiClient.GetFromJsonAsync<List<Post>>("v1/posts") ?? new List<Post>();
+            _posts = await Http.GetFromJsonAsync<List<Post>>("v1/posts") ?? new List<Post>();
         }
         catch (HttpRequestException ex)
         {
