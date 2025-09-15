@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using personal_blog.Api.Common.Api.Helpers;
+using personal_blog.Api.ApiTesting;
 using personal_blog.Api.Data;
-using personal_blog.Api.Data.ApiTesting;
 using personal_blog.Api.Endpoints;
 using personal_blog.Api.Handlers;
 using personal_blog.Api.Models;
@@ -57,15 +56,7 @@ builder.Services.AddSwaggerGen(x =>
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
-{
-    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<long>>>();
-    
-    var dbInitializer = new DbInitializer(userManager, roleManager);
-    
-    dbInitializer.SeedAdminUserAsync();
-}
+await app.SeedAdminUserAsync(); //Seeding the database for testing
 
 if (app.Environment.IsDevelopment())
 {

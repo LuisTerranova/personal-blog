@@ -1,0 +1,13 @@
+﻿@using personal_blog.spa.Client.Components
+@using personal_blog.spa.Themes
+@inherits LayoutComponentBase
+
+<MudThemeProvider Theme="CustomTheme.mudTheme"/>
+<MudPopoverProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+
+<NavBar/>
+<MudMainContent>
+    @Body
+</MudMainContent>

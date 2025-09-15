@@ -1,0 +1,38 @@
+@page "/posts"
+@using personal_blog.core.Models
+@using personal_blog.spa.Client.Components
+@inject HttpClient Http
+
+<MudLayout>
+    @if (_errorMessage != null)
+    {
+        <MudAlert Severity="Severity.Error" Class="mb-5">@_errorMessage</MudAlert>
+    }
+    else
+    {
+        <MudContainer Class="pa-12">
+            <SearchBar Posts="_posts"/>
+        </MudContainer>
+    }
+</MudLayout>
+
+@code {
+    private List<Post> _posts = [];
+    private string? _errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _posts = await Http.GetFromJsonAsync<List<Post>>("http://localhost:5177/v1/posts") ?? new List<Post>();
+        }
+        catch (HttpRequestException ex)
+        {
+            _errorMessage = $"An error occurred while fetching posts: {ex.Message}";
+        }
+        catch(Exception ex)
+        {
+            _errorMessage = $"An unexpected error occurred. Please try again later. {ex.Message}";
+        }
+    }
+}

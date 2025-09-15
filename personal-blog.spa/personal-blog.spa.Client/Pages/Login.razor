@@ -1,0 +1,36 @@
+@page "/login"
+@using Microsoft.AspNetCore.Authorization
+@using personal_blog.core.Requests
+@rendermode InteractiveWebAssembly
+@inject NavigationManager Nav
+@inject HttpClient Http
+@attribute [AllowAnonymous]
+
+<div style="min-height: 93vh;" class="d-flex justify-center align-center">
+    <MudContainer MaxWidth="MaxWidth.Small">
+        <MudGrid>
+            <MudItem xs="12" Class="align-items-center">
+                <EditForm  FormName="Login" Model="_loginRequest" OnValidSubmit="HandleLogin">
+                    <DataAnnotationsValidator/>
+                    <MudCard Class="pa-10 ma-3 mud-theme-tertiary">
+                        <MudText Typo="Typo.h4" Class="d-flex justify-center align-center">Admin log-in</MudText>
+                        <MudCardContent>
+                            <MudTextField Label="Username" @bind-Value="_loginRequest.UserName" Variant="Variant.Outlined"/>
+                            <MudTextField Label="Password" InputType="InputType.Password" @bind-Value="_loginRequest.Password" Variant="Variant.Outlined"/>
+                        </MudCardContent>
+                        <MudButton Color="Color.Secondary" Variant="Variant.Filled" ButtonType="ButtonType.Submit">Login</MudButton>
+                    </MudCard>
+                </EditForm>
+            </MudItem>
+        </MudGrid>
+    </MudContainer>    
+</div>
+
+@code {
+    private LoginRequest _loginRequest = new();
+    
+    private async Task HandleLogin(EditContext context)
+    {
+        
+    }
+}
