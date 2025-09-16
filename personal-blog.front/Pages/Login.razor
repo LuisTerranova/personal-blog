@@ -2,7 +2,6 @@
 @using Microsoft.AspNetCore.Authorization
 @using personal_blog.core.Requests
 @inject HttpClient Http
-@inject ILocalStorageService LocalStorage
 @inject NavigationManager Nav
 @attribute [AllowAnonymous]
 
@@ -28,21 +27,10 @@
 
 @code {
     private LoginRequest _loginRequest = new();
-
-    public record JwtToken
-    {
-        public string accessToken;
-    }
+    
     
     private async Task HandleLogin(EditContext context)
     {
-        var user = _loginRequest;
-        var response = await Http.PostAsJsonAsync("v1/identity/login", user);
-        if (response.IsSuccessStatusCode)
-        {
-            var token = await response.Content.ReadFromJsonAsync<JwtToken>();
-            await LocalStorage.SetItemAsync("authToken", token.accessToken);
-            Nav.NavigateTo("/dashboard");
-        }
+        
     }
 }

@@ -3,8 +3,7 @@ using personal_blog.Api.Endpoints.AccountEndpoints;
 using personal_blog.Api.Endpoints.CategoryEndpoints;
 using personal_blog.Api.Endpoints.PostEndpoints;
 using personal_blog.Api.Endpoints.ProjectEndpoints;
-using personal_blog.Api.Models;
-using personal_blog.core.Requests.Posts;
+using personal_blog.core.Models;
 
 namespace personal_blog.Api.Endpoints;
 
