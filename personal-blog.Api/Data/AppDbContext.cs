@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using personal_blog.Api.Data.Mappings;
-using personal_blog.Api.Models;
 using personal_blog.core.Models;
 
 namespace personal_blog.Api.Data;

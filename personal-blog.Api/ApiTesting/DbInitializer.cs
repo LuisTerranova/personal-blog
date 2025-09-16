@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Identity;
-using personal_blog.Api.Models;
+using personal_blog.core.Models;
 
 namespace personal_blog.Api.ApiTesting;
 
