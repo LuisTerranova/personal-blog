@@ -12,14 +12,14 @@ public class PostMap : IEntityTypeConfiguration<Post>
         builder.HasKey(p => p.Id);
         
         builder.Property(p => p.Title)
-            .HasColumnType("NVARCHAR")
             .IsRequired()
-            .HasMaxLength(200);
-        
-        builder.Property(p => p.Body)
             .HasColumnType("NVARCHAR")
-            .IsRequired();
+            .HasMaxLength(200);
 
+        builder.Property(p => p.Body)
+            .IsRequired()
+            .HasColumnType("NVARCHAR");
+        
         builder.Property(p => p.Created)
             .IsRequired()
             .HasColumnType("DATETIME");
@@ -27,21 +27,9 @@ public class PostMap : IEntityTypeConfiguration<Post>
         builder.Property(p => p.Updated)
             .IsRequired()
             .HasColumnType("DATETIME");
-        
-        builder.Property(p => p.CategoryId)
-            .HasColumnType("INTEGER")
-            .IsRequired();
-        
-        builder.HasOne(p => p.Category)
-            .WithMany(c => c.Posts)
-            .HasForeignKey(p => p.CategoryId);;
-        
+
         builder.Property(p => p.UserId)
-            .HasColumnType("BIGINT")
-            .IsRequired();
-        
-        builder.HasOne(p => p.User)
-            .WithMany()
-            .HasForeignKey(p => p.UserId);
+            .IsRequired()
+            .HasColumnType("BIGINT");
     }
 }

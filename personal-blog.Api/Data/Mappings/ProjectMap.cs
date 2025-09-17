@@ -34,9 +34,5 @@ public class ProjectMap : IEntityTypeConfiguration<Project>
         builder.Property(p => p.UserId)
             .HasColumnType("BIGINT")
             .IsRequired();
-        
-        builder.HasOne(p => p.User)
-            .WithMany()
-            .HasForeignKey(p => p.UserId);
     }
 }

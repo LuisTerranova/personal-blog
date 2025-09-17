@@ -4,8 +4,8 @@ using personal_blog.Api.ApiTesting;
 using personal_blog.Api.Data;
 using personal_blog.Api.Endpoints;
 using personal_blog.Api.Handlers;
-using personal_blog.core.Models;
 using personal_blog.core.Handlers;
+using ApplicationUser = personal_blog.Api.Models.ApplicationUser;
 
 var builder = WebApplication.CreateBuilder(args);
 

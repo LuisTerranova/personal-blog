@@ -1,8 +1,9 @@
+using System.Reflection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using personal_blog.Api.Data.Mappings;
 using personal_blog.core.Models;
+using ApplicationUser = personal_blog.Api.Models.ApplicationUser;
 
 namespace personal_blog.Api.Data;
 
@@ -15,8 +16,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(modelBuilder); 
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(PostMap).Assembly);
+        base.OnModelCreating(modelBuilder);
+        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
 }
 

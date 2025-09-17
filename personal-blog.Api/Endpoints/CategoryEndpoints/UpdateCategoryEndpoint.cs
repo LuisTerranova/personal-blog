@@ -1,7 +1,9 @@
 using personal_blog.Api.Common.Api;
+using personal_blog.Api.Models;
 using personal_blog.core.Handlers;
 using personal_blog.core.Models;
 using personal_blog.core.Requests.Categories;
+using ApplicationUser = personal_blog.Api.Models.ApplicationUser;
 
 namespace personal_blog.Api.Endpoints.CategoryEndpoints;
 

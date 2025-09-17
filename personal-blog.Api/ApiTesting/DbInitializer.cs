@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Identity;
-using personal_blog.core.Models;
+using ApplicationUser = personal_blog.Api.Models.ApplicationUser;
 
 namespace personal_blog.Api.ApiTesting;
 
@@ -13,14 +13,14 @@ public static class DbInitializer
         try
         {
             var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
-            var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+            var roleManager = services.GetRequiredService<RoleManager<IdentityRole<long>>>();
             var configuration = services.GetRequiredService<IConfiguration>();
 
             const string adminRole = "admin";
             
             if (!await roleManager.RoleExistsAsync(adminRole))
             {
-                await roleManager.CreateAsync(new IdentityRole(adminRole));
+                await roleManager.CreateAsync(new IdentityRole<long>(adminRole));
             }
             
             var adminEmail = configuration["AdminUser:Email"];

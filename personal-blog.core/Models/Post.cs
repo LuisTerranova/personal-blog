@@ -7,9 +7,7 @@ public class Post
     public string Body { get; set; }
     public DateTime Created { get; set; } =  DateTime.Now;
     public DateTime Updated { get; set; } = DateTime.Now;
-    
-    public Category Category { get; set; }
     public int CategoryId { get; set; }
+    public Category Category { get; set; }
     public long UserId { get; set; }
-    public ApplicationUser User { get; set; }
 }

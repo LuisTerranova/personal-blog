@@ -1,7 +1,7 @@
 @page "/"
 @using personal_blog.core.Models
 @using personal_blog.front.Components
-@inject HttpClient Http
+@inject IHttpClientFactory HttpClientFactory
 
 <MudContainer Class="my-10 d-flex align-center justify-center" Style="min-height: 85vh;">
     <MudPaper Class="pa-10 align-items-center" Style="background-color: #EBE9E1">
@@ -33,7 +33,7 @@
     {
         try
         {
-            _featuredPosts = await Http.GetFromJsonAsync<List<Post>?>("v1/posts/featured");
+            //_featuredPosts = await Http.GetFromJsonAsync<List<Post>?>("v1/posts/featured");
         }
         catch (HttpRequestException ex)
         {

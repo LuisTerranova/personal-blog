@@ -17,17 +17,13 @@ public class CategoryMap : IEntityTypeConfiguration<Category>
             .HasMaxLength(100);
 
         builder.Property(x => x.Slug)
-            .HasColumnType("NVARCHAR")
             .IsRequired()
+            .HasColumnType("NVARCHAR")
             .HasMaxLength(100);
         
-        builder.HasMany(c => c.Posts)
-            .WithOne(p => p.Category)
-            .OnDelete(DeleteBehavior.Cascade);
-        
-        builder.HasOne(c => c.User)
-            .WithMany()
-            .HasForeignKey(c => c.UserId)
-            .OnDelete(DeleteBehavior.Restrict);
+        builder.Property(x => x.UserId)
+            .IsRequired()
+            .HasColumnType("VARCHAR")
+            .HasMaxLength(160);
     }   
 }

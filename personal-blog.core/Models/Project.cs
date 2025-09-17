@@ -9,5 +9,4 @@ public class Project
     public string RepoLink { get; set; }
     public DateTime Created { get; set; }
     public long UserId { get; set; }
-    public ApplicationUser User { get; set; }
 }
