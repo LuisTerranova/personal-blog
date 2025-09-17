@@ -10,7 +10,7 @@ public class CookieAuthenticationStateProvider(IHttpClientFactory clientFactory 
     ICookieAuthenticationStateProvider
 {
     private bool _isAuthenticated = false;
-    private readonly HttpClient _client = clientFactory.CreateClient("a-name");
+    private readonly HttpClient _client = clientFactory.CreateClient("API");
 
     public async Task<bool> CheckAuthenticatedAsync()
     {
