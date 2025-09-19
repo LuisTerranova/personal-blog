@@ -1,3 +1,4 @@
+@using HtmlAgilityPack
 @using personal_blog.core.Models
 
 <MudGrid Justify="Justify.Center">
@@ -9,17 +10,40 @@
     }
     else
     {
+        <MudOverlay Visible="_viewerVisible"
+                    DarkBackground="true"
+                    OnClick="@(() => _viewerVisible = false)" 
+                    Class="d-flex align-center justify-center"
+                    Style="z-index: 1301">
+            <MudPaper Elevation="25" Class="pa-8 rounded-lg" Style="width: 800px; max-height: 85vh; 
+            color: #EBE9E1; overflow-y: auto; min-height: 85vh ">
+                @if (_selectedPost is not null)
+                {
+                    <MudText Typo="Typo.h4" Color="Color.Primary" GutterBottom="true"
+                             Class="d-flex align-center justify-center">@_selectedPost.Title</MudText>
+                    <MudText Typo="Typo.body2" Color="Color.Primary" Class="ma-2">
+                        Created At: @_selectedPost.Created
+                    </MudText>
+                    <MudText Typo="Typo.body2" Color="Color.Primary" Class="ma-2">
+                        Category: @_selectedPost.Category.Title
+                    </MudText>
+                    <MudDivider/>
+                    <MudText Color="Color.Primary" Typo="Typo.subtitle1">
+                        @((MarkupString)_selectedPost.Body)
+                    </MudText>
+                }
+            </MudPaper>
+        </MudOverlay>
         @foreach (var post in Posts)
         {
-            <MudItem xs="12" sm="6" md="4">
-                <MudLink Href="/posts/" Typo="Typo.inherit" Color="Color.Inherit" Underline="Underline.None">
+            <MudItem xs="12" sm="6" md="4" @onclick="@(() => OnItemClick(post.Id))"
+                     Style="cursor: pointer;">
                     <MudPaper Class="pa-4 ma-2 mud-theme-primary rounded-lg">
                         <MudText Align="Align.Center" Typo="Typo.h6" Class="pa-5">@post.Title</MudText>
                         <MudText Align="Align.Center" Typo="Typo.body1" Class="pa-5">
                             @GetSummary(post.Body)
                         </MudText>
                     </MudPaper>
-                </MudLink>
             </MudItem>
         }   
     }
@@ -30,13 +54,34 @@
     [Parameter]
     public List<Post>? Posts { get; set; }
 
+    private bool _viewerVisible;
+    private Post? _selectedPost;
+    
+    private void OnItemClick(int postId)
+    {
+        _selectedPost = Posts?.FirstOrDefault(p => p.Id == postId);
+        if(_selectedPost is not null)
+        {
+            _viewerVisible = true;
+        }
+    }
+
     private string GetSummary(string body, int maxLength = 200)
     {
-        if (string.IsNullOrEmpty(body) || body.Length <= maxLength)
+        if (string.IsNullOrEmpty(body))
         {
-            return body;
+            return string.Empty;
         }
 
-        return body.Substring(0, maxLength) + "...";
+        var doc = new HtmlDocument();
+        doc.LoadHtml(body);
+        string plainText = doc.DocumentNode.InnerText;
+        
+        if (plainText.Length <= maxLength)
+        {
+            return plainText;
+        }
+
+        return plainText.Substring(0, maxLength) + "...";
     }
 }

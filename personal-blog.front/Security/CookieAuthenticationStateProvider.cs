@@ -9,7 +9,7 @@ public class CookieAuthenticationStateProvider(IHttpClientFactory clientFactory 
     AuthenticationStateProvider,
     ICookieAuthenticationStateProvider
 {
-    private bool _isAuthenticated = false;
+    private bool _isAuthenticated;
     private readonly HttpClient _client = clientFactory.CreateClient("API");
 
     public async Task<bool> CheckAuthenticatedAsync()
@@ -19,7 +19,8 @@ public class CookieAuthenticationStateProvider(IHttpClientFactory clientFactory 
     }
 
     public void NotifyAuthenticationStateChanged()
-        => NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+        =>NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+    
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
@@ -41,13 +42,14 @@ public class CookieAuthenticationStateProvider(IHttpClientFactory clientFactory 
 
     private async Task<ApplicationUser?> GetUser()
     {
+        Console.WriteLine("Making API call to GetUser...");
         try
         {
             return await _client.GetFromJsonAsync<ApplicationUser?>("v1/identity/manage/info");
         }
         catch
         {
-            return null;
+                return null;
         }
     }
 

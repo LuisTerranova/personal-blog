@@ -60,6 +60,7 @@ public class PostHandler(AppDbContext context) : IPostHandler
         try
         {
             var posts = await context.Posts
+                .Include(p=>p.Category)
                 .AsNoTracking()
                 .Skip(request.PageNumber - 1)
                 .Take(request.PageSize)

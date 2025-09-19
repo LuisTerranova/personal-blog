@@ -1,4 +1,3 @@
-using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -13,6 +12,8 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped<CookieHandler>();
+builder.Services.AddTransient<IPostHandler, PostHandler>();
+
 builder.Services.AddAuthorizationCore();
 
 builder.Services.AddScoped<AuthenticationStateProvider, CookieAuthenticationStateProvider>();
@@ -26,6 +27,7 @@ builder.Services.AddHttpClient("API", options =>
     options.BaseAddress = new Uri("http://localhost:5177");
 })
 .AddHttpMessageHandler<CookieHandler>();
+
 
 builder.Services.AddTransient<IAccountHandler, AccountHandler>();
 

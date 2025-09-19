@@ -31,9 +31,10 @@
 
     protected override async Task OnInitializedAsync()
     {
+        var client = HttpClientFactory.CreateClient("API");
         try
         {
-            //_featuredPosts = await Http.GetFromJsonAsync<List<Post>?>("v1/posts/featured");
+            _featuredPosts = await client.GetFromJsonAsync<List<Post>?>("v1/posts/featured");
         }
         catch (HttpRequestException ex)
         {

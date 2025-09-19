@@ -48,16 +48,17 @@ builder.Services.AddSwaggerGen(x =>
 
 var app = builder.Build();
 
-await app.SeedAdminUserAsync(); //Seeding the database for testing
+await app.SeedAdminUserAsync(); //Seeding database for testing
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("BlazorApp");
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseCors("BlazorApp");
 app.MapGet("/", () => new {message = "OK"});
 app.MapEndpoints();
 
