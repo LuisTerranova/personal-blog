@@ -10,10 +10,10 @@
 <MudContainer Class="pa-10 align-items-center">
     <MudTabs Centered="true" Rounded="true" ApplyEffectsToContainer="true" Color="Color.Primary">
         <MudTabPanel Text="Posts">
-            <PostsManager Posts="Posts"/>
+            <PostsManager/>
         </MudTabPanel>
         <MudTabPanel Text="Categories">
-        
+            <CategoriesManager/>
         </MudTabPanel>
         <MudTabPanel Text="Projects">
         
@@ -25,25 +25,4 @@
 @code {
     private string? _errorMessage;
     private List<Post> Posts { get; set; } = [];
-    
-    protected override async Task OnInitializedAsync()
-    {
-        try
-        {
-            var request = new GetAllPostsRequest();
-            var result = await Handler.GetAllAsync(request);
-            if (result.IsSuccess)
-            { 
-                Posts = result.Data ?? [];
-            }
-        }
-        catch (HttpRequestException ex)
-        {
-            _errorMessage = $"An error occurred while fetching posts: {ex.Message}";
-        }
-        catch(Exception ex)
-        {
-            _errorMessage = $"An unexpected error occurred. Please try again later. {ex.Message}";
-        }
-    }
 }

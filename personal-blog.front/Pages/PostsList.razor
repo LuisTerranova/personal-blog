@@ -13,7 +13,20 @@
     else
     {
         <MudContainer Class="pa-12">
-            <SearchBar Posts="Posts"/>
+            <SearchBar TItem="Post"
+                       Items="Posts"
+                       OnFilterChanged="HandleFilterChanged"
+                       SearchFunc="@((post, query) => 
+                                       post.Title.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                                       post.Body.Contains(query, StringComparison.OrdinalIgnoreCase))" />
+            @if (_filteredPosts.Any())
+            {
+                <PostCard Posts="_filteredPosts" />
+            }
+            else
+            {
+                <MudText>Nenhum post encontrado.</MudText>
+            }
         </MudContainer>
     }
 </MudLayout>
@@ -21,6 +34,7 @@
 @code {
     private string? _errorMessage;
     private List<Post> Posts { get; set; } = [];
+    private List<Post> _filteredPosts = [];
 
     protected override async Task OnInitializedAsync()
     {
@@ -28,9 +42,10 @@
         {
             var request = new GetAllPostsRequest();
             var result = await Handler.GetAllAsync(request);
-            if (result.IsSuccess)
-            { 
-                Posts = result.Data ?? [];
+            if (result.IsSuccess && result.Data is not null)
+            {
+                Posts = result.Data;
+                _filteredPosts = result.Data;
             }
         }
         catch (HttpRequestException ex)
@@ -41,5 +56,11 @@
         {
             _errorMessage = $"An unexpected error occurred. Please try again later. {ex.Message}";
         }
+    }
+    
+    private void HandleFilterChanged(List<Post> filteredListFromSearch)
+    {
+        _filteredPosts = filteredListFromSearch;
+        StateHasChanged();
     }
 }

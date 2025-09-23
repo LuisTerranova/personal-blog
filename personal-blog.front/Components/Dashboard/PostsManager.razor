@@ -1,4 +1,7 @@
+@using personal_blog.core.Handlers
 @using personal_blog.core.Models
+@using personal_blog.core.Requests.Posts
+@inject IPostHandler Handler;
 
 <MudTable Items="displayedPosts" Dense="true">
     <ToolBarContent>
@@ -7,8 +10,11 @@
             Create
         </MudButton>
         <MudSpacer/>
-        <SearchBar ShowCards="false" Posts="Posts"
-                   OnFilterChanged="UpdateDisplayedPosts"/>
+        <SearchBar TItem="Post" Items="Posts"
+                   OnFilterChanged="UpdateDisplayedPosts"
+                   SearchFunc="@((post, query) => 
+                        post.Title.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                        post.Body.Contains(query, StringComparison.OrdinalIgnoreCase))" />
     </ToolBarContent>
         <HeaderContent>
             <MudTh Class="pa-5">Id</MudTh>
@@ -33,15 +39,29 @@
 </MudTable>   
 
 @code {
-    [Parameter]
-    public List<Post>? Posts { get; set; }
-    private List<Post>? displayedPosts;
+    public List<Post?> Posts { get; set; }
+    private List<Post?> displayedPosts;
+    private string? _errorMessage;
     
-    protected override void OnParametersSet()
+    protected override async Task OnInitializedAsync()
     {
-        if (displayedPosts == null && Posts != null)
+        try
         {
-            displayedPosts = Posts;
+            var request = new GetAllPostsRequest();
+            var result = await Handler.GetAllAsync(request);
+            if (result.IsSuccess && result.Data is not null)
+            { 
+                Posts = result.Data;
+                displayedPosts = result.Data;
+            }
+        }
+        catch (HttpRequestException ex)
+        {
+            _errorMessage = $"An error occurred while fetching posts: {ex.Message}";
+        }
+        catch(Exception ex)
+        {
+            _errorMessage = $"An unexpected error occurred. Please try again later. {ex.Message}";
         }
     }
     

@@ -1,60 +1,47 @@
-@using personal_blog.core.Models
-
+@typeparam TItem
 
 <MudTextField T="string"
-              ValueChanged="FilterPosts"
+              ValueChanged="FilterItems"
               Placeholder="Search..." 
               Adornment="Adornment.Start"
               AdornmentIcon="@Icons.Material.Filled.Search"
               Clearable="true"
-              DebounceInterval="250"/>
-@if (ShowCards)
-{
-    @if (_filteredPosts.Count > 0)
-    {
-        <PostCard Posts="_filteredPosts"/>
-    }
-    else
-    {
-        <PostCard Posts="Posts"/>
-    }
-}
+              DebounceInterval="250"
+              Immediate="true"/>
 
 @code {
-    [Parameter] 
-    public bool ShowCards { get; set; } = true;
+    [Parameter] public List<TItem?> Items { get; set; } = [];
 
-    [Parameter] 
-    public List<Post> Posts { get; set; } = [];
-    
-    [Parameter] 
-    public EventCallback<List<Post>> OnFilterChanged { get; set; }
+    [Parameter] public Func<TItem, string, bool>? SearchFunc { get; set; }
 
-    private List<Post> _filteredPosts =[];
-    
+    [Parameter] public EventCallback<List<TItem>> OnFilterChanged { get; set; }
+
+    private List<TItem> _filteredItems = [];
+
     protected override async Task OnParametersSetAsync()
     {
-        if (!_filteredPosts.Any() && Posts.Any())
+        if (!_filteredItems.Any() && Items.Any())
         {
-            _filteredPosts = Posts;
-            
-            await OnFilterChanged.InvokeAsync(_filteredPosts);
+            _filteredItems = Items;
+            await OnFilterChanged.InvokeAsync(_filteredItems);
         }
     }
-    
-    private async Task FilterPosts(string searchQuery)
+
+    private async Task FilterItems(string searchQuery)
     {
         if (string.IsNullOrWhiteSpace(searchQuery))
         {
-            _filteredPosts = Posts;
+            _filteredItems = Items;
         }
         else
         {
-            _filteredPosts = Posts.Where(p => 
-                    p.Title.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                    p.Body.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
-                .ToList();
+            if (SearchFunc is not null)
+            {
+                _filteredItems = Items.Where(item => SearchFunc(item, searchQuery)).ToList();
+            }
         }
-        await OnFilterChanged.InvokeAsync(_filteredPosts);
+
+        await OnFilterChanged.InvokeAsync(_filteredItems);
     }
+
 }

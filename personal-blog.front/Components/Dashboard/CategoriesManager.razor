@@ -1,0 +1,68 @@
+@using personal_blog.core.Handlers
+@using personal_blog.core.Models
+@using personal_blog.core.Requests.Categories
+@inject ICategoryHandler Handler
+
+<MudTable Items="displayedCategories" Dense="true">
+    <ToolBarContent>
+        <MudText Typo="Typo.h5" Class="ma-5">Categories</MudText>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary">
+            Create
+        </MudButton>
+        <MudSpacer/>
+        <SearchBar TItem="Category" Items="Categories"
+                   OnFilterChanged="UpdateDisplayedCategories"
+                   SearchFunc="@((category, query) => 
+                    category.Title.Contains(query, StringComparison.OrdinalIgnoreCase))" />
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh Class="pa-5">Id</MudTh>
+        <MudTh>Title</MudTh>
+        <MudTh>Slug</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Id">@context.Id</MudTd>   
+        <MudTd DataLabel="Title">@context.Title</MudTd>   
+        <MudTd DataLabel="CreatedDate">@context.Slug</MudTd>   
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-4 ma-2" Size="Size.Medium">
+            Edit
+        </MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-4 ma-2" Size="Size.Medium">
+            Delete
+        </MudButton>
+    </RowTemplate>
+</MudTable>   
+
+@code {
+    [Parameter]
+    public List<Category?> Categories { get; set; }
+    private List<Category?> displayedCategories;
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var request = new GetAllCategoriesRequest();
+            var result = await Handler.GetAllAsync(request);
+            if (result.IsSuccess && result.Data is not null)
+            { 
+                Categories = result.Data;
+                displayedCategories = result.Data;
+            }
+        }
+        catch (HttpRequestException ex)
+        {
+            errorMessage = $"An error occurred while fetching posts: {ex.Message}";
+        }
+        catch(Exception ex)
+        {
+            errorMessage = $"An unexpected error occurred. Please try again later. {ex.Message}";
+        }
+    }
+
+    private void UpdateDisplayedCategories(List<Category> filteredList)
+    {
+        displayedCategories = filteredList;
+    }
+}
