@@ -1,0 +1,52 @@
+@using personal_blog.core.Models
+
+<MudTable Items="displayedPosts" Dense="true">
+    <ToolBarContent>
+        <MudText Typo="Typo.h5" Class="ma-5">Posts</MudText>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary">
+            Create
+        </MudButton>
+        <MudSpacer/>
+        <SearchBar ShowCards="false" Posts="Posts"
+                   OnFilterChanged="UpdateDisplayedPosts"/>
+    </ToolBarContent>
+        <HeaderContent>
+            <MudTh Class="pa-5">Id</MudTh>
+            <MudTh>Title</MudTh>
+            <MudTh>Category</MudTh>
+            <MudTh>Created</MudTh>
+            <MudTh>Updated</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Id">@context.Id</MudTd>   
+            <MudTd DataLabel="Title">@context.Title</MudTd>   
+            <MudTd DataLabel="Category">@context.Category.Title</MudTd> 
+            <MudTd DataLabel="CreatedDate">@context.Created</MudTd>   
+            <MudTd DataLabel="UpdatedDate">@context.Updated</MudTd>   
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-4 ma-2" Size="Size.Medium">
+                Edit
+            </MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-4 ma-2" Size="Size.Medium">
+                Delete
+            </MudButton>
+        </RowTemplate>
+</MudTable>   
+
+@code {
+    [Parameter]
+    public List<Post>? Posts { get; set; }
+    private List<Post>? displayedPosts;
+    
+    protected override void OnParametersSet()
+    {
+        if (displayedPosts == null && Posts != null)
+        {
+            displayedPosts = Posts;
+        }
+    }
+    
+    private void UpdateDisplayedPosts(List<Post> filteredList)
+    {
+        displayedPosts = filteredList;
+    }
+}

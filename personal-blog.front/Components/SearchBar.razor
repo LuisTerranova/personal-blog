@@ -1,5 +1,6 @@
 @using personal_blog.core.Models
 
+
 <MudTextField T="string"
               ValueChanged="FilterPosts"
               Placeholder="Search..." 
@@ -7,22 +8,41 @@
               AdornmentIcon="@Icons.Material.Filled.Search"
               Clearable="true"
               DebounceInterval="250"/>
-@if (_filteredPosts.Count > 0)
+@if (ShowCards)
 {
-    <PostCard Posts="_filteredPosts"/>
+    @if (_filteredPosts.Count > 0)
+    {
+        <PostCard Posts="_filteredPosts"/>
+    }
+    else
+    {
+        <PostCard Posts="Posts"/>
+    }
 }
-else
-{
-    <PostCard Posts="Posts"/>
-}
-
 
 @code {
     [Parameter] 
+    public bool ShowCards { get; set; } = true;
+
+    [Parameter] 
     public List<Post> Posts { get; set; } = [];
+    
+    [Parameter] 
+    public EventCallback<List<Post>> OnFilterChanged { get; set; }
+
     private List<Post> _filteredPosts =[];
     
-    private void FilterPosts(string searchQuery)
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!_filteredPosts.Any() && Posts.Any())
+        {
+            _filteredPosts = Posts;
+            
+            await OnFilterChanged.InvokeAsync(_filteredPosts);
+        }
+    }
+    
+    private async Task FilterPosts(string searchQuery)
     {
         if (string.IsNullOrWhiteSpace(searchQuery))
         {
@@ -35,5 +55,6 @@ else
                     p.Body.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
                 .ToList();
         }
+        await OnFilterChanged.InvokeAsync(_filteredPosts);
     }
 }
