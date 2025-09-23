@@ -23,7 +23,14 @@ public static class CustomTheme
         {
             DrawerMiniWidthLeft = "260px",
             DrawerMiniWidthRight = "300px",
+        },
+        
+        Typography = new  Typography()
+        {
+            Default = new DefaultTypography()
+            {
+                FontFamily = new[] { "Outfit", "sans-serif"}
+            }
         }
-
     };
 }

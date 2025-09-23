@@ -38,7 +38,7 @@
         {
             <MudItem xs="12" sm="6" md="4" @onclick="@(() => OnItemClick(post.Id))"
                      Style="cursor: pointer;">
-                    <MudPaper Class="pa-4 ma-2 mud-theme-primary rounded-lg">
+                    <MudPaper Class="pa-4 ma-2 mud-theme-primary rounded-lg" Style="min-height: 300px ;">
                         <MudText Align="Align.Center" Typo="Typo.h6" Class="pa-5">@post.Title</MudText>
                         <MudText Align="Align.Center" Typo="Typo.body1" Class="pa-5">
                             @GetSummary(post.Body)

@@ -101,6 +101,7 @@ public class PostHandler(AppDbContext context) : IPostHandler
         try
         {
             var featuredPosts = await context.Posts
+                .Include(p=>p.Category)
                 .AsNoTracking()
                 .OrderByDescending(p => p.Created)
                 .Take(3)
