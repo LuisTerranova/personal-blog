@@ -1,47 +1,28 @@
-@typeparam TItem
-
-<MudTextField T="string"
-              ValueChanged="FilterItems"
-              Placeholder="Search..." 
+<MudTextField @bind-Value="CurrentSearchQuery"
+              Placeholder="Search..."
               Adornment="Adornment.Start"
               AdornmentIcon="@Icons.Material.Filled.Search"
               Clearable="true"
-              DebounceInterval="250"
-              Immediate="true"/>
+              DebounceInterval="500"
+              Immediate="true" />
 
 @code {
-    [Parameter] public List<TItem?> Items { get; set; } = [];
-
-    [Parameter] public Func<TItem, string, bool>? SearchFunc { get; set; }
-
-    [Parameter] public EventCallback<List<TItem>> OnFilterChanged { get; set; }
-
-    private List<TItem> _filteredItems = [];
-
-    protected override async Task OnParametersSetAsync()
+    [Parameter]
+    public string? SearchQuery { get; set; }
+    
+    [Parameter]
+    public EventCallback<string?> SearchQueryChanged { get; set; }
+    
+    private string? CurrentSearchQuery
     {
-        if (!_filteredItems.Any() && Items.Any())
+        get => SearchQuery;
+        set
         {
-            _filteredItems = Items;
-            await OnFilterChanged.InvokeAsync(_filteredItems);
-        }
-    }
-
-    private async Task FilterItems(string searchQuery)
-    {
-        if (string.IsNullOrWhiteSpace(searchQuery))
-        {
-            _filteredItems = Items;
-        }
-        else
-        {
-            if (SearchFunc is not null)
+            if (SearchQuery != value)
             {
-                _filteredItems = Items.Where(item => SearchFunc(item, searchQuery)).ToList();
+                SearchQuery = value;
+                SearchQueryChanged.InvokeAsync(value);
             }
         }
-
-        await OnFilterChanged.InvokeAsync(_filteredItems);
     }
-
 }

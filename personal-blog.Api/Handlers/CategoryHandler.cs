@@ -63,13 +63,20 @@ public class CategoryHandler(AppDbContext context) : ICategoryHandler
     {
         try
         {
-            var categories = await context.Categories
-                .AsNoTracking()
-                .Skip(request.PageNumber - 1)
+            var query = context.Categories.AsNoTracking();
+            
+            if (!string.IsNullOrEmpty(request.Query))
+            {
+                query = query.Where(c => c.Title.Contains(request.Query));
+            }
+            
+            var totalCount = await context.Categories.AsNoTracking().CountAsync();
+            
+            var categories = await query
+                .Skip((request.PageNumber - 1) * request.PageSize)
                 .Take(request.PageSize)
                 .ToListAsync();
-
-            var totalCount = categories.Count;
+            
             return totalCount == 0
                 ? new PagedResponse<List<Category>?>(null, "Categories not found", 400)
                 : new PagedResponse<List<Category>?>(categories, totalCount);

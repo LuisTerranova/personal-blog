@@ -1,9 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using personal_blog.Api.Data;
-using personal_blog.core.Common.Helpers;
 using personal_blog.core.Handlers;
 using personal_blog.core.Models;
-using personal_blog.core.Requests.Categories;
 using personal_blog.core.Requests.Posts;
 using personal_blog.core.Responses;
 
@@ -25,7 +23,12 @@ public class PostHandler(AppDbContext context) : IPostHandler
 
            await context.Posts.AddAsync(post);
            await context.SaveChangesAsync();
-           return new Response<Post?>(post, "Post created successfully", 201);
+           
+           var createdPostWithCategory = await context.Posts
+               .Include(p => p.Category)
+               .FirstOrDefaultAsync(p => p.Id == post.Id);
+           
+           return new Response<Post?>(createdPostWithCategory, "Post created successfully", 201);
         }
         catch
         {
@@ -59,17 +62,23 @@ public class PostHandler(AppDbContext context) : IPostHandler
     {
         try
         {
-            var posts = await context.Posts
-                .Include(p=>p.Category)
-                .AsNoTracking()
-                .Skip(request.PageNumber - 1)
+            var query = context.Posts.AsNoTracking();
+            
+            if (!string.IsNullOrEmpty(request.Query))
+            {
+                query = query.Where(c => c.Title.Contains(request.Query));
+            }
+            
+            var totalCount = await query.CountAsync();
+            
+            var posts = await query
+                .Include(p => p.Category)
+                .Skip((request.PageNumber - 1) * request.PageSize)
                 .Take(request.PageSize)
                 .ToListAsync();
-
-            var totalCount = posts
-                .Count;
+            
             return totalCount == 0
-                ? new PagedResponse<List<Post>?>(null, "Posts not found", 400)
+                ? new PagedResponse<List<Post>?>(null, "Categories not found", 400)
                 : new PagedResponse<List<Post>?>(posts, totalCount);
         }
         catch 

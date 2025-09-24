@@ -13,15 +13,17 @@
     else
     {
         <MudContainer Class="pa-12">
-            <SearchBar TItem="Post"
-                       Items="Posts"
-                       OnFilterChanged="HandleFilterChanged"
-                       SearchFunc="@((post, query) => 
-                                       post.Title.Contains(query, StringComparison.OrdinalIgnoreCase) ||
-                                       post.Body.Contains(query, StringComparison.OrdinalIgnoreCase))" />
-            @if (_filteredPosts.Any())
+            
+            <SearchBar @bind-SearchQuery="SearchString" />
+            @if (_isLoading)
             {
-                <PostCard Posts="_filteredPosts" />
+                <MudProgressCircular Color="Color.Primary" Indeterminate="true" Class="my-8" />
+            }
+            else if (_postsToDisplay.Any())
+            {
+                <PostCard Posts="_postsToDisplay" />
+                <MudPagination Class="d-flex justify-center" Count="TotalPages" 
+                               @bind-Selected="CurrentPage"/>
             }
             else
             {
@@ -33,34 +35,86 @@
 
 @code {
     private string? _errorMessage;
-    private List<Post> Posts { get; set; } = [];
-    private List<Post> _filteredPosts = [];
-
-    protected override async Task OnInitializedAsync()
+    private bool _isLoading;
+    private List<Post> _postsToDisplay { get; set; } = [];
+    
+    private int _totalItems;
+    private int _currentPage = 1;
+    private int CurrentPage 
     {
-        try
+        get => _currentPage;
+        set 
         {
-            var request = new GetAllPostsRequest();
-            var result = await Handler.GetAllAsync(request);
-            if (result.IsSuccess && result.Data is not null)
+            if (_currentPage != value) 
             {
-                Posts = result.Data;
-                _filteredPosts = result.Data;
+                _currentPage = value;
+                _ = LoadPostsAsync(_currentPage);
             }
         }
-        catch (HttpRequestException ex)
+    }
+    private int _pageSize = 6; 
+    
+    private int TotalPages => (int)Math.Ceiling(_totalItems / (double)_pageSize);
+
+    private string? _searchString;
+
+    private string? SearchString
+    {
+        get => _searchString;
+        set
         {
-            _errorMessage = $"An error occurred while fetching posts: {ex.Message}";
-        }
-        catch(Exception ex)
-        {
-            _errorMessage = $"An unexpected error occurred. Please try again later. {ex.Message}";
+            _searchString = value;
+            _ = LoadPostsAsync(1);
         }
     }
     
-    private void HandleFilterChanged(List<Post> filteredListFromSearch)
+    protected override async Task OnInitializedAsync()
     {
-        _filteredPosts = filteredListFromSearch;
-        StateHasChanged();
+        await LoadPostsAsync(_currentPage);
     }
+    
+    private async Task OnPageChangedAsync(int newPage)
+    {
+        await LoadPostsAsync(newPage);
+    }
+    
+    private async Task LoadPostsAsync(int pageNumber)
+    {
+        _isLoading = true;
+        _currentPage = pageNumber; 
+        StateHasChanged();
+
+        try
+        {
+            var request = new GetAllPostsRequest
+            {
+                Query = _searchString,
+                PageNumber = _currentPage,
+                PageSize = _pageSize
+            };
+            
+            var result = await Handler.GetAllAsync(request);
+
+            if (result.IsSuccess && result.Data is not null)
+            {
+                _postsToDisplay = result.Data;
+                _totalItems = result.TotalCount;
+            }
+            else
+            {
+                _postsToDisplay = [];
+                _totalItems = 0;
+            }
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"An unexpected error occurred: {ex.Message}";
+        }
+        finally
+        {
+            _isLoading = false;
+            StateHasChanged();
+        }
+    }
+}
 }

@@ -14,6 +14,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddScoped<CookieHandler>();
 builder.Services.AddTransient<IPostHandler, PostHandler>();
 builder.Services.AddTransient<ICategoryHandler, CategoryHandler>();
+builder.Services.AddTransient<IProjectHandler, ProjectHandler>();
 
 builder.Services.AddAuthorizationCore();
 

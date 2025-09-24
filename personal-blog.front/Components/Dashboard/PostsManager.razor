@@ -1,20 +1,15 @@
-@using personal_blog.core.Handlers
 @using personal_blog.core.Models
-@using personal_blog.core.Requests.Posts
-@inject IPostHandler Handler;
 
-<MudTable Items="displayedPosts" Dense="true">
+<MudTable @ref="_table" 
+          ServerData="new Func<TableState, CancellationToken, Task<TableData<Post>>>(ServerReload)" 
+          Dense="true">
     <ToolBarContent>
         <MudText Typo="Typo.h5" Class="ma-5">Posts</MudText>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => OpenCreateForm()">
             Create
         </MudButton>
         <MudSpacer/>
-        <SearchBar TItem="Post" Items="Posts"
-                   OnFilterChanged="UpdateDisplayedPosts"
-                   SearchFunc="@((post, query) => 
-                        post.Title.Contains(query, StringComparison.OrdinalIgnoreCase) ||
-                        post.Body.Contains(query, StringComparison.OrdinalIgnoreCase))" />
+        <SearchBar @bind-SearchQuery="SearchString"/>
     </ToolBarContent>
         <HeaderContent>
             <MudTh Class="pa-5">Id</MudTh>
@@ -23,50 +18,20 @@
             <MudTh>Created</MudTh>
             <MudTh>Updated</MudTh>
         </HeaderContent>
-        <RowTemplate>
-            <MudTd DataLabel="Id">@context.Id</MudTd>   
-            <MudTd DataLabel="Title">@context.Title</MudTd>   
-            <MudTd DataLabel="Category">@context.Category.Title</MudTd> 
-            <MudTd DataLabel="CreatedDate">@context.Created</MudTd>   
-            <MudTd DataLabel="UpdatedDate">@context.Updated</MudTd>   
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-4 ma-2" Size="Size.Medium">
-                Edit
-            </MudButton>
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-4 ma-2" Size="Size.Medium">
-                Delete
-            </MudButton>
-        </RowTemplate>
+    <RowTemplate>
+        <MudTd DataLabel="Id">@context.Id</MudTd>   
+        <MudTd DataLabel="Title">@context.Title</MudTd>   
+        <MudTd DataLabel="Category">@context.Category?.Title</MudTd> 
+        <MudTd DataLabel="CreatedDate">@context.Created</MudTd>   
+        <MudTd DataLabel="UpdatedDate">@context.Updated</MudTd>   
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-4 ma-2" Size="Size.Medium">
+            Edit
+        </MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-4 ma-2" Size="Size.Medium">
+            Delete
+        </MudButton>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager/>
+    </PagerContent>
 </MudTable>   
-
-@code {
-    public List<Post?> Posts { get; set; }
-    private List<Post?> displayedPosts;
-    private string? _errorMessage;
-    
-    protected override async Task OnInitializedAsync()
-    {
-        try
-        {
-            var request = new GetAllPostsRequest();
-            var result = await Handler.GetAllAsync(request);
-            if (result.IsSuccess && result.Data is not null)
-            { 
-                Posts = result.Data;
-                displayedPosts = result.Data;
-            }
-        }
-        catch (HttpRequestException ex)
-        {
-            _errorMessage = $"An error occurred while fetching posts: {ex.Message}";
-        }
-        catch(Exception ex)
-        {
-            _errorMessage = $"An unexpected error occurred. Please try again later. {ex.Message}";
-        }
-    }
-    
-    private void UpdateDisplayedPosts(List<Post> filteredList)
-    {
-        displayedPosts = filteredList;
-    }
-}

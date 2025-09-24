@@ -1,6 +1,4 @@
 using personal_blog.Api.Common.Api;
-using personal_blog.Api.Common.Api.Filters;
-using personal_blog.core;
 using personal_blog.core.Handlers;
 using personal_blog.core.Requests.Posts;
 
@@ -14,15 +12,9 @@ public class GetAllPostsEndpoint : IEndpoint
             .WithSummary("Gets all posts")
             .WithOrder(3);
 
-    private static async Task<IResult> HandleAsync(IPostHandler handler, 
-        int pageNumber = Configuration.DefaultPageNumber,
-        int pageSize = Configuration.DefaultPageSize)
+    private static async Task<IResult> HandleAsync(IPostHandler handler,
+    [AsParameters] GetAllPostsRequest request)
     {
-        var request = new GetAllPostsRequest
-        {
-            PageNumber = pageNumber,
-            PageSize = pageSize
-        };
         var result = await handler.GetAllAsync(request);
         return result.IsSuccess 
             ? TypedResults.Ok(result) 

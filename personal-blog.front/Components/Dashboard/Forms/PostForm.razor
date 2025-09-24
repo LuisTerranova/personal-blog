@@ -1,0 +1,56 @@
+@using personal_blog.core.Handlers
+@using personal_blog.core.Requests.Posts
+@using personal_blog.core.Models
+@using personal_blog.core.Requests.Categories
+@inject ICategoryHandler Handler
+
+<MudDialog Style="min-width: 800px; min-height: 500px ">
+    <TitleContent>
+        <MudText Typo="Typo.h6">Create a New Post</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTextField @bind-Value="Model.Title" Label="Title" 
+                      Variant="Variant.Outlined" Class="mb-3"/>
+        <MudTextField @bind-Value="Model.Body" Label="Body" 
+                      Variant="Variant.Outlined" Lines="10"
+                      Class="mb-3"/>
+        <MudSelect T="int" @bind-Value="Model.CategoryId" Label="Category" Variant="Variant.Outlined">
+            @foreach (var category in _categories)
+            { 
+                <MudSelectItem Value="@category.Id">@category.Title</MudSelectItem>
+            }
+        </MudSelect>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Create">Create</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] private IMudDialogInstance DialogInstance { get; set; } = null!;
+    
+    private CreatePostRequest Model { get; set; } = new();
+    private List<Category> _categories = new(); 
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var request = new GetAllCategoriesRequest();
+        var result = await Handler.GetAllAsync(request); 
+        if (result.IsSuccess && result.Data is not null)
+        {
+            _categories = result.Data;
+        }
+    }
+
+    private void Cancel()
+    {
+        DialogInstance.Cancel();
+    }
+
+    private void Create()
+    {
+        DialogInstance.Close(DialogResult.Ok(Model));
+    }
+
+}

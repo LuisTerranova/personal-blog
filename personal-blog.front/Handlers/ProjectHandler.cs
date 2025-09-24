@@ -7,6 +7,7 @@ namespace personal_blog.front.Handlers;
 
 public class ProjectHandler(IHttpClientFactory httpClientFactory) : IProjectHandler
 {
+    private readonly HttpClient _client = httpClientFactory.CreateClient("API");
     public Task<Response<Project?>> CreateAsync(CreateProjectRequest request)
     {
         throw new NotImplementedException();
