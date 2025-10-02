@@ -1,7 +1,4 @@
 using personal_blog.Api.Common.Api;
-using personal_blog.Api.Models;
-using personal_blog.core.Models;
-using personal_blog.core.DTOs;
 using personal_blog.core.Handlers;
 using personal_blog.core.Requests.Categories;
 using ApplicationUser = personal_blog.Api.Models.ApplicationUser;
@@ -21,7 +18,7 @@ public class DeleteCategoryEndpoint : IEndpoint
         ,int id
         ,HttpContext httpContext)
     {
-        var user = httpContext.Items["ApplicationUser"] as ApplicationUser;  ;
+        var user = httpContext.Items["ApplicationUser"] as ApplicationUser;
         
         var request = new DeleteCategoryRequest
         {
@@ -29,14 +26,9 @@ public class DeleteCategoryEndpoint : IEndpoint
             Id = id
         };
         var result =  await handler.DeleteAsync(request);
-        var responseDto = new ResponseDto
-        {
-            Message = result.Message,
-            StatusCode = result.StatusCode
-        };
         
         return result.IsSuccess 
-            ? TypedResults.Ok(responseDto) 
-            : TypedResults.BadRequest(responseDto);
+            ? TypedResults.Ok(result) 
+            : TypedResults.BadRequest(result);
     }
 }

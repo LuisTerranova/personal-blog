@@ -1,6 +1,4 @@
 using personal_blog.Api.Common.Api;
-using personal_blog.Api.Models;
-using personal_blog.core.Models;
 using personal_blog.core.Handlers;
 using personal_blog.core.Requests.Posts;
 using ApplicationUser = personal_blog.Api.Models.ApplicationUser;
@@ -22,8 +20,8 @@ public class CreatePostEndpoint : IEndpoint
         ,HttpContext httpContext)
     {
         var user = httpContext.Items["ApplicationUser"] as ApplicationUser;
-        
         request.UserId = user.Id;
+        
         var result = await handler.CreateAsync(request);
         return result.IsSuccess 
             ? TypedResults.Created($"/{result.Data.Id}", result) 

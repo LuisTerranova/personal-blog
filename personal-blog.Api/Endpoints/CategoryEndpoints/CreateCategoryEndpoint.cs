@@ -1,8 +1,5 @@
 using personal_blog.Api.Common.Api;
 using personal_blog.Api.Common.Api.Helpers;
-using personal_blog.Api.Models;
-using personal_blog.core.Models;
-using personal_blog.core.DTOs;
 using personal_blog.core.Handlers;
 using personal_blog.core.Requests.Categories;
 using ApplicationUser = personal_blog.Api.Models.ApplicationUser;
@@ -25,19 +22,13 @@ public class CreateCategoryEndpoint : IEndpoint
         ,HttpRequest httpRequest)
     {
         var user = httpContext.Items["ApplicationUser"] as ApplicationUser;
-        
         request.UserId = user!.Id;
+        
         var result = await handler.CreateAsync(request);
 
         if (!result.IsSuccess) return TypedResults.BadRequest(result.Message);
-        var responseDto = new ResponseDto
-        {
-            Id = result.Data!.Id,
-            Title = result.Data.Title,
-            Message = result.Message,
-            StatusCode = result.StatusCode
-        };   
-        var location = LocationHelper.Location(httpRequest, "category", responseDto.Id);
-        return TypedResults.Created(location, responseDto);
+        
+        var location = LocationHelper.Location(httpRequest, "category", result.Data.Id);
+        return TypedResults.Created(location, result);
     }
 }

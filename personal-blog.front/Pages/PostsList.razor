@@ -3,6 +3,7 @@
 @using personal_blog.core.Models
 @using personal_blog.core.Requests.Posts
 @using personal_blog.front.Components
+@using personal_blog.front.Components.Cards
 @inject IPostHandler Handler;
 
 <MudLayout>
@@ -17,7 +18,11 @@
             <SearchBar @bind-SearchQuery="SearchString" />
             @if (_isLoading)
             {
-                <MudProgressCircular Color="Color.Primary" Indeterminate="true" Class="my-8" />
+                <MudElement Class="d-flex align-items-center justify-center">
+                    <MudProgressCircular Indeterminate="true"
+                                         Color="Color.Primary"
+                                         Class="my-8"/>
+                </MudElement>
             }
             else if (_postsToDisplay.Any())
             {
@@ -27,7 +32,9 @@
             }
             else
             {
-                <MudText>Nenhum post encontrado.</MudText>
+                <MudText Class="d-flex justify-center pa-5 ma-5" 
+                         Color="Color.Primary">Nenhum post encontrado.
+                </MudText>
             }
         </MudContainer>
     }
@@ -94,7 +101,6 @@
             };
             
             var result = await Handler.GetAllAsync(request);
-
             if (result.IsSuccess && result.Data is not null)
             {
                 _postsToDisplay = result.Data;
@@ -116,5 +122,4 @@
             StateHasChanged();
         }
     }
-}
 }

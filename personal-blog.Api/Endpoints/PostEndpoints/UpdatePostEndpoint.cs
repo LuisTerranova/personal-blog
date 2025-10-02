@@ -21,9 +21,9 @@ public class UpdatePostEndpoint : IEndpoint
         ,HttpContext httpContext)
     {
         var user = httpContext.Items["ApplicationUser"] as ApplicationUser;
-        
         request.UserId = user!.Id;
         request.Id = id;
+        
         var result = await handler.UpdateAsync(request);
         return result.IsSuccess 
             ? TypedResults.Ok(result) 

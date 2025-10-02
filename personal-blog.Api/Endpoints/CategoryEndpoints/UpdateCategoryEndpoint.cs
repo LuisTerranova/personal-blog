@@ -1,7 +1,6 @@
 using personal_blog.Api.Common.Api;
-using personal_blog.Api.Models;
+using personal_blog.Api.Common.Api.Helpers;
 using personal_blog.core.Handlers;
-using personal_blog.core.Models;
 using personal_blog.core.Requests.Categories;
 using ApplicationUser = personal_blog.Api.Models.ApplicationUser;
 
@@ -20,15 +19,16 @@ public class UpdateCategoryEndpoint : IEndpoint
     private static async Task<IResult> HandleAsync(ICategoryHandler handler
         , UpdateCategoryRequest request
         , HttpContext httpContext
+        ,HttpRequest httpRequest
         , int id)
     {
         var user = httpContext.Items["ApplicationUser"] as ApplicationUser;
-
         request.UserId = user!.Id;
         request.Id = id;
+        
         var result = await handler.UpdateAsync(request);
         return result.IsSuccess 
-            ? TypedResults.Ok($"/{result.Data.Id}") 
+            ? TypedResults.Ok(result) 
             : TypedResults.BadRequest();
     }
 }

@@ -24,11 +24,11 @@ public class PostHandler(AppDbContext context) : IPostHandler
            await context.Posts.AddAsync(post);
            await context.SaveChangesAsync();
            
-           var createdPostWithCategory = await context.Posts
+           var createdPost = await context.Posts
                .Include(p => p.Category)
                .FirstOrDefaultAsync(p => p.Id == post.Id);
            
-           return new Response<Post?>(createdPostWithCategory, "Post created successfully", 201);
+           return new Response<Post?>(createdPost, "Post created successfully", 201);
         }
         catch
         {
@@ -78,7 +78,7 @@ public class PostHandler(AppDbContext context) : IPostHandler
                 .ToListAsync();
             
             return totalCount == 0
-                ? new PagedResponse<List<Post>?>(null, "Categories not found", 400)
+                ? new PagedResponse<List<Post>?>(null, "Posts not found")
                 : new PagedResponse<List<Post>?>(posts, totalCount);
         }
         catch 

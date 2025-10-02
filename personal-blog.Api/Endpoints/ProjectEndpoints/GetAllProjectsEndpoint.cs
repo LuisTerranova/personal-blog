@@ -1,5 +1,4 @@
 using personal_blog.Api.Common.Api;
-using personal_blog.Api.Common.Api.Filters;
 using personal_blog.core;
 using personal_blog.core.Handlers;
 using personal_blog.core.Requests.Projects;
@@ -10,7 +9,6 @@ public class GetAllProjectsEndpoint : IEndpoint
 {
     public static void Map(IEndpointRouteBuilder app) 
         => app.MapGet("/", HandleAsync)
-            .AddEndpointFilter<RoleAuthorizationEndpointFilter>()
             .WithName("Projects : GetAllProjects")
             .WithSummary("Gets all projects")
             .WithOrder(3);
@@ -26,7 +24,7 @@ public class GetAllProjectsEndpoint : IEndpoint
         };
         var result = await handler.GetAllAsync(request);
         return result.IsSuccess 
-            ? TypedResults.Ok() 
-            : TypedResults.NotFound();
+            ? TypedResults.Ok(result) 
+            : TypedResults.NotFound(result);
     }
 }

@@ -1,5 +1,3 @@
-using personal_blog.core.DTOs;
-
 namespace personal_blog.Api.Common.Api.Helpers;
 
 public static class LocationHelper

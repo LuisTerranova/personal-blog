@@ -1,5 +1,4 @@
 using personal_blog.Api.Common.Api;
-using personal_blog.Api.Common.Api.Filters;
 using personal_blog.core.Handlers;
 using personal_blog.core.Requests.Posts;
 

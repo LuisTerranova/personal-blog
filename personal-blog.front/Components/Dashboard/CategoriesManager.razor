@@ -21,17 +21,22 @@
         <MudTh Class="pa-5">Id</MudTh>
         <MudTh>Title</MudTh>
         <MudTh>Slug</MudTh>
+        <MudTh></MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Id">@context.Id</MudTd>   
         <MudTd DataLabel="Title">@context.Title</MudTd>   
         <MudTd DataLabel="Slug">@context.Slug</MudTd>   
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-4 ma-2" Size="Size.Medium">
-            Edit
-        </MudButton>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-4 ma-2" Size="Size.Medium">
-            Delete
-        </MudButton>
+        <MudTd DataLabel=""  Class="d-flex justify-center">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Medium" Class="ma-1"
+                       OnClick="()=> OpenEditForm(context.Id)">
+                Edit
+            </MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Medium" Class="ma-1"
+                       OnClick="()=> DeleteCategory(context.Id)">
+                Delete
+            </MudButton>
+        </MudTd>
     </RowTemplate>
     <PagerContent>
         <MudTablePager/>
@@ -84,22 +89,96 @@
     
     private async Task OpenCreateForm()
     {
-        var dialog = DialogService.Show<CategoryForm>("Create New Category");
+        var dialog = DialogService.Show<CreateCategoryForm>("Create New Category");
         var result = await dialog.Result;
-        
-        if (!result.Canceled)
-        {
-            var newCategoryRequest = (CreateCategoryRequest)result.Data;
-            var createResult = await Handler.CreateAsync(newCategoryRequest);
 
-            if (createResult.IsSuccess)
+        try
+        {
+            if (!result.Canceled)
             {
-                snackbar.Add("Category created successfully!", Severity.Success);
-                await _table.ReloadServerData();
+                var newCategoryRequest = (CreateCategoryRequest)result.Data;
+                var createResult = await Handler.CreateAsync(newCategoryRequest);
+
+                if (createResult.IsSuccess)
+                {
+                    snackbar.Add("Category created successfully!", Severity.Success);
+                    await _table.ReloadServerData();
+                }
+                else
+                {
+                    snackbar.Add(createResult.Message, Severity.Error);
+                }
             }
-            else
+        }
+        catch(Exception ex)
+        {
+            snackbar.Add("An unexpected error occurred while creating the category.", Severity.Error);
+        }
+    }
+    
+    private async Task OpenEditForm(int id)
+    {
+        var dialog = DialogService.Show<UpdateCategoryForm>("Edit Category");
+        var result = await dialog.Result;
+
+        try
+        {
+            if (!result.Canceled)
             {
-                snackbar.Add(createResult.Message, Severity.Error);
+                var categoryRequest = (UpdateCategoryRequest)result.Data;
+                categoryRequest.Id = id;
+                
+                var updateResult = await Handler.UpdateAsync(categoryRequest);
+
+                if (updateResult.IsSuccess)
+                {
+                    snackbar.Add("Category updated successfully!", Severity.Success);
+                    await _table.ReloadServerData();
+                }
+                else
+                {
+                    snackbar.Add(updateResult.Message, Severity.Error);
+                }
+            }
+        }
+        catch(Exception ex)
+        {
+            snackbar.Add("An unexpected error occurred while updating the category.", Severity.Error);
+        }
+    }
+
+    private async Task DeleteCategory(int id)
+    {
+        bool? result = await DialogService.ShowMessageBox(
+            "Warning",
+            "Do you really want to delete this category? This action cannot be undone.",
+            yesText: "Delete!",
+            cancelText: "Cancel");
+
+        if (result is true)
+        {
+            try
+            {
+                var request = new DeleteCategoryRequest()
+                {
+                    Id = id
+                };
+                
+                var deleteResult = await Handler.DeleteAsync(request);
+
+                if (deleteResult.IsSuccess)
+                {
+                    snackbar.Add(deleteResult.Message, Severity.Success);
+                    await _table.ReloadServerData();
+                }
+                else
+                {
+                    snackbar.Add(deleteResult.Message, Severity.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                snackbar.Add("An unexpected error occurred while deleting the category.", Severity.Error);
             }
         }
     }
