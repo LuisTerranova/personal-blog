@@ -11,7 +11,7 @@
           Dense="true">
     <ToolBarContent>
         <MudText Typo="Typo.h5" Class="ma-5">Categories</MudText>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => OpenCreateForm() ">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => OpenForm() ">
             Create
         </MudButton>
         <MudSpacer/>
@@ -29,7 +29,7 @@
         <MudTd DataLabel="Slug">@context.Slug</MudTd>   
         <MudTd DataLabel=""  Class="d-flex justify-center">
             <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Medium" Class="ma-1"
-                       OnClick="()=> OpenEditForm(context.Id)">
+                       OnClick="()=> OpenForm(context.Id)">
                 Edit
             </MudButton>
             <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Medium" Class="ma-1"
@@ -87,14 +87,40 @@
         return new TableData<Category>() { TotalItems = 0, Items = new List<Category>() };
     }
     
-    private async Task OpenCreateForm()
+    private async Task OpenForm(int? id = null)
     {
-        var dialog = DialogService.Show<CreateCategoryForm>("Create New Category");
+        var parameters = new DialogParameters();
+
+        if (id.HasValue)
+        {
+            var getResult = await Handler.GetByIdAsync(new GetCategoryByIdRequest { Id = id.Value });
+
+            if (getResult.IsSuccess && getResult.Data != null)
+            {
+                var updateModel = new UpdateCategoryRequest
+                {
+                    Id = getResult.Data.Id,
+                    Title = getResult.Data.Title
+                };
+                
+                parameters.Add("InitialUpdateModel", updateModel);
+            }
+            else
+            {
+                snackbar.Add("Category data not found for editing.", Severity.Error);
+                return; 
+            }
+        }
+        
+        var dialog = DialogService.Show<CategoryForm>("Create/Edit a Category", parameters);
         var result = await dialog.Result;
+        
+        if (result.Canceled)
+            return;
 
         try
         {
-            if (!result.Canceled)
+            if (id == null) 
             {
                 var newCategoryRequest = (CreateCategoryRequest)result.Data;
                 var createResult = await Handler.CreateAsync(newCategoryRequest);
@@ -109,27 +135,11 @@
                     snackbar.Add(createResult.Message, Severity.Error);
                 }
             }
-        }
-        catch(Exception ex)
-        {
-            snackbar.Add("An unexpected error occurred while creating the category.", Severity.Error);
-        }
-    }
-    
-    private async Task OpenEditForm(int id)
-    {
-        var dialog = DialogService.Show<UpdateCategoryForm>("Edit Category");
-        var result = await dialog.Result;
-
-        try
-        {
-            if (!result.Canceled)
+            else 
             {
-                var categoryRequest = (UpdateCategoryRequest)result.Data;
-                categoryRequest.Id = id;
+                var updateCategoryRequest = (UpdateCategoryRequest)result.Data;
+                var updateResult = await Handler.UpdateAsync(updateCategoryRequest);
                 
-                var updateResult = await Handler.UpdateAsync(categoryRequest);
-
                 if (updateResult.IsSuccess)
                 {
                     snackbar.Add("Category updated successfully!", Severity.Success);
@@ -139,14 +149,19 @@
                 {
                     snackbar.Add(updateResult.Message, Severity.Error);
                 }
+                
             }
+        }
+        catch(InvalidCastException) 
+        {
+            snackbar.Add("Form submission failed. Data was not returned correctly.", Severity.Warning);
         }
         catch(Exception ex)
         {
-            snackbar.Add("An unexpected error occurred while updating the category.", Severity.Error);
+            snackbar.Add($"An unexpected error occurred: {ex.Message}", Severity.Error);
         }
     }
-
+    
     private async Task DeleteCategory(int id)
     {
         bool? result = await DialogService.ShowMessageBox(

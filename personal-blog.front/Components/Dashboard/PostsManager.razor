@@ -5,7 +5,7 @@
           Dense="true">
     <ToolBarContent>
         <MudText Typo="Typo.h5" Class="ma-5">Posts</MudText>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => OpenCreateForm()">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => OpenForm()">
             Create
         </MudButton>
         <MudSpacer/>
@@ -24,7 +24,8 @@
         <MudTd DataLabel="Category">@context.Category?.Title</MudTd> 
         <MudTd DataLabel="CreatedDate">@context.Created</MudTd>   
         <MudTd DataLabel="UpdatedDate">@context.Updated</MudTd>   
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-4 ma-2" Size="Size.Medium">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-4 ma-2" Size="Size.Medium"
+                   OnClick="()=> OpenForm(context.Id)">
             Edit
         </MudButton>
         <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-4 ma-2" Size="Size.Medium">

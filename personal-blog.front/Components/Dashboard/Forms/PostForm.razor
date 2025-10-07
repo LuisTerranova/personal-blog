@@ -6,12 +6,12 @@
 
 <MudDialog Style="min-width: 800px; min-height: 500px ">
     <TitleContent>
-        <MudText Typo="Typo.h6">Create a New Post</MudText>
+        <MudText Typo="Typo.h6">@(IsUpdateMode ? "Update Post" : "Create Post")</MudText>
     </TitleContent>
     <DialogContent>
-        <MudTextField @bind-Value="Model.Title" Label="Title" 
+        <MudTextField @bind-Value="UpdateModel.Title" Label="Title" 
                       Variant="Variant.Outlined" Class="mb-3"/>
-        <MudTextField @bind-Value="Model.Body" Label="Body" 
+        <MudTextField @bind-Value="UpdateModel.Body" Label="Body" 
                       Variant="Variant.Outlined" Lines="10"
                       Class="mb-3"/>
         <MudSelect T="int" @bind-Value="Model.CategoryId" Label="Category" Variant="Variant.Outlined">
@@ -20,26 +20,54 @@
                 <MudSelectItem Value="@category.Id">@category.Title</MudSelectItem>
             }
         </MudSelect>
+        @{ 
+            Model.Title = UpdateModel.Title;
+            Model.Body = UpdateModel.Body;
+            Model.CategoryId = UpdateModel.CategoryId;
+        }
+
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Create">Create</MudButton>
+        @if (IsUpdateMode)
+        {
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Update">Update</MudButton>
+        }
+        else
+        {
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Create">Create</MudButton>
+        }
     </DialogActions>
 </MudDialog>
 
 @code {
     [CascadingParameter] private IMudDialogInstance DialogInstance { get; set; } = null!;
     
+    [Parameter]
+    public UpdatePostRequest? InitialUpdateModel { get; set; }
+    
     private CreatePostRequest Model { get; set; } = new();
+    private UpdatePostRequest UpdateModel { get; set; } = new();
     private List<Category> _categories = new(); 
+    
+    private bool IsUpdateMode => InitialUpdateModel != null && InitialUpdateModel.Id != 0;
     
     protected override async Task OnInitializedAsync()
     {
-        var request = new GetAllCategoriesRequest();
+        var request = new GetAllCategoriesRequest()
+        {
+            PageSize = 9999,
+            PageNumber = 1
+        };
         var result = await Handler.GetAllAsync(request); 
         if (result.IsSuccess && result.Data is not null)
         {
             _categories = result.Data;
+        }
+        
+        if (IsUpdateMode && InitialUpdateModel != null)
+        {
+            UpdateModel = InitialUpdateModel;
         }
     }
 
@@ -51,6 +79,11 @@
     private void Create()
     {
         DialogInstance.Close(DialogResult.Ok(Model));
+    }
+    
+    private void Update()
+    {
+        DialogInstance.Close(DialogResult.Ok(UpdateModel));
     }
 
 }

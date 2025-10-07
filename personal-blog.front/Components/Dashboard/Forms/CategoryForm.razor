@@ -1,0 +1,62 @@
+@using personal_blog.core.Requests.Categories
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">@(IsUpdateMode ? "Update Category" : "Create Category")</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTextField @bind-Value="UpdateModel.Title" Label="Title" 
+                      Variant="Variant.Outlined" Class="mb-3"/>
+        @{ Model.Title = UpdateModel.Title; }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        
+        @if (IsUpdateMode)
+        {
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Update">Update</MudButton>
+        }
+        else
+        {
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Create">Create</MudButton>
+        }
+    </DialogActions>
+</MudDialog>
+
+
+@code {
+    [CascadingParameter] private IMudDialogInstance DialogInstance { get; set; } = null!;
+    
+    [Parameter] 
+    public UpdateCategoryRequest? InitialUpdateModel { get; set; }
+    
+    private CreateCategoryRequest Model { get; set; } = new();
+    private UpdateCategoryRequest UpdateModel { get; set; } = new();
+    
+    private bool IsUpdateMode => InitialUpdateModel != null && InitialUpdateModel.Id != 0;
+    
+    protected override void OnInitialized()
+    {
+        if (InitialUpdateModel != null)
+        {
+            UpdateModel = InitialUpdateModel;
+        }
+    }
+
+    
+    private void Cancel()
+    {
+        DialogInstance.Cancel();
+    }
+
+    private void Create()
+    {
+        DialogInstance.Close(DialogResult.Ok(Model));
+    }
+    
+    private void Update()
+    {
+        DialogInstance.Close(DialogResult.Ok(UpdateModel));
+    }
+
+}

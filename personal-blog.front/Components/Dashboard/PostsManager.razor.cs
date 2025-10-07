@@ -70,25 +70,79 @@ public partial class PostsManager
         }
         return new TableData<Post> { TotalItems = 0, Items = new List<Post>() };
     }
-    private async Task OpenCreateForm()
+    private async Task OpenForm(int? id = null)
     {
-        var dialog = DialogService.Show<PostForm>("Create New Post");
-        var result = await dialog.Result;
+        var parameters = new DialogParameters();
         
-        if (!result.Canceled)
+        if (id.HasValue)
         {
-            var newPostRequest = (CreatePostRequest)result.Data;
-            var createResult = await Handler.CreateAsync(newPostRequest);
+            var getResult = await Handler.GetByIdAsync(new GetPostByIdRequest() { Id = id.Value });
 
-            if (createResult.IsSuccess && createResult.Data is not null)
+            if (getResult.IsSuccess && getResult.Data != null)
             {
-                snackbar.Add("Post created successfully!", Severity.Success);
-                await _table.ReloadServerData();
+                var updateModel = new UpdatePostRequest()
+                {
+                    Id = getResult.Data.Id,
+                    Title = getResult.Data.Title,
+                    Body = getResult.Data.Body,
+                    CategoryId =  getResult.Data.CategoryId
+                };
+                
+                parameters.Add("InitialUpdateModel", updateModel);
             }
             else
             {
-                snackbar.Add(createResult.Message, Severity.Error);
+                snackbar.Add("Post data not found for editing.", Severity.Error);
+                return; 
             }
+        }
+        
+        var dialog = DialogService.Show<PostForm>("Create/Update Post", parameters);
+        var result = await dialog.Result;
+        
+        if (result.Canceled || result.Data == null)
+            return; 
+        
+        try
+        {
+            if (id.HasValue) 
+            {
+                var updatePostRequest = (UpdatePostRequest)result.Data;
+                var updateResult = await Handler.UpdateAsync(updatePostRequest);
+            
+                if (updateResult.IsSuccess)
+                {
+                    snackbar.Add("Post updated successfully!", Severity.Success);
+                    await _table.ReloadServerData();
+                }
+                else
+                {
+                    snackbar.Add(updateResult.Message, Severity.Error);
+                }
+            }
+            else 
+            {
+                var newPostRequest = (CreatePostRequest)result.Data;
+                var createResult = await Handler.CreateAsync(newPostRequest);
+
+                if (createResult.IsSuccess && createResult.Data is not null)
+                {
+                    snackbar.Add("Post created successfully!", Severity.Success);
+                    await _table.ReloadServerData();
+                }
+                else
+                {
+                    snackbar.Add(createResult.Message, Severity.Error);
+                }
+            }
+        }
+        catch (InvalidCastException)
+        {
+            snackbar.Add("Error: Data returned from the form had an incorrect type. Check the form's Update/Create methods.", Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            snackbar.Add($"An unexpected error occurred: {ex.Message}", Severity.Error);
         }
     }
 
