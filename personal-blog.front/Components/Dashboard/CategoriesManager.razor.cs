@@ -2,30 +2,28 @@ using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using personal_blog.core.Handlers;
 using personal_blog.core.Models;
-using personal_blog.core.Requests.Posts;
+using personal_blog.core.Requests.Categories;
 using personal_blog.front.Components.Dashboard.Forms;
 
 namespace personal_blog.front.Components.Dashboard;
 
-public partial class PostsManager
+public partial class CategoriesManager
 {
     #region Services
-    
+
     [Inject]
     public ISnackbar snackbar { get; set; }
     [Inject]
-    public IPostHandler Handler { get; set; }
+    public ICategoryHandler Handler { get; set; }
     [Inject]
     private IDialogService DialogService { get; set; }
     
-    
-
     #endregion
-    
+
     #region Properties
-    
-    private MudTable<Post> _table;
-    private string? _searchString;
+
+    private MudTable<Category> _table;
+    private string _searchString = "";
     private string SearchString
     {
         get => _searchString;
@@ -35,17 +33,17 @@ public partial class PostsManager
             _table.ReloadServerData();
         }
     }
-    private string? _errorMessage;
-    
+    private string? errorMessage;
+
     #endregion
     
     #region Methods
-
-    private async Task<TableData<Post>> ServerReload(TableState state, CancellationToken token)
+    
+    private async Task<TableData<Category>> ServerReload(TableState state, CancellationToken token)
     {
         try
         {
-            var request = new GetAllPostsRequest()
+            var request = new GetAllCategoriesRequest
             {
                 PageNumber = state.Page + 1, 
                 PageSize = state.PageSize,
@@ -56,78 +54,62 @@ public partial class PostsManager
 
             if (result.IsSuccess)
             {
-                return new TableData<Post>()
+                return new TableData<Category>()
                 {
                     TotalItems = result.TotalCount,
-                    Items = result.Data ?? new List<Post>()
+                    Items = result.Data ?? new List<Category>()
                 };
             }
         }
         catch (Exception ex)
         {
-            _errorMessage = $"An unexpected error occurred: {ex.Message}";
-            snackbar.Add(_errorMessage, Severity.Error);
+            errorMessage = $"An unexpected error occurred: {ex.Message}";
+            snackbar.Add(errorMessage, Severity.Error);
         }
-        return new TableData<Post> { TotalItems = 0, Items = new List<Post>() };
+        return new TableData<Category>() { TotalItems = 0, Items = new List<Category>() };
     }
+    
     private async Task OpenForm(int? id = null)
     {
         var parameters = new DialogParameters();
-        
+
         if (id.HasValue)
         {
-            var getResult = await Handler.GetByIdAsync(new GetPostByIdRequest() { Id = id.Value });
+            var getResult = await Handler.GetByIdAsync(new GetCategoryByIdRequest { Id = id.Value });
 
             if (getResult.IsSuccess && getResult.Data != null)
             {
-                var updateModel = new UpdatePostRequest()
+                var updateModel = new UpdateCategoryRequest
                 {
                     Id = getResult.Data.Id,
-                    Title = getResult.Data.Title,
-                    Body = getResult.Data.Body,
-                    CategoryId =  getResult.Data.CategoryId
+                    Title = getResult.Data.Title
                 };
                 
                 parameters.Add("InitialUpdateModel", updateModel);
             }
             else
             {
-                snackbar.Add("Post data not found for editing.", Severity.Error);
+                snackbar.Add("Category data not found for editing.", Severity.Error);
                 return; 
             }
         }
         
-        var dialog = DialogService.Show<PostForm>("Create/Update Post", parameters);
+        var dialog = DialogService.Show<CategoryForm>("Create/Edit a Category", parameters);
         var result = await dialog.Result;
         
-        if (result.Canceled || result.Data == null)
-            return; 
-        
+        if (result.Canceled)
+            return;
+
         try
         {
-            if (id.HasValue) 
+            if (id == null) 
             {
-                var updatePostRequest = (UpdatePostRequest)result.Data;
-                var updateResult = await Handler.UpdateAsync(updatePostRequest);
-            
-                if (updateResult.IsSuccess)
-                {
-                    snackbar.Add("Post updated successfully!", Severity.Success);
-                    await _table.ReloadServerData();
-                }
-                else
-                {
-                    snackbar.Add(updateResult.Message, Severity.Error);
-                }
-            }
-            else 
-            {
-                var newPostRequest = (CreatePostRequest)result.Data;
-                var createResult = await Handler.CreateAsync(newPostRequest);
+                var newCategoryRequest = (CreateCategoryRequest)result.Data;
+                var createResult = await Handler.CreateAsync(newCategoryRequest);
 
-                if (createResult.IsSuccess && createResult.Data is not null)
+                if (createResult.IsSuccess)
                 {
-                    snackbar.Add("Post created successfully!", Severity.Success);
+                    snackbar.Add("Category created successfully!", Severity.Success);
                     await _table.ReloadServerData();
                 }
                 else
@@ -135,18 +117,34 @@ public partial class PostsManager
                     snackbar.Add(createResult.Message, Severity.Error);
                 }
             }
+            else 
+            {
+                var updateCategoryRequest = (UpdateCategoryRequest)result.Data;
+                var updateResult = await Handler.UpdateAsync(updateCategoryRequest);
+                
+                if (updateResult.IsSuccess)
+                {
+                    snackbar.Add("Category updated successfully!", Severity.Success);
+                    await _table.ReloadServerData();
+                }
+                else
+                {
+                    snackbar.Add(updateResult.Message, Severity.Error);
+                }
+                
+            }
         }
-        catch (InvalidCastException)
+        catch(InvalidCastException) 
         {
-            snackbar.Add("Error: Data returned from the form had an incorrect type. Check the form's Update/Create methods.", Severity.Error);
+            snackbar.Add("Form submission failed. Data was not returned correctly.", Severity.Warning);
         }
-        catch (Exception ex)
+        catch(Exception ex)
         {
             snackbar.Add($"An unexpected error occurred: {ex.Message}", Severity.Error);
         }
     }
-
-    private async Task Delete(int id)
+    
+    private async Task DeleteCategory(int id)
     {
         bool? result = await DialogService.ShowMessageBox(
             "Warning",
@@ -158,7 +156,7 @@ public partial class PostsManager
         {
             try
             {
-                var request = new DeletePostRequest()
+                var request = new DeleteCategoryRequest()
                 {
                     Id = id
                 };
@@ -177,10 +175,12 @@ public partial class PostsManager
             }
             catch (Exception ex)
             {
-                snackbar.Add("An unexpected error occurred while deleting the post.", Severity.Error);
+                snackbar.Add("An unexpected error occurred while deleting the category.", Severity.Error);
             }
         }
     }
-
+    
     #endregion
+    
+    
 }
