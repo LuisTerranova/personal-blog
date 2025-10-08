@@ -150,7 +150,7 @@ public partial class PostsManager
     {
         bool? result = await DialogService.ShowMessageBox(
             "Warning",
-            "Do you really want to delete this category? This action cannot be undone.",
+            "Do you really want to delete this post? This action cannot be undone.",
             yesText: "Delete!",
             cancelText: "Cancel");
 

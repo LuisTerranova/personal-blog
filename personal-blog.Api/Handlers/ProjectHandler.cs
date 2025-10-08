@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.EntityFrameworkCore;
 using personal_blog.Api.Data;
 using personal_blog.core.Handlers;
@@ -7,7 +8,7 @@ using personal_blog.core.Responses;
 
 namespace personal_blog.Api.Handlers;
 
-public class ProjectHandler(AppDbContext context) : IProjectHandler
+public class ProjectHandler(AppDbContext context, IHttpContextAccessor httpContextAccessor) : IProjectHandler
 {
     public async Task<Response<Project?>> CreateAsync(CreateProjectRequest request)
     {
@@ -38,10 +39,21 @@ public class ProjectHandler(AppDbContext context) : IProjectHandler
         {
             var project = await context.Projects
                 .FirstOrDefaultAsync(p => p.Id == request.Id);
-
+            var imageUrl = project.ImageUrl;
+            
             if (project == null)
                 return new Response<Project?>(null, "Project not found", 404);
 
+            var fileName = Path.GetFileName(imageUrl);
+
+            var basePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "projects");
+            var physicalPath = Path.Combine(basePath, fileName);
+            
+            if (File.Exists(physicalPath))
+            {
+                File.Delete(physicalPath);
+            }
+            
             context.Projects.Remove(project);
             await context.SaveChangesAsync();
 
@@ -69,9 +81,27 @@ public class ProjectHandler(AppDbContext context) : IProjectHandler
                 ? new PagedResponse<List<Project>?>(null, "Projects not found", 400)
                 : new PagedResponse<List<Project>?>(projects, totalCount);
         }
-        catch 
+        catch
         {
             return new PagedResponse<List<Project>?>(null, "Error while retrieving projects", 400);
+        }
+    }
+
+    public async Task<Response<Project?>> GetByIdAsync(GetProjectByIdRequest request)
+    {
+        try
+        {
+            var project = await context.Projects
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Id == request.Id);
+
+            return project == null
+                ? new Response<Project?>(null, "Project not found", 404)
+                : new Response<Project?>(project, "Project retrieved successfully");
+        }
+        catch
+        {
+            return new Response<Project?>(null, "Error retrieving project", 400);
         }
     }
 
@@ -81,10 +111,10 @@ public class ProjectHandler(AppDbContext context) : IProjectHandler
         {
             var project = await context.Projects
                 .FirstOrDefaultAsync(p => p.Id == request.Id
-                && p.UserId == request.UserId);
+                                          && p.UserId == request.UserId);
             if (project == null)
                 return new Response<Project?>(null, "Project not found", 404);
-            
+
             project.Title = request.Title;
             project.Description = request.Description;
             project.ImageUrl = request.ImageUrl;
@@ -96,6 +126,41 @@ public class ProjectHandler(AppDbContext context) : IProjectHandler
         catch
         {
             return new Response<Project?>(null, "Error updating project", 400);
+        }
+    }
+
+    public async Task<Response<string>> UploadImageAsync(IBrowserFile file)
+    {
+        try
+        {
+            var basePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "projects");
+
+            if (!Directory.Exists(basePath))
+                Directory.CreateDirectory(basePath);
+
+            var fileExtension = Path.GetExtension(file.Name);
+            var uniqueFileName = $"{Guid.NewGuid()}{fileExtension}";
+            var fullPath = Path.Combine(basePath, uniqueFileName);
+
+            await using var stream = file.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024);
+            await using var fileStream = new FileStream(fullPath, FileMode.Create);
+            await stream.CopyToAsync(fileStream);
+            var httpContext = httpContextAccessor.HttpContext;
+            
+            if (httpContext == null)
+            {
+                throw new InvalidOperationException("Wasn't possible to get the complete URL");
+            }
+            
+            var request = httpContext.Request;
+            var baseUrl = $"{request.Scheme}://{request.Host}";
+            var absoluteUrl = $"{baseUrl}/images/projects/{uniqueFileName}";
+            
+            return new Response<string>(absoluteUrl, "Image uploaded successfully", 200);
+        }
+        catch (Exception ex)
+        {
+            return new Response<string>(null, $"Error during file upload: {ex.Message}", 500);
         }
     }
 }

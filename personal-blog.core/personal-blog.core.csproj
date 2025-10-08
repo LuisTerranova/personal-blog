@@ -11,4 +11,10 @@
     <PackageReference Include="Microsoft.AspnetCore.Identity.EntityFrameworkCore" Version="9.0.8" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="Microsoft.AspNetCore.Components.Web">
+      <HintPath>..\..\..\..\.nuget\packages\microsoft.aspnetcore.components.web\9.0.4\lib\net9.0\Microsoft.AspNetCore.Components.Web.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

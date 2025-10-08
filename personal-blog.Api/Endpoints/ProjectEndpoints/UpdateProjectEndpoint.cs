@@ -13,7 +13,7 @@ public class UpdateProjectEndpoint : IEndpoint
             .WithValidation<UpdateProjectRequest>()
             .WithName("Projects : Update")
             .WithSummary("Updates a project")
-            .WithOrder(4);
+            .WithOrder(5);
 
     private static async Task<IResult> HandleAsync(IProjectHandler handler
         ,UpdateProjectRequest request
@@ -26,7 +26,7 @@ public class UpdateProjectEndpoint : IEndpoint
         
         var result = await handler.UpdateAsync(request);
         return result.IsSuccess 
-            ? TypedResults.Ok() 
-            : TypedResults.BadRequest();
+            ? TypedResults.Ok(result) 
+            : TypedResults.BadRequest(result);
     }
 }

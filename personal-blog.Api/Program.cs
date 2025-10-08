@@ -8,6 +8,7 @@ builder.AddSecurity();
 builder.AddDataContext();
 builder.AddCrossOrigin();
 builder.AddDocumentation();
+builder.Services.AddHttpContextAccessor();
 builder.AddServices();
 
 var app = builder.Build();
@@ -15,6 +16,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
     app.ConfigureDevEnvironment();
 
+app.UseStaticFiles();
 app.UseCors("BlazorApp");
 app.UseSecurity();
 app.MapGet("/", () => new {message = "OK"});

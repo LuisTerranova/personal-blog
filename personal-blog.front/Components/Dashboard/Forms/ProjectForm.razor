@@ -1,0 +1,92 @@
+@using personal_blog.core.Requests.Projects
+
+<MudDialog Style="min-width: 800px; min-height: 500px ">
+    <TitleContent>
+        <MudText Typo="Typo.h6">@(IsUpdateMode ? "Update Project" : "Create Project")</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTextField @bind-Value="UpdateModel.Title" Label="Title" 
+                      Variant="Variant.Outlined" Class="mb-3"/>
+        <MudTextField @bind-Value="UpdateModel.Description" Label="Description" 
+                      Variant="Variant.Outlined" Lines="10"
+                      Class="mb-3"/>
+        <MudTextField @bind-Value="UpdateModel.RepoLink" Label="Repolink" 
+                      Variant="Variant.Outlined" Class="mb-3"/>
+        
+        @if (!string.IsNullOrEmpty(UpdateModel.ImageUrl))
+        {
+            <MudText Typo="Typo.subtitle2" Class="mt-3">Imagem Atual:</MudText>
+            <img src="@UpdateModel.ImageUrl" style="max-width: 150px; height: auto;"/>
+        }
+        
+        <MudFileUpload T="IBrowserFile" FilesChanged="HandleFileUpload"> 
+            <ActivatorContent>
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.CloudUpload">
+                    @(UpdateModel.ImageFile is null ? "Upload Image" : $"File: {UpdateModel.ImageFile.Name}")
+                </MudButton>
+            </ActivatorContent>
+        </MudFileUpload>
+        
+        @{ 
+            Model.Title = UpdateModel.Title;
+            Model.Description = UpdateModel.Description;
+            Model.RepoLink = UpdateModel.RepoLink;
+            Model.ImageUrl = UpdateModel.ImageUrl;
+        }
+
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        @if (IsUpdateMode)
+        {
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Update">Update</MudButton>
+        }
+        else
+        {
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Create">Create</MudButton>
+        }
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] private IMudDialogInstance DialogInstance { get; set; } = null!;
+    
+    [Parameter]
+    public UpdateProjectRequest? InitialUpdateModel { get; set; }
+    
+    private CreateProjectRequest Model { get; set; } = new();
+    private UpdateProjectRequest UpdateModel { get; set; } = new();
+    
+    private bool IsUpdateMode => InitialUpdateModel != null && InitialUpdateModel.Id != 0;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        if (IsUpdateMode && InitialUpdateModel != null)
+        {
+            UpdateModel = InitialUpdateModel;
+        }
+    }
+
+    private void Cancel()
+    {
+        DialogInstance.Cancel();
+    }
+
+    private void Create()
+    {
+        Model.ImageFile = UpdateModel.ImageFile; 
+        DialogInstance.Close(DialogResult.Ok(Model));
+    }
+    
+    private void Update()
+    {
+        DialogInstance.Close(DialogResult.Ok(UpdateModel));
+    }
+    
+    private void HandleFileUpload(IBrowserFile file)
+    {
+        UpdateModel.ImageFile = file; 
+    }
+}

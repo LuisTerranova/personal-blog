@@ -1,0 +1,36 @@
+@using personal_blog.core.Models
+
+<MudTable @ref="_table" 
+          ServerData="new Func<TableState, CancellationToken, Task<TableData<Project>>>(ServerReload)" 
+          Dense="true">
+    <ToolBarContent>
+        <MudText Typo="Typo.h5" Class="ma-5">Projects</MudText>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => OpenForm()">
+            Create
+        </MudButton>
+        <MudSpacer/>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh Class="pa-5">Id</MudTh>
+        <MudTh Class="pa-5">Title</MudTh>
+        <MudTh>RepoLink</MudTh>
+        <MudTh>Created</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Id">@context.Id</MudTd>   
+        <MudTd DataLabel="Title">@context.Title</MudTd>   
+        <MudTd DataLabel="RepoLink">@context.RepoLink</MudTd>   
+        <MudTd DataLabel="CreatedDate">@context.Created</MudTd>   
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-4 ma-2" Size="Size.Medium"
+                   OnClick="()=> OpenForm(context.Id)">
+            Edit
+        </MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-4 ma-2" Size="Size.Medium"
+                   OnClick="() => Delete(context.Id)">
+            Delete
+        </MudButton>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager/>
+    </PagerContent>
+</MudTable>

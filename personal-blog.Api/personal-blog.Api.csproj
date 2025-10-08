@@ -29,4 +29,8 @@
     <ProjectReference Include="..\personal-blog.core\personal-blog.core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\projects\" />
+  </ItemGroup>
+
 </Project>

@@ -37,6 +37,7 @@ public static class Endpoint
             .MapEndpoint<CreateProjectEndpoint>()
             .MapEndpoint<DeleteProjectEndpoint>()
             .MapEndpoint<GetAllProjectsEndpoint>()
+            .MapEndpoint<GetProjectByIdEndpoint>()
             .MapEndpoint<UpdateProjectEndpoint>();
         
         endpoints.MapGroup("v1/identity")
@@ -45,6 +46,10 @@ public static class Endpoint
         endpoints.MapGroup("v1/identity")
             .MapEndpoint<GetRolesEndpoint>()
             .MapEndpoint<LogoutEndpoint>();
+
+        endpoints.MapGroup("v1/storage")
+            .WithTags("Storage")
+            .MapEndpoint<ProjectImageStorageEndpoint>();
     }
     private static IEndpointRouteBuilder MapEndpoint<TEndpoint>(this IEndpointRouteBuilder app)
         where TEndpoint : IEndpoint

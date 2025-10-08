@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Components.Forms;
+
 namespace personal_blog.core.Models;
 
 public class Project

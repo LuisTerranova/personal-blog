@@ -24,7 +24,7 @@ public class CreateProjectEndpoint : IEndpoint
         
         var result = await handler.CreateAsync(request);
         return result.IsSuccess 
-            ? TypedResults.Created() 
-            : TypedResults.BadRequest();
+            ? TypedResults.Created($"/{result.Data.Id}", result) 
+            : TypedResults.BadRequest(result);
     }
 }
