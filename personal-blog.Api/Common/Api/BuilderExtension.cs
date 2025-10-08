@@ -36,6 +36,7 @@ public static class BuilderExtension
 
     public static void AddServices(this WebApplicationBuilder builder)
     {
+        builder.Services.AddHttpContextAccessor();
         builder.Services.AddTransient<ICategoryHandler, CategoryHandler>();
         builder.Services.AddTransient<IPostHandler, PostHandler>();
         builder.Services.AddTransient<IProjectHandler, ProjectHandler>();

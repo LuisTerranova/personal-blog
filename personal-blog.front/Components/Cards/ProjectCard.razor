@@ -1,5 +1,36 @@
-<h3>ProjectCard</h3>
+@using personal_blog.core.Models
+
+<MudText Typo="Typo.h3" 
+         Align="Align.Center" 
+         GutterBottom="true" 
+         Class="my-8"
+         Color="Color.Primary">
+    Projects
+</MudText>
+<MudDivider Class="mb-8" />
+
+<MudGrid Justify="Justify.Center" >
+    @foreach (var project in Projects)
+    {
+        <MudItem Style="min-width: 400px; max-width: 400px">
+            <MudCard Style="background-color: #EBE9E1">
+                <MudCardMedia Image="@project.ImageUrl" Height="200"/>
+                <MudCardContent Class="mud-theme-primary">
+                    <MudText Typo="Typo.h5">@project.Title</MudText>
+                    <MudText Typo="Typo.body2">@project.Description</MudText>
+                </MudCardContent>
+                <MudCardActions Class="mud-theme-primary">
+                    <MudButton Href="@project.RepoLink"
+                               Variant="Variant.Outlined"
+                               Target="_blank">Repo</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+    }
+</MudGrid>
+
 
 @code {
-    
+    [Parameter] public List<Project?> Projects { get; set; } = [];
+
 }

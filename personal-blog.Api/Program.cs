@@ -8,7 +8,6 @@ builder.AddSecurity();
 builder.AddDataContext();
 builder.AddCrossOrigin();
 builder.AddDocumentation();
-builder.Services.AddHttpContextAccessor();
 builder.AddServices();
 
 var app = builder.Build();

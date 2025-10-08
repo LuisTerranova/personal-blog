@@ -75,7 +75,7 @@
 
         var doc = new HtmlDocument();
         doc.LoadHtml(body);
-        string plainText = doc.DocumentNode.InnerText;
+        var plainText = doc.DocumentNode.InnerText;
         
         if (plainText.Length <= maxLength)
         {

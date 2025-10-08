@@ -1,6 +1,42 @@
 @page "/projects"
-<h3>Projects</h3>
+@using personal_blog.core.Handlers
+@using personal_blog.core.Models
+@using personal_blog.core.Requests.Projects
+@using personal_blog.front.Components.Cards
+@inject IProjectHandler Handler
+
+@if (_projects is null)
+{
+    <MudText>
+        loading projects...
+    </MudText>
+}
+else
+{
+    <ProjectCard Projects="_projects"/>    
+}
+
+
+
 
 @code {
-    
+    private List<Project>? _projects;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var request = new GetAllProjectsRequest();
+        try
+        {
+            var result = await Handler.GetAllAsync(request);
+            if (result.IsSuccess && result.Data is not null)
+            {
+                _projects = result.Data;
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
 }

@@ -9,6 +9,6 @@ public class Project
     public string Description { get; set; } = string.Empty;
     public string ImageUrl { get; set; } = string.Empty;
     public string RepoLink { get; set; }
-    public DateTime Created { get; set; }
+    public DateTime Created { get; set; } = DateTime.Now;
     public long UserId { get; set; }
 }
