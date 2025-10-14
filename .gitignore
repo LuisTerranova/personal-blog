@@ -815,3 +815,4 @@ FodyWeavers.xsd
 
 
 personal-blog.Api/Data/ApiTesting/DbInitializer.cs
+/src/personal_blog.Api/wwwroot/
