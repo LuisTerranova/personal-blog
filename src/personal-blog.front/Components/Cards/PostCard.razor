@@ -12,11 +12,15 @@
     {
         <MudOverlay Visible="_viewerVisible"
                     DarkBackground="true"
-                    OnClick="@(() => _viewerVisible = false)" 
                     Class="d-flex align-center justify-center"
                     Style="z-index: 1301">
             <MudPaper Elevation="25" Class="pa-8 rounded-lg" Style="width: 800px; max-height: 85vh; 
             color: #EBE9E1; overflow-y: auto; min-height: 85vh ">
+                <MudIconButton Icon="@Icons.Material.Filled.Close" 
+                               Color="Color.Primary" 
+                               OnClick="@(() => _viewerVisible = false)" 
+                               Size="Size.Large"
+                               Style="position: absolute; top: 8px; right: 8px;" />
                 @if (_selectedPost is not null)
                 {
                     <MudText Typo="Typo.h4" Color="Color.Primary" GutterBottom="true"
