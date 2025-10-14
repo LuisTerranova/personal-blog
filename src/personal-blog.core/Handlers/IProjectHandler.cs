@@ -12,5 +12,5 @@ public interface IProjectHandler
     Task<PagedResponse<List<Project>?>> GetAllAsync(GetAllProjectsRequest request);
     Task<Response<Project?>> GetByIdAsync(GetProjectByIdRequest request);
     Task<Response<Project?>> UpdateAsync(UpdateProjectRequest request);
-    Task<Response<string>> UploadImageAsync(IBrowserFile file);
+    Task<Response<string>> UploadImageAsync(Stream fileStream, string fileName);
 }

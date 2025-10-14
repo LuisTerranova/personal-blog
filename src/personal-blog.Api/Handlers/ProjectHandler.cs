@@ -128,8 +128,8 @@ public class ProjectHandler(AppDbContext context, IHttpContextAccessor httpConte
             return new Response<Project?>(null, "Error updating project", 400);
         }
     }
-
-    public async Task<Response<string>> UploadImageAsync(IBrowserFile file)
+    
+    public async Task<Response<string>> UploadImageAsync(Stream fileStream, string fileName)
     {
         try
         {
@@ -138,29 +138,28 @@ public class ProjectHandler(AppDbContext context, IHttpContextAccessor httpConte
             if (!Directory.Exists(basePath))
                 Directory.CreateDirectory(basePath);
 
-            var fileExtension = Path.GetExtension(file.Name);
+            var fileExtension = Path.GetExtension(fileName);
             var uniqueFileName = $"{Guid.NewGuid()}{fileExtension}";
             var fullPath = Path.Combine(basePath, uniqueFileName);
-
-            await using var stream = file.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024);
-            await using var fileStream = new FileStream(fullPath, FileMode.Create);
-            await stream.CopyToAsync(fileStream);
-            var httpContext = httpContextAccessor.HttpContext;
             
+            await using var diskStream = new FileStream(fullPath, FileMode.Create);
+            await fileStream.CopyToAsync(diskStream);
+            var httpContext = httpContextAccessor.HttpContext;
+        
             if (httpContext == null)
             {
-                throw new InvalidOperationException("Wasn't possible to get the complete URL");
+                throw new InvalidOperationException("Não foi possível obter a URL completa");
             }
-            
+        
             var request = httpContext.Request;
             var baseUrl = $"{request.Scheme}://{request.Host}";
             var absoluteUrl = $"{baseUrl}/images/projects/{uniqueFileName}";
-            
-            return new Response<string>(absoluteUrl, "Image uploaded successfully", 200);
+        
+            return new Response<string>(absoluteUrl, "Imagem enviada com sucesso", 200);
         }
         catch (Exception ex)
         {
-            return new Response<string>(null, $"Error during file upload: {ex.Message}", 500);
+            return new Response<string>(null, $"Erro durante o upload: {ex.Message}", 500);
         }
     }
 }

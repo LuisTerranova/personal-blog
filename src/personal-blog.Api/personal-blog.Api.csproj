@@ -26,11 +26,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\personal-blog.core\personal-blog.core.csproj" />
+    <Folder Include="wwwroot\images\projects\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\images\projects\" />
+    <ProjectReference Include="..\personal-blog.core\personal-blog.core.csproj" />
   </ItemGroup>
 
 </Project>

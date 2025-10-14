@@ -102,16 +102,17 @@ public partial class ProjectsManager
 
                 if (updateProjectRequest.ImageFile is not null)
                 {
-                    var uploadResult = await Handler.UploadImageAsync(updateProjectRequest.ImageFile);
-
+                    var fileToUpload = updateProjectRequest.ImageFile;
+                    await using var stream = fileToUpload.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024);
+                    var uploadResult = await Handler.UploadImageAsync(stream, fileToUpload.Name);
+                    
                     if (uploadResult.IsSuccess && !string.IsNullOrEmpty(uploadResult.Data))
                     {
                         updateProjectRequest.ImageUrl = uploadResult.Data;
                     }
                     else
                     {
-                        snackbar.Add($"Image upload failed: {uploadResult.Message}. Project update cancelled.",
-                            Severity.Error);
+                        snackbar.Add($"Image upload failed: {uploadResult.Message}. Project update cancelled.", Severity.Error);
                         return;
                     }
                 }
@@ -134,16 +135,17 @@ public partial class ProjectsManager
 
                 if (newProjectRequest.ImageFile is not null)
                 {
-                    var uploadResult = await Handler.UploadImageAsync(newProjectRequest.ImageFile);
-
+                    var fileToUpload = newProjectRequest.ImageFile;
+                    await using var stream = fileToUpload.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024);
+                    var uploadResult = await Handler.UploadImageAsync(stream, fileToUpload.Name);
+                    
                     if (uploadResult.IsSuccess && !string.IsNullOrEmpty(uploadResult.Data))
                     {
                         newProjectRequest.ImageUrl = uploadResult.Data;
                     }
                     else
                     {
-                        snackbar.Add($"Image upload failed: {uploadResult.Message}. Project creation cancelled.",
-                            Severity.Error);
+                        snackbar.Add($"Image upload failed: {uploadResult.Message}. Project creation cancelled.", Severity.Error);
                         return;
                     }
                 }

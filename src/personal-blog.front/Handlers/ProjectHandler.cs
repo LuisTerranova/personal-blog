@@ -40,22 +40,19 @@ public class ProjectHandler(IHttpClientFactory httpClientFactory) : IProjectHand
         return await result.Content.ReadFromJsonAsync<Response<Project>?>()
                ?? new Response<Project?>(null, "Could not update requested project", 400);
     }
-
-    public async Task<Response<string>> UploadImageAsync(IBrowserFile file)
+    
+    public async Task<Response<string>> UploadImageAsync(Stream fileStream, string fileName)
     {
         try
         {
             using var content = new MultipartFormDataContent();
+            using var fileContent = new StreamContent(fileStream);
             
-            using var stream = file.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024); 
-            using var fileContent = new StreamContent(stream);
-            
-            content.Add(fileContent, "file", file.Name); 
-            
+            content.Add(fileContent, "file", fileName); 
             var response = await _client.PostAsync("v1/storage/upload", content);
 
             response.EnsureSuccessStatusCode(); 
-            
+        
             var result = await response.Content.ReadFromJsonAsync<Response<string>>();
             return result ?? new Response<string>("Server returned null URL.", null);
         }

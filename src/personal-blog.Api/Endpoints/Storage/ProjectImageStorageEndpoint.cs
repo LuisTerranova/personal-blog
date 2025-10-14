@@ -6,22 +6,21 @@ namespace personal_blog.Api.Endpoints.ProjectEndpoints;
 
 public class ProjectImageStorageEndpoint : IEndpoint
 {
-    public static void Map(IEndpointRouteBuilder app) 
+    public static void Map(IEndpointRouteBuilder app)
         => app.MapPost("/upload", HandleAsync)
             .RequireRole("admin")
-            .DisableAntiforgery() 
+            .DisableAntiforgery()
             .WithName("Storage : Upload Image")
             .WithSummary("Uploads a project image to local storage")
             .WithOrder(1);
     
     private static async Task<IResult> HandleAsync(IProjectHandler handler, IFormFile file)
     {
-        var browserFileWrapper = new FormFileToBrowserFile(file);
+        await using var stream = file.OpenReadStream();
+        var result = await handler.UploadImageAsync(stream, file.FileName);
         
-        var result = await handler.UploadImageAsync(browserFileWrapper);
-        
-        return result.IsSuccess 
-            ? TypedResults.Ok(result) 
+        return result.IsSuccess
+            ? TypedResults.Ok(result)
             : TypedResults.BadRequest(result);
     }
 }
