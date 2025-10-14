@@ -2,35 +2,72 @@
 
 <MudText Typo="Typo.h3" 
          Align="Align.Center" 
-         GutterBottom="true" 
-         Class="my-8"
          Color="Color.Primary">
     Projects
 </MudText>
 <MudDivider Class="mb-8" />
-
-<MudGrid Justify="Justify.Center" >
-    @foreach (var project in Projects)
-    {
-        <MudItem Style="min-width: 400px; max-width: 400px">
-            <MudCard Style="background-color: #EBE9E1">
-                <MudCardMedia Image="@project.ImageUrl" Height="200"/>
-                <MudCardContent Class="mud-theme-primary">
-                    <MudText Typo="Typo.h5">@project.Title</MudText>
-                    <MudText Typo="Typo.body2">@project.Description</MudText>
-                </MudCardContent>
-                <MudCardActions Class="mud-theme-primary">
-                    <MudButton Href="@project.RepoLink"
-                               Variant="Variant.Outlined"
-                               Target="_blank">Repo</MudButton>
-                </MudCardActions>
-            </MudCard>
-        </MudItem>
-    }
-</MudGrid>
-
+@if (Projects == null || !Projects.Any())
+{
+    <MudAlert Severity="Severity.Warning" Class="ma-15" Variant="Variant.Outlined" >
+        No related projects found.
+    </MudAlert>
+}
+else
+{
+    <MudGrid Justify="Justify.Center">
+        <MudOverlay Visible="_viewerVisible"
+                    DarkBackground="true"
+                    Class="d-flex align-center justify-center"
+                    Style="z-index: 1301">
+            <MudPaper MinHeight="500px" Width="600px" Style="color: #EBE9E1">
+                <MudIconButton Icon="@Icons.Material.Filled.Close" 
+                               Color="Color.Primary" 
+                               OnClick="@(() => _viewerVisible = false)" 
+                               Size="Size.Large"
+                               Style="position: absolute; top: 8px; right: 8px;" />
+                <MudText Typo="Typo.h4" Color="Color.Primary" GutterBottom="true"
+                         Class="d-flex align-center justify-center pa-2">
+                    @_selectedProject.Title
+                </MudText>
+                <MudText Typo="Typo.body1" Color="Color.Primary"
+                         Class="d-flex align-center justify-center pa-5">
+                    @_selectedProject.Description
+                </MudText>
+                <MudLink Typo="Typo.body1" Color="Color.Primary"
+                         Class="ml-5" Href="@_selectedProject.RepoLink"
+                         Target="_blank">
+                    Repository
+                </MudLink>
+            </MudPaper>
+        </MudOverlay>
+        @foreach (var project in Projects)
+        {
+            <MudItem xs="12" sm="6" md="4"
+                     Style="max-width: 495px;">
+                <MudCard Style="background-color: #EBE9E1">
+                    <MudCardMedia Image="@project.ImageUrl" Class="card-media-responsive"/>
+                    <MudCardContent Class="mud-theme-primary">
+                        <MudText Typo="Typo.h5">@project.Title</MudText>
+                        <MudText Typo="Typo.body2">@project.Summary</MudText>
+                    </MudCardContent>
+                    <MudCardActions Class="mud-theme-primary">
+                        <MudButton Class="ma-2"
+                                   Variant="Variant.Filled"
+                                   OnClick="() => { _viewerVisible = true; _selectedProject = project; }">+Info</MudButton>
+                        <MudButton Href="@project.RepoLink"
+                                   Variant="Variant.Filled"
+                                   Target="_blank">Repo</MudButton>
+                    </MudCardActions>
+                </MudCard>
+            </MudItem>
+        }
+    </MudGrid>
+}
 
 @code {
     [Parameter] public List<Project?> Projects { get; set; } = [];
+    
+    private bool _viewerVisible;
+    private Project _selectedProject;
 
 }
