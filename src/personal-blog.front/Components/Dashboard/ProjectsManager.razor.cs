@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using personal_blog.core.Common.Helpers;
 using personal_blog.core.Handlers;
 using personal_blog.core.Models;
 using personal_blog.core.Requests.Projects;
@@ -75,6 +76,7 @@ public partial class ProjectsManager
                     Id = getResult.Data.Id,
                     Title = getResult.Data.Title,
                     Description = getResult.Data.Description,
+                    Summary = getResult.Data.Summary,
                     ImageUrl = getResult.Data.ImageUrl,
                     RepoLink = getResult.Data.RepoLink
                 };
@@ -96,28 +98,17 @@ public partial class ProjectsManager
 
         try
         {
+            var projectRequest = (IProjectRequestWithImage)result.Data;
+
+            bool canProceed = await HandleImageUploadAsync(projectRequest);
+            if (!canProceed)
+            {
+                    return;
+            }
+
             if (id.HasValue)
             {
-                var updateProjectRequest = (UpdateProjectRequest)result.Data;
-
-                if (updateProjectRequest.ImageFile is not null)
-                {
-                    var fileToUpload = updateProjectRequest.ImageFile;
-                    await using var stream = fileToUpload.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024);
-                    var uploadResult = await Handler.UploadImageAsync(stream, fileToUpload.Name);
-                    
-                    if (uploadResult.IsSuccess && !string.IsNullOrEmpty(uploadResult.Data))
-                    {
-                        updateProjectRequest.ImageUrl = uploadResult.Data;
-                    }
-                    else
-                    {
-                        snackbar.Add($"Image upload failed: {uploadResult.Message}. Project update cancelled.", Severity.Error);
-                        return;
-                    }
-                }
-
-                var updateResult = await Handler.UpdateAsync(updateProjectRequest);
+                var updateResult = await Handler.UpdateAsync((UpdateProjectRequest)projectRequest);
 
                 if (updateResult.IsSuccess)
                 {
@@ -131,27 +122,8 @@ public partial class ProjectsManager
             }
             else
             {
-                var newProjectRequest = (CreateProjectRequest)result.Data;
-
-                if (newProjectRequest.ImageFile is not null)
-                {
-                    var fileToUpload = newProjectRequest.ImageFile;
-                    await using var stream = fileToUpload.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024);
-                    var uploadResult = await Handler.UploadImageAsync(stream, fileToUpload.Name);
-                    
-                    if (uploadResult.IsSuccess && !string.IsNullOrEmpty(uploadResult.Data))
-                    {
-                        newProjectRequest.ImageUrl = uploadResult.Data;
-                    }
-                    else
-                    {
-                        snackbar.Add($"Image upload failed: {uploadResult.Message}. Project creation cancelled.", Severity.Error);
-                        return;
-                    }
-                }
-
-                var createResult = await Handler.CreateAsync(newProjectRequest);
-
+                var createResult = await Handler.CreateAsync((CreateProjectRequest)projectRequest);
+                
                 if (createResult.IsSuccess && createResult.Data is not null)
                 {
                     snackbar.Add("Project created successfully!", Severity.Success);
@@ -209,6 +181,27 @@ public partial class ProjectsManager
                 snackbar.Add("An unexpected error occurred while deleting the project.", Severity.Error);
             }
         }
+    }
+
+    private async Task<bool> HandleImageUploadAsync(IProjectRequestWithImage request)
+    {
+        if (request.ImageFile is null)
+        {
+            return true; 
+        }
+        
+        var fileToUpload = request.ImageFile;
+        await using var stream = fileToUpload.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024);
+        var uploadResult = await Handler.UploadImageAsync(stream, fileToUpload.Name);
+                    
+        if (uploadResult.IsSuccess && !string.IsNullOrEmpty(uploadResult.Data))
+        {
+            request.ImageUrl = uploadResult.Data;
+            return true;
+        }
+        
+        snackbar.Add($"Image upload failed: {uploadResult.Message}. Project update cancelled.", Severity.Error); 
+        return false;
     }
 
     #endregion

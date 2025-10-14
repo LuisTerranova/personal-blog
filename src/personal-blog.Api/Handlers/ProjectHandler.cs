@@ -18,6 +18,7 @@ public class ProjectHandler(AppDbContext context, IHttpContextAccessor httpConte
             {
                 Title = request.Title,
                 Description = request.Description,
+                Summary = request.Summary,
                 ImageUrl = request.ImageUrl,
                 RepoLink = request.RepoLink,
                 UserId = request.UserId,
@@ -117,6 +118,7 @@ public class ProjectHandler(AppDbContext context, IHttpContextAccessor httpConte
 
             project.Title = request.Title;
             project.Description = request.Description;
+            project.Summary = request.Summary;
             project.ImageUrl = request.ImageUrl;
             project.RepoLink = request.RepoLink;
 

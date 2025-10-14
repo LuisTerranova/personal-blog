@@ -5,36 +5,32 @@
         <MudText Typo="Typo.h6">@(IsUpdateMode ? "Update Project" : "Create Project")</MudText>
     </TitleContent>
     <DialogContent>
-        <MudTextField @bind-Value="UpdateModel.Title" Label="Title" 
+        <MudTextField @bind-Value="Model.Title" Label="Title"
                       Variant="Variant.Outlined" Class="mb-3"/>
-        <MudTextField @bind-Value="UpdateModel.Description" Label="Description" 
+        <MudTextField @bind-Value="Model.Summary" Label="Summary"
+                      Variant="Variant.Outlined" Lines="5"
+                      Class="mb-3"/>
+        <MudTextField @bind-Value="Model.Description" Label="Description"
                       Variant="Variant.Outlined" Lines="10"
                       Class="mb-3"/>
-        <MudTextField @bind-Value="UpdateModel.RepoLink" Label="Repolink" 
+        <MudTextField @bind-Value="Model.RepoLink" Label="Repolink"
                       Variant="Variant.Outlined" Class="mb-3"/>
-        
-        @if (!string.IsNullOrEmpty(UpdateModel.ImageUrl))
+
+        @if (!string.IsNullOrEmpty(Model.ImageUrl))
         {
             <MudText Typo="Typo.subtitle2" Class="mt-3">Imagem Atual:</MudText>
-            <img src="@UpdateModel.ImageUrl" style="max-width: 150px; height: auto;"/>
+            <img src="@Model.ImageUrl" style="max-width: 150px; height: auto;"/>
         }
-        
-        <MudFileUpload T="IBrowserFile" FilesChanged="HandleFileUpload"> 
+
+        <MudFileUpload T="IBrowserFile" FilesChanged="HandleFileUpload">
             <ActivatorContent>
                 <MudButton Variant="Variant.Filled"
                            Color="Color.Primary"
                            StartIcon="@Icons.Material.Filled.CloudUpload">
-                    @(UpdateModel.ImageFile is null ? "Upload Image" : $"File: {UpdateModel.ImageFile.Name}")
+                    @(Model.ImageFile is null ? "Upload Image" : $"File: {Model.ImageFile.Name}")
                 </MudButton>
             </ActivatorContent>
         </MudFileUpload>
-        
-        @{ 
-            Model.Title = UpdateModel.Title;
-            Model.Description = UpdateModel.Description;
-            Model.RepoLink = UpdateModel.RepoLink;
-            Model.ImageUrl = UpdateModel.ImageUrl;
-        }
 
     </DialogContent>
     <DialogActions>
@@ -52,20 +48,19 @@
 
 @code {
     [CascadingParameter] private IMudDialogInstance DialogInstance { get; set; } = null!;
-    
+
     [Parameter]
     public UpdateProjectRequest? InitialUpdateModel { get; set; }
     
-    private CreateProjectRequest Model { get; set; } = new();
-    private UpdateProjectRequest UpdateModel { get; set; } = new();
-    
+    private UpdateProjectRequest Model { get; set; } = new();
+
     private bool IsUpdateMode => InitialUpdateModel != null && InitialUpdateModel.Id != 0;
-    
-    protected override async Task OnInitializedAsync()
+
+    protected override void OnInitialized()
     {
         if (IsUpdateMode && InitialUpdateModel != null)
         {
-            UpdateModel = InitialUpdateModel;
+            Model = InitialUpdateModel;
         }
     }
 
@@ -76,17 +71,25 @@
 
     private void Create()
     {
-        Model.ImageFile = UpdateModel.ImageFile; 
-        DialogInstance.Close(DialogResult.Ok(Model));
+        var createRequest = new CreateProjectRequest
+        {
+            Title = Model.Title,
+            Description = Model.Description,
+            Summary = Model.Summary,
+            RepoLink = Model.RepoLink,
+            ImageUrl = Model.ImageUrl,
+            ImageFile = Model.ImageFile
+        };
+        DialogInstance.Close(DialogResult.Ok(createRequest));
     }
-    
+
     private void Update()
     {
-        DialogInstance.Close(DialogResult.Ok(UpdateModel));
+        DialogInstance.Close(DialogResult.Ok(Model));
     }
-    
+
     private void HandleFileUpload(IBrowserFile file)
     {
-        UpdateModel.ImageFile = file; 
+        Model.ImageFile = file;
     }
 }

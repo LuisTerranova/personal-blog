@@ -18,6 +18,11 @@ public class ProjectMap : IEntityTypeConfiguration<Project>
         
         builder.Property(p => p.Description)
             .HasColumnType("NVARCHAR")
+            .HasMaxLength(2000)
+            .IsRequired();
+
+        builder.Property(p => p.Summary)
+            .HasColumnType("NVARCHAR")
             .HasMaxLength(200)
             .IsRequired();
         
