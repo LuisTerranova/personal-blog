@@ -813,6 +813,6 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 
-
-personal-blog.Api/Data/ApiTesting/DbInitializer.cs
-/src/personal_blog.Api/wwwroot/
+# Sensiive info
+/src/personal-blog.Api/Common/MockData/DbInitializer.cs
+/src/personal-blog.Api/wwwroot/
