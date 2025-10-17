@@ -1,22 +1,23 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using personal_blog.admin.Components.Dashboard.Forms;
+using personal_blog.core.DTOs;
 using personal_blog.core.Handlers;
 using personal_blog.core.Models;
 using personal_blog.core.Requests.Posts;
-using personal_blog.front.Components.Dashboard.Forms;
 
-namespace personal_blog.front.Components.Dashboard;
+namespace personal_blog.admin.Components.Dashboard;
 
 public partial class PostsManager
 {
     #region Services
     
     [Inject]
-    public ISnackbar snackbar { get; set; }
+    public ISnackbar? Snackbar { get; set; }
     [Inject]
-    public IPostHandler Handler { get; set; }
+    public IPostHandler? Handler { get; set; }
     [Inject]
-    private IDialogService DialogService { get; set; }
+    private IDialogService? DialogService { get; set; }
     
     
 
@@ -24,7 +25,7 @@ public partial class PostsManager
     
     #region Properties
     
-    private MudTable<Post> _table;
+    private MudTable<PostDTO>? _table;
     private string? _searchString;
     private string SearchString
     {
@@ -41,7 +42,7 @@ public partial class PostsManager
     
     #region Methods
 
-    private async Task<TableData<Post>> ServerReload(TableState state, CancellationToken token)
+    private async Task<TableData<PostDTO>> ServerReload(TableState state, CancellationToken token)
     {
         try
         {
@@ -56,19 +57,19 @@ public partial class PostsManager
 
             if (result.IsSuccess)
             {
-                return new TableData<Post>()
+                return new TableData<PostDTO>()
                 {
                     TotalItems = result.TotalCount,
-                    Items = result.Data ?? new List<Post>()
+                    Items = result.Data ?? new List<PostDTO>()
                 };
             }
         }
         catch (Exception ex)
         {
             _errorMessage = $"An unexpected error occurred: {ex.Message}";
-            snackbar.Add(_errorMessage, Severity.Error);
+            Snackbar.Add(_errorMessage, Severity.Error);
         }
-        return new TableData<Post> { TotalItems = 0, Items = new List<Post>() };
+        return new TableData<PostDTO> { TotalItems = 0, Items = new List<PostDTO>() };
     }
     private async Task OpenForm(int? id = null)
     {
@@ -92,12 +93,12 @@ public partial class PostsManager
             }
             else
             {
-                snackbar.Add("Post data not found for editing.", Severity.Error);
+                Snackbar.Add("Post data not found for editing.", Severity.Error);
                 return; 
             }
         }
         
-        var dialog = DialogService.Show<PostForm>("Create/Update Post", parameters);
+        var dialog = await DialogService.ShowAsync<PostForm>("Create/Update Post", parameters);
         var result = await dialog.Result;
         
         if (result.Canceled || result.Data == null)
@@ -112,12 +113,12 @@ public partial class PostsManager
             
                 if (updateResult.IsSuccess)
                 {
-                    snackbar.Add("Post updated successfully!", Severity.Success);
+                    Snackbar.Add("Post updated successfully!", Severity.Success);
                     await _table.ReloadServerData();
                 }
                 else
                 {
-                    snackbar.Add(updateResult.Message, Severity.Error);
+                    Snackbar.Add(updateResult.Message, Severity.Error);
                 }
             }
             else 
@@ -127,22 +128,22 @@ public partial class PostsManager
 
                 if (createResult.IsSuccess && createResult.Data is not null)
                 {
-                    snackbar.Add("Post created successfully!", Severity.Success);
+                    Snackbar.Add("Post created successfully!", Severity.Success);
                     await _table.ReloadServerData();
                 }
                 else
                 {
-                    snackbar.Add(createResult.Message, Severity.Error);
+                    Snackbar.Add(createResult.Message, Severity.Error);
                 }
             }
         }
         catch (InvalidCastException)
         {
-            snackbar.Add("Error: Data returned from the form had an incorrect type. Check the form's Update/Create methods.", Severity.Error);
+            Snackbar.Add("Error: Data returned from the form had an incorrect type. Check the form's Update/Create methods.", Severity.Error);
         }
         catch (Exception ex)
         {
-            snackbar.Add($"An unexpected error occurred: {ex.Message}", Severity.Error);
+            Snackbar.Add($"An unexpected error occurred: {ex.Message}", Severity.Error);
         }
     }
 
@@ -167,17 +168,17 @@ public partial class PostsManager
 
                 if (deleteResult.IsSuccess)
                 {
-                    snackbar.Add(deleteResult.Message, Severity.Success);
+                    Snackbar.Add(deleteResult.Message, Severity.Success);
                     await _table.ReloadServerData();
                 }
                 else
                 {
-                    snackbar.Add(deleteResult.Message, Severity.Error);
+                    Snackbar.Add(deleteResult.Message, Severity.Error);
                 }
             }
             catch (Exception ex)
             {
-                snackbar.Add("An unexpected error occurred while deleting the post.", Severity.Error);
+                Snackbar.Add("An unexpected error occurred while deleting the post.", Severity.Error);
             }
         }
     }

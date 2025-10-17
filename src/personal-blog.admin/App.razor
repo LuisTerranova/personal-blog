@@ -1,0 +1,30 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+
+<Router AppAssembly="@typeof(App).Assembly">
+    <Found Context="routeData">
+        <CascadingAuthenticationState>
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                <NotAuthorized>
+                    <MudContainer Class="d-flex flex-column align-center justify-center" Style="height: 80vh">
+                        <MudText Typo="Typo.h3" Color="Color.Primary">Access Denied</MudText>
+                        <MudText Typo="Typo.body1">You are not allowed to access this page.</MudText>
+                        <MudButton Color="Color.Primary" 
+                                   Variant="Variant.Filled"
+                                   Class="ma-3"
+                                   Typo="Typo.body1">Log-in</MudButton>
+                    </MudContainer>
+                </NotAuthorized>
+                <Authorizing>
+                    <p>Verifying authentication state...</p>
+                </Authorizing>
+            </AuthorizeRouteView>
+            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+        </CascadingAuthenticationState>
+    </Found>
+    <NotFound>
+        <PageTitle>Not found</PageTitle>
+        <LayoutView Layout="@typeof(MainLayout)">
+            <p role="alert">Sorry, nothing to see here.</p>
+        </LayoutView>
+    </NotFound>
+</Router>

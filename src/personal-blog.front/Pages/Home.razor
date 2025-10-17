@@ -1,7 +1,10 @@
 @page "/"
-@using personal_blog.core.Models
+@using personal_blog.core.DTOs
+@using personal_blog.core.Handlers
+@using personal_blog.core.Handlers.FrontEndHandlers
+@using personal_blog.core.Requests.Posts
 @using personal_blog.front.Components.Cards
-@inject IHttpClientFactory HttpClientFactory
+@inject IFrontPostHandler Handler
 
 <MudContainer Class="my-10 d-flex align-center justify-center" Style="min-height: 78vh;">
     <MudPaper Class="pa-10 align-items-center" Style="background-color: #EBE9E1">
@@ -26,15 +29,26 @@
 </MudContainer>
 
 @code {
-    private List<Post>? _featuredPosts;
+    private List<PostDTO>? _featuredPosts;
     private string? _errorMessage;
 
     protected override async Task OnInitializedAsync()
     {
-        var client = HttpClientFactory.CreateClient("API");
         try
         {
-            _featuredPosts = await client.GetFromJsonAsync<List<Post>?>("v1/posts/featured");
+            var request = new GetFeaturedPostsRequest();
+            var response = await Handler.GetFeaturedAsync(request);
+            
+            if (response.IsSuccess)
+            {
+                _featuredPosts = response.Data;
+                StateHasChanged();
+            }
+            else
+            {
+                _errorMessage = response.Message ?? "Failed to load featured posts with an unknown error.";
+                _featuredPosts = new List<PostDTO>(); 
+            }
         }
         catch (HttpRequestException ex)
         {

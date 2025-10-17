@@ -1,34 +1,33 @@
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
+using personal_blog.admin.Security;
 using personal_blog.core.Handlers;
 using personal_blog.core.Requests;
-using personal_blog.front.Security;
 
-namespace personal_blog.front.Pages;
+namespace personal_blog.admin.Pages;
 
 public class Login_ : ComponentBase
 {
     #region Services
     
     [Inject]
-    public ISnackbar Snackbar { get; set; }
+    public ISnackbar? Snackbar { get; set; }
     
     [Inject]
-    public IAccountHandler AccountHandler { get; set; }
+    public IAccountHandler? AccountHandler { get; set; }
     
     [Inject]
-    public NavigationManager NavigationManager { get; set; }
+    public NavigationManager? NavigationManager { get; set; }
     
     [Inject]
-    public ICookieAuthenticationStateProvider AuthenticationStateProvider { get; set; }
+    public ICookieAuthenticationStateProvider? AuthenticationStateProvider { get; set; }
     
     #endregion
     
     #region Properties
     
     public bool IsBusy { get; set; }
-    public LoginRequest InputModel = new();
+    public readonly LoginRequest InputModel = new();
     
     #endregion
     
@@ -36,11 +35,11 @@ public class Login_ : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        var authState =  await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var authState =  await AuthenticationStateProvider!.GetAuthenticationStateAsync();
         var user = authState.User;
         
         if (user.Identity is {IsAuthenticated: true})
-            NavigationManager.NavigateTo("/dashboard");
+            NavigationManager!.NavigateTo("/dashboard");
     }
     
     #endregion
@@ -57,16 +56,16 @@ public class Login_ : ComponentBase
 
             if (result.IsSuccess)
             {
-                await AuthenticationStateProvider.GetAuthenticationStateAsync();
+                await AuthenticationStateProvider!.GetAuthenticationStateAsync();
                 AuthenticationStateProvider.NotifyAuthenticationStateChanged();
-                NavigationManager.NavigateTo("/dashboard");
+                NavigationManager!.NavigateTo("/dashboard");
             }
             else
-                Snackbar.Add(result.Message, Severity.Error);
+                Snackbar!.Add(result.Message ?? string.Empty, Severity.Error);
         }
         catch (Exception ex)
         {
-            Snackbar.Add(ex.Message, Severity.Error);
+            Snackbar!.Add(ex.Message, Severity.Error);
         }
         finally
         {

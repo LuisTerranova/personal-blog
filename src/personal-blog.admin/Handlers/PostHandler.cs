@@ -2,16 +2,29 @@ using System.Net.Http.Json;
 using System.Web;
 using personal_blog.core.DTOs;
 using personal_blog.core.Handlers;
-using personal_blog.core.Handlers.FrontEndHandlers;
 using personal_blog.core.Models;
 using personal_blog.core.Requests.Posts;
 using personal_blog.core.Responses;
 
-namespace personal_blog.front.Handlers;
+namespace personal_blog.admin.Handlers;
 
-public class PostHandler(IHttpClientFactory httpClientFactory) : IFrontPostHandler
+public class PostHandler(IHttpClientFactory httpClientFactory) : IPostHandler
 {
     private readonly HttpClient _client = httpClientFactory.CreateClient("API");
+    public async Task<Response<Post?>> CreateAsync(CreatePostRequest request)
+    {  
+        var result =  await _client.PostAsJsonAsync("v1/posts", request);
+        return await result.Content.ReadFromJsonAsync<Response<Post?>>()
+            ?? new Response<Post?>(null, "Could not create post", 400);
+    }
+
+    public async Task<Response<Post?>> DeleteAsync(DeletePostRequest request)
+    {
+        var result = await _client.DeleteAsync($"v1/posts/{request.Id}");
+        return await result.Content.ReadFromJsonAsync<Response<Post?>>()
+            ??  new Response<Post?>(null, "Could not delete requested post", 400);
+    }
+
     public async Task<PagedResponse<List<PostDTO>?>> GetAllAsync(GetAllPostsRequest request)
     {
         var url = $"v1/posts?pageNumber={request.PageNumber}&pageSize={request.PageSize}";
@@ -20,7 +33,7 @@ public class PostHandler(IHttpClientFactory httpClientFactory) : IFrontPostHandl
         {
             url += $"&query={HttpUtility.UrlEncode(request.Query)}";
         }
-        return await _client.GetFromJsonAsync<PagedResponse<List<PostDTO>>?>(url)
+        return await _client.GetFromJsonAsync<PagedResponse<List<PostDTO>?>>(url)
                ?? new PagedResponse<List<PostDTO>>(null, "Could not fetch posts", 400);
     }
 
@@ -31,4 +44,12 @@ public class PostHandler(IHttpClientFactory httpClientFactory) : IFrontPostHandl
     public async Task<PagedResponse<List<PostDTO>?>> GetFeaturedAsync(GetFeaturedPostsRequest request)
         => await _client.GetFromJsonAsync<PagedResponse<List<PostDTO>?>>("v1/posts/featured")
             ?? new PagedResponse<List<PostDTO>?>(null, "Could not fetch posts", 400);
+ 
+
+    public async Task<Response<Post?>> UpdateAsync(UpdatePostRequest request)
+    {
+        var result = await _client.PutAsJsonAsync($"v1/posts/{request.Id}", request);
+        return await result.Content.ReadFromJsonAsync<Response<Post?>>()
+            ?? new Response<Post?>(null, "Could not update requested post", 400);
+    }
 }

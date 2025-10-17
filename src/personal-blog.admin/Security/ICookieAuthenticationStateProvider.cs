@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components.Authorization;
 
-namespace personal_blog.front.Security;
+namespace personal_blog.admin.Security;
 
 public interface ICookieAuthenticationStateProvider
 {

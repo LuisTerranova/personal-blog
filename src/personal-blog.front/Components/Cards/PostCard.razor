@@ -1,5 +1,9 @@
 @using HtmlAgilityPack
+@using personal_blog.core.DTOs
+@using personal_blog.core.Handlers
+@using personal_blog.core.Handlers.FrontEndHandlers
 @using personal_blog.core.Models
+@using personal_blog.core.Requests.Posts
 
 <MudGrid Justify="Justify.Center">
     @if (Posts == null || !Posts.Any())
@@ -45,7 +49,7 @@
                     <MudPaper Class="pa-4 ma-2 mud-theme-primary rounded-lg" Style="min-height: 300px ;">
                         <MudText Align="Align.Center" Typo="Typo.h6" Class="pa-5">@post.Title</MudText>
                         <MudText Align="Align.Center" Typo="Typo.body1" Class="pa-5">
-                            @GetSummary(post.Body)
+                            @post.Summary
                         </MudText>
                     </MudPaper>
             </MudItem>
@@ -56,36 +60,27 @@
 @code
 {
     [Parameter]
-    public List<Post>? Posts { get; set; }
+    public List<PostDTO>? Posts { get; set; }
+    [Inject]
+    public IFrontPostHandler? Handler { get; set; }
 
     private bool _viewerVisible;
     private Post? _selectedPost;
     
-    private void OnItemClick(int postId)
+    private async Task OnItemClick(int postId)
     {
-        _selectedPost = Posts?.FirstOrDefault(p => p.Id == postId);
-        if(_selectedPost is not null)
+        var request = new GetPostByIdRequest { Id = postId };
+        var result = await Handler.GetByIdAsync(request); 
+
+        if (result.IsSuccess && result.Data is not null)
         {
+            _selectedPost = result.Data; 
             _viewerVisible = true;
+            StateHasChanged();
         }
-    }
-
-    private string GetSummary(string body, int maxLength = 200)
-    {
-        if (string.IsNullOrEmpty(body))
+        else
         {
-            return string.Empty;
-        }
-
-        var doc = new HtmlDocument();
-        doc.LoadHtml(body);
-        var plainText = doc.DocumentNode.InnerText;
-        
-        if (plainText.Length <= maxLength)
-        {
-            return plainText;
-        }
-
-        return plainText.Substring(0, maxLength) + "...";
+            
+        } 
     }
 }

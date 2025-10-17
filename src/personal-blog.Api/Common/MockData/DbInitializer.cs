@@ -19,6 +19,7 @@ public static class DbInitializer
             var configuration = services.GetRequiredService<IConfiguration>();
 
             const string adminRole = "admin";
+            //this is commentary
             
             if (!await roleManager.RoleExistsAsync(adminRole))
             {

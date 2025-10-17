@@ -1,10 +1,11 @@
 @page "/posts"
+@using personal_blog.core.DTOs
 @using personal_blog.core.Handlers
-@using personal_blog.core.Models
+@using personal_blog.core.Handlers.FrontEndHandlers
 @using personal_blog.core.Requests.Posts
 @using personal_blog.front.Components
 @using personal_blog.front.Components.Cards
-@inject IPostHandler Handler;
+@inject IFrontPostHandler Handler;
 
 <MudLayout>
     @if (_errorMessage != null)
@@ -43,7 +44,7 @@
 @code {
     private string? _errorMessage;
     private bool _isLoading;
-    private List<Post> _postsToDisplay { get; set; } = [];
+    private List<PostDTO> _postsToDisplay { get; set; } = [];
     
     private int _totalItems;
     private int _currentPage = 1;

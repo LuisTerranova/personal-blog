@@ -8,7 +8,7 @@ public class Response<TData>
     
     private readonly int _code;
     
-    public Response(TData data, string? message = null, int code = Configuration.DefaultStatusCode)
+    public Response(TData? data, string? message = null, int code = Configuration.DefaultStatusCode)
     {
         Data = data;
         Message = message;

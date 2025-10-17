@@ -7,7 +7,6 @@
     <DialogContent>
         <MudTextField @bind-Value="UpdateModel.Title" Label="Title" 
                       Variant="Variant.Outlined" Class="mb-3"/>
-        @{ Model.Title = UpdateModel.Title; }
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
@@ -51,6 +50,10 @@
 
     private void Create()
     {
+        var createRequest = new CreateCategoryRequest
+        {
+            Title = UpdateModel.Title
+        };
         DialogInstance.Close(DialogResult.Ok(Model));
     }
     

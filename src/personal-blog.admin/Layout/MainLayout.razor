@@ -1,0 +1,23 @@
+﻿@using personal_blog.admin.Themes
+@inherits LayoutComponentBase
+
+<MudThemeProvider Theme="CustomTheme.mudTheme"/>
+<MudPopoverProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+
+<MudMainContent>
+    @Body
+</MudMainContent>
+
+<footer style="width: 100%; padding: 20px">
+    <MudContainer MaxWidth="MaxWidth.ExtraLarge">
+        <MudGrid Justify="Justify.Center">
+            <MudItem>
+                <MudText>
+                    &copy; @DateTime.Now.Year Trash Tech Blog
+                </MudText>
+            </MudItem>
+        </MudGrid>
+    </MudContainer>
+</footer>

@@ -52,6 +52,11 @@ public static class BuilderExtension
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials();
+                
+                policy.WithOrigins("http://localhost:5164", "https://localhost:5164")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
             });
         });
     }

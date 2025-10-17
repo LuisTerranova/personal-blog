@@ -1,9 +1,9 @@
 @page "/projects"
-@using personal_blog.core.Handlers
+@using personal_blog.core.Handlers.FrontEndHandlers
 @using personal_blog.core.Models
 @using personal_blog.core.Requests.Projects
 @using personal_blog.front.Components.Cards
-@inject IProjectHandler Handler
+@inject IFrontProjectHandler Handler
 
 @if (_projects is null)
 {

@@ -4,20 +4,20 @@ using personal_blog.core.Common.Helpers;
 using personal_blog.core.Handlers;
 using personal_blog.core.Models;
 using personal_blog.core.Requests.Projects;
-using personal_blog.front.Components.Dashboard.Forms;
+using personal_blog.admin.Components.Dashboard.Forms;
 
-namespace personal_blog.front.Components.Dashboard;
+namespace personal_blog.admin.Components.Dashboard;
 
 public partial class ProjectsManager
 {
     #region Services
     
     [Inject]
-    public ISnackbar snackbar { get; set; }
+    public ISnackbar? Snackbar { get; set; }
     [Inject]
-    public IProjectHandler Handler { get; set; }
+    public IProjectHandler? Handler { get; set; }
     [Inject]
-    private IDialogService DialogService { get; set; }
+    private IDialogService? DialogService { get; set; }
     
     
 
@@ -25,7 +25,7 @@ public partial class ProjectsManager
     
     #region Properties
     
-    private MudTable<Project> _table;
+    private MudTable<Project>? _table;
     private string? _errorMessage;
     
     #endregion
@@ -56,7 +56,7 @@ public partial class ProjectsManager
         catch (Exception ex)
         {
             _errorMessage = $"An unexpected error occurred: {ex.Message}";
-            snackbar.Add(_errorMessage, Severity.Error);
+            Snackbar.Add(_errorMessage, Severity.Error);
         }
         return new TableData<Project> { TotalItems = 0, Items = new List<Project>() };
     }
@@ -85,12 +85,12 @@ public partial class ProjectsManager
             }
             else
             {
-                snackbar.Add("Project data not found for editing.", Severity.Error);
+                Snackbar.Add("Project data not found for editing.", Severity.Error);
                 return;
             }
         }
 
-        var dialog = DialogService.Show<ProjectForm>("Create/Update Project", parameters);
+        var dialog = await DialogService.ShowAsync<ProjectForm>("Create/Update Project", parameters);
         var result = await dialog.Result;
 
         if (result.Canceled || result.Data == null)
@@ -112,12 +112,12 @@ public partial class ProjectsManager
 
                 if (updateResult.IsSuccess)
                 {
-                    snackbar.Add("Project updated successfully!", Severity.Success);
+                    Snackbar.Add("Project updated successfully!", Severity.Success);
                     await _table.ReloadServerData();
                 }
                 else
                 {
-                    snackbar.Add(updateResult.Message, Severity.Error);
+                    Snackbar.Add(updateResult.Message, Severity.Error);
                 }
             }
             else
@@ -126,24 +126,24 @@ public partial class ProjectsManager
                 
                 if (createResult.IsSuccess && createResult.Data is not null)
                 {
-                    snackbar.Add("Project created successfully!", Severity.Success);
+                    Snackbar.Add("Project created successfully!", Severity.Success);
                     await _table.ReloadServerData();
                 }
                 else
                 {
-                    snackbar.Add(createResult.Message, Severity.Error);
+                    Snackbar.Add(createResult.Message, Severity.Error);
                 }
             }
         }
         catch (InvalidCastException)
         {
-            snackbar.Add(
+            Snackbar.Add(
                 "Error: Data returned from the form had an incorrect type. Check the form's Update/Create methods.",
                 Severity.Error);
         }
         catch (Exception ex)
         {
-            snackbar.Add($"An unexpected error occurred: {ex.Message}", Severity.Error);
+            Snackbar.Add($"An unexpected error occurred: {ex.Message}", Severity.Error);
         }
     }
 
@@ -168,17 +168,17 @@ public partial class ProjectsManager
 
                 if (deleteResult.IsSuccess)
                 {
-                    snackbar.Add(deleteResult.Message, Severity.Success);
+                    Snackbar.Add(deleteResult.Message, Severity.Success);
                     await _table.ReloadServerData();
                 }
                 else
                 {
-                    snackbar.Add(deleteResult.Message, Severity.Error);
+                    Snackbar.Add(deleteResult.Message, Severity.Error);
                 }
             }
             catch (Exception ex)
             {
-                snackbar.Add("An unexpected error occurred while deleting the project.", Severity.Error);
+                Snackbar.Add("An unexpected error occurred while deleting the project.", Severity.Error);
             }
         }
     }
@@ -200,7 +200,7 @@ public partial class ProjectsManager
             return true;
         }
         
-        snackbar.Add($"Image upload failed: {uploadResult.Message}. Project update cancelled.", Severity.Error); 
+        Snackbar.Add($"Image upload failed: {uploadResult.Message}. Project update cancelled.", Severity.Error); 
         return false;
     }
 

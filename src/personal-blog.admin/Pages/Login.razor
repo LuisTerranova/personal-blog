@@ -1,4 +1,4 @@
-@page "/login"
+@page "/"
 @inherits Login_
 
 <div style="min-height: 85vh;" class="d-flex justify-center align-center">
@@ -8,7 +8,7 @@
                 <EditForm  FormName="Login" Model="InputModel" OnValidSubmit="HandleLogin">
                     <DataAnnotationsValidator/>
                     <MudCard Class="pa-10 ma-3 mud-theme-primary">
-                        <MudText Typo="Typo.h4" Class="d-flex justify-center align-center">Admin log-in</MudText>
+                        <MudText Typo="Typo.h4" Class="d-flex justify-center align-center">Log-in</MudText>
                         <MudCardContent>
                             <MudTextField Label="Username" @bind-Value="InputModel.Email" Variant="Variant.Outlined"/>
                             <MudTextField Label="Password" InputType="InputType.Password" @bind-Value="InputModel.Password" Variant="Variant.Outlined"/>

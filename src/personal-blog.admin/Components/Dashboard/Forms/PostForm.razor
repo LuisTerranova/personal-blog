@@ -14,18 +14,13 @@
         <MudTextField @bind-Value="UpdateModel.Body" Label="Body" 
                       Variant="Variant.Outlined" Lines="10"
                       Class="mb-3"/>
-        <MudSelect T="int" @bind-Value="Model.CategoryId" Label="Category" Variant="Variant.Outlined">
+        <MudSelect T="int" @bind-Value="UpdateModel.CategoryId" Label="Category" Variant="Variant.Outlined">
             @foreach (var category in _categories)
             { 
                 <MudSelectItem Value="@category.Id">@category.Title</MudSelectItem>
             }
         </MudSelect>
-        @{ 
-            Model.Title = UpdateModel.Title;
-            Model.Body = UpdateModel.Body;
-            Model.CategoryId = UpdateModel.CategoryId;
-        }
-
+        
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
@@ -46,7 +41,6 @@
     [Parameter]
     public UpdatePostRequest? InitialUpdateModel { get; set; }
     
-    private CreatePostRequest Model { get; set; } = new();
     private UpdatePostRequest UpdateModel { get; set; } = new();
     private List<Category> _categories = new(); 
     
@@ -78,7 +72,13 @@
 
     private void Create()
     {
-        DialogInstance.Close(DialogResult.Ok(Model));
+            var createRequest = new CreatePostRequest
+            {
+                Title = UpdateModel.Title,
+                Body = UpdateModel.Body,
+                CategoryId = UpdateModel.CategoryId,
+            };
+            DialogInstance.Close(DialogResult.Ok(createRequest));
     }
     
     private void Update()

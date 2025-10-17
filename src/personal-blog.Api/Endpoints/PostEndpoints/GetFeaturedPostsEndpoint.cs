@@ -14,11 +14,10 @@ public class GetFeaturedPostsEndpoint : IEndpoint
     private static async Task<IResult> HandleAsync(IPostHandler handler)
     {
         var request = new GetFeaturedPostsRequest();
-        
         var result = await handler.GetFeaturedAsync(request);
       
         return result.IsSuccess 
-            ? TypedResults.Ok(result.Data) 
+            ? TypedResults.Ok(result) 
             : TypedResults.NotFound(result);
     }
 }

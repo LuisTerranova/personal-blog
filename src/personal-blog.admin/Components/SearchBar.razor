@@ -1,0 +1,28 @@
+<MudTextField @bind-Value="CurrentSearchQuery"
+              Placeholder="Search..."
+              Adornment="Adornment.Start"
+              AdornmentIcon="@Icons.Material.Filled.Search"
+              Clearable="true"
+              DebounceInterval="500"
+              Immediate="true" />
+
+@code {
+    [Parameter]
+    public string? SearchQuery { get; set; }
+    
+    [Parameter]
+    public EventCallback<string?> SearchQueryChanged { get; set; }
+    
+    private string? CurrentSearchQuery
+    {
+        get => SearchQuery;
+        set
+        {
+            if (SearchQuery != value)
+            {
+                SearchQuery = value;
+                SearchQueryChanged.InvokeAsync(value);
+            }
+        }
+    }
+}

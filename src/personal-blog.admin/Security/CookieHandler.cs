@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components.WebAssembly.Http;
 
-namespace personal_blog.front.Security;
+namespace personal_blog.admin.Security;
 
 public class CookieHandler : DelegatingHandler
 {

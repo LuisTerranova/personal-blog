@@ -3,26 +3,26 @@ using MudBlazor;
 using personal_blog.core.Handlers;
 using personal_blog.core.Models;
 using personal_blog.core.Requests.Categories;
-using personal_blog.front.Components.Dashboard.Forms;
+using personal_blog.admin.Components.Dashboard.Forms;
 
-namespace personal_blog.front.Components.Dashboard;
+namespace personal_blog.admin.Components.Dashboard;
 
 public partial class CategoriesManager
 {
     #region Services
 
     [Inject]
-    public ISnackbar snackbar { get; set; }
+    public ISnackbar? Snackbar { get; set; }
     [Inject]
-    public ICategoryHandler Handler { get; set; }
+    public ICategoryHandler? Handler { get; set; }
     [Inject]
-    private IDialogService DialogService { get; set; }
+    private IDialogService? DialogService { get; set; }
     
     #endregion
 
     #region Properties
 
-    private MudTable<Category> _table;
+    private MudTable<Category>? _table;
     private string _searchString = "";
     private string SearchString
     {
@@ -64,7 +64,7 @@ public partial class CategoriesManager
         catch (Exception ex)
         {
             errorMessage = $"An unexpected error occurred: {ex.Message}";
-            snackbar.Add(errorMessage, Severity.Error);
+            Snackbar.Add(errorMessage, Severity.Error);
         }
         return new TableData<Category>() { TotalItems = 0, Items = new List<Category>() };
     }
@@ -89,7 +89,7 @@ public partial class CategoriesManager
             }
             else
             {
-                snackbar.Add("Category data not found for editing.", Severity.Error);
+                Snackbar.Add("Category data not found for editing.", Severity.Error);
                 return; 
             }
         }
@@ -109,12 +109,12 @@ public partial class CategoriesManager
 
                 if (createResult.IsSuccess)
                 {
-                    snackbar.Add("Category created successfully!", Severity.Success);
+                    Snackbar.Add("Category created successfully!", Severity.Success);
                     await _table.ReloadServerData();
                 }
                 else
                 {
-                    snackbar.Add(createResult.Message, Severity.Error);
+                    Snackbar.Add(createResult.Message, Severity.Error);
                 }
             }
             else 
@@ -124,23 +124,23 @@ public partial class CategoriesManager
                 
                 if (updateResult.IsSuccess)
                 {
-                    snackbar.Add("Category updated successfully!", Severity.Success);
+                    Snackbar.Add("Category updated successfully!", Severity.Success);
                     await _table.ReloadServerData();
                 }
                 else
                 {
-                    snackbar.Add(updateResult.Message, Severity.Error);
+                    Snackbar.Add(updateResult.Message, Severity.Error);
                 }
                 
             }
         }
         catch(InvalidCastException) 
         {
-            snackbar.Add("Form submission failed. Data was not returned correctly.", Severity.Warning);
+            Snackbar.Add("Form submission failed. Data was not returned correctly.", Severity.Warning);
         }
         catch(Exception ex)
         {
-            snackbar.Add($"An unexpected error occurred: {ex.Message}", Severity.Error);
+            Snackbar.Add($"An unexpected error occurred: {ex.Message}", Severity.Error);
         }
     }
     
@@ -165,17 +165,17 @@ public partial class CategoriesManager
 
                 if (deleteResult.IsSuccess)
                 {
-                    snackbar.Add(deleteResult.Message, Severity.Success);
+                    Snackbar.Add(deleteResult.Message, Severity.Success);
                     await _table.ReloadServerData();
                 }
                 else
                 {
-                    snackbar.Add(deleteResult.Message, Severity.Error);
+                    Snackbar.Add(deleteResult.Message, Severity.Error);
                 }
             }
             catch (Exception ex)
             {
-                snackbar.Add("An unexpected error occurred while deleting the category.", Severity.Error);
+                Snackbar.Add("An unexpected error occurred while deleting the category.", Severity.Error);
             }
         }
     }

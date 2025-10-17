@@ -4,7 +4,7 @@ using personal_blog.core.Handlers;
 using personal_blog.core.Requests;
 using personal_blog.core.Responses;
 
-namespace personal_blog.front.Handlers;
+namespace personal_blog.admin.Handlers;
 
 public class AccountHandler(IHttpClientFactory httpClientFactory) : IAccountHandler
 {

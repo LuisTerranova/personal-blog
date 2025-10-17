@@ -3,7 +3,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Components.Authorization;
 using personal_blog.core.Models;
 
-namespace personal_blog.front.Security;
+namespace personal_blog.admin.Security;
 
 public class CookieAuthenticationStateProvider(IHttpClientFactory clientFactory ) :
     AuthenticationStateProvider,
