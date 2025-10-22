@@ -48,15 +48,32 @@ public static class BuilderExtension
         {
             options.AddPolicy("BlazorApp", policy =>
             {
-                policy.WithOrigins("http://localhost:5096", "https://localhost:5096")
-                    .AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .AllowCredentials();
-                
-                policy.WithOrigins("http://localhost:5164", "https://localhost:5164")
-                    .AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .AllowCredentials();
+                if (builder.Environment.IsDevelopment())
+                {
+                    policy.WithOrigins(
+                            "http://localhost:5096",
+                            "https://localhost:5096",
+                            "http://localhost:5164",
+                            "https://localhost:5164",
+                            //Docker
+                            "http://localhost:8080",  
+                            "http://localhost:8082"   
+                        )
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
+                }
+                else
+                {
+                    var origins = builder.Configuration.GetValue<string>("CORS_ORIGINS");
+                    if (!string.IsNullOrEmpty(origins))
+                    {
+                        policy.WithOrigins(origins.Split(','))
+                            .AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .AllowCredentials(); 
+                    }
+                }
             });
         });
     }

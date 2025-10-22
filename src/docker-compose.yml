@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+
+  frontend:
+    build:
+      context: .
+      dockerfile: ./personal-blog.front/Dockerfile.front
+    ports:
+      - "8080:80"
+    container_name: personal-blog-front
+    restart: unless-stopped
+
+  api:
+    build:
+      context: .
+      dockerfile: ./personal-blog.api/Dockerfile.api
+    ports:
+      - "5000:8080"
+      - "5001:8081"
+    env_file:
+      - .env
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=db, 1433;Database=${DB_USER};User Id=sa;Password=${DB_PASSWORD};TrustServerCertificate=true;Encrypt=false
+      - ASPNETCORE_ENVIRONMENT=Development 
+    depends_on:
+      - db
+    container_name: personal-blog-api
+    restart: unless-stopped
+
+  admin:
+    build:
+      context: .
+      dockerfile: ./personal-blog.admin/Dockerfile.admin
+    ports:
+      - "8082:80"
+    container_name: personal-blog-admin
+    restart: unless-stopped
+
+  db:
+    image: "mcr.microsoft.com/mssql/server:2022-latest"
+    container_name: personal-blog-db
+    env_file:
+      - .env
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${DB_PASSWORD}
+    ports:
+      - "1434:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    restart: unless-stopped
+
+volumes:
+  sqlserver_data:

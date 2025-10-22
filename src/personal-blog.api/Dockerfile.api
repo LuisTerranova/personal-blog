@@ -1,0 +1,24 @@
+﻿FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+ARG BUILD_CONFIGURATION=Release
+WORKDIR /src
+
+COPY ["personal-blog.sln", "."]
+COPY ["personal-blog.api/*.csproj", "personal-blog.api/"]
+COPY ["personal-blog.core/*.csproj", "personal-blog.core/"]
+COPY ["personal-blog.admin/*.csproj", "personal-blog.admin/"]
+COPY ["personal-blog.front/*.csproj", "personal-blog.front/"]
+
+RUN dotnet restore "personal-blog.sln"
+
+COPY . .
+
+WORKDIR "/src/personal-blog.api"
+RUN dotnet publish "personal-blog.api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
+WORKDIR /app
+
+COPY --from=build /app/publish .
+
+ENTRYPOINT ["dotnet", "personal-blog.api.dll"]

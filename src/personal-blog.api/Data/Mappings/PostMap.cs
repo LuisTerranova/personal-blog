@@ -18,7 +18,7 @@ public class PostMap : IEntityTypeConfiguration<Post>
 
         builder.Property(p => p.Body)
             .IsRequired()
-            .HasColumnType("NVARCHAR");
+            .HasColumnType("NVARCHAR(max)");
         
         builder.Property(p => p.Created)
             .IsRequired()

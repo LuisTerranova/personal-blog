@@ -266,7 +266,7 @@ namespace personal_blog.Api.Migrations
 
                     b.Property<string>("Body")
                         .IsRequired()
-                        .HasColumnType("NVARCHAR");
+                        .HasColumnType("NVARCHAR(max)");
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");

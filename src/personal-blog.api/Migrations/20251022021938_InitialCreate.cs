@@ -44,11 +44,31 @@ namespace personal_blog.Api.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "NVARCHAR(100)", maxLength: 100, nullable: false),
-                    Slug = table.Column<string>(type: "NVARCHAR(100)", maxLength: 100, nullable: false)
+                    Slug = table.Column<string>(type: "NVARCHAR(100)", maxLength: 100, nullable: false),
+                    UserId = table.Column<string>(type: "VARCHAR(160)", maxLength: 160, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Categories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Projects",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "NVARCHAR(200)", maxLength: 200, nullable: false),
+                    Description = table.Column<string>(type: "NVARCHAR(2000)", maxLength: 2000, nullable: false),
+                    Summary = table.Column<string>(type: "NVARCHAR(200)", maxLength: 200, nullable: false),
+                    ImageUrl = table.Column<string>(type: "NVARCHAR(2000)", maxLength: 2000, nullable: true),
+                    RepoLink = table.Column<string>(type: "NVARCHAR(2000)", maxLength: 2000, nullable: false),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserId = table.Column<long>(type: "BIGINT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Projects", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -134,51 +154,21 @@ namespace personal_blog.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Projects",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "NVARCHAR(200)", maxLength: 200, nullable: false),
-                    Description = table.Column<string>(type: "NVARCHAR(200)", maxLength: 200, nullable: false),
-                    ImageUrl = table.Column<string>(type: "NVARCHAR(2000)", maxLength: 2000, nullable: true),
-                    RepoLink = table.Column<string>(type: "NVARCHAR(2000)", maxLength: 2000, nullable: false),
-                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserId = table.Column<long>(type: "BIGINT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Projects", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Projects_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Posts",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "NVARCHAR(200)", maxLength: 200, nullable: false),
-                    Body = table.Column<string>(type: "NVARCHAR", nullable: false),
+                    Body = table.Column<string>(type: "NVARCHAR(max)", nullable: false),
                     Created = table.Column<DateTime>(type: "DATETIME", nullable: false),
                     Updated = table.Column<DateTime>(type: "DATETIME", nullable: false),
-                    CategoryId = table.Column<int>(type: "INTEGER", nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<long>(type: "BIGINT", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Posts", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Posts_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Posts_Categories_CategoryId",
                         column: x => x.CategoryId,
@@ -280,16 +270,6 @@ namespace personal_blog.Api.Migrations
                 name: "IX_Posts_CategoryId",
                 table: "Posts",
                 column: "CategoryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Posts_UserId",
-                table: "Posts",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Projects_UserId",
-                table: "Projects",
-                column: "UserId");
         }
 
         /// <inheritdoc />
