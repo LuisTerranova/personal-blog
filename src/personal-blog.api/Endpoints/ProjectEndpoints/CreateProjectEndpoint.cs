@@ -20,7 +20,9 @@ public class CreateProjectEndpoint : IEndpoint
         ,HttpContext httpContext)
     {
         var user = httpContext.Items["ApplicationUser"] as ApplicationUser;
-        request.UserId = user!.Id;
+        if (user == null) return TypedResults.Unauthorized();
+        
+        request.UserId = user.Id;
         
         var result = await handler.CreateAsync(request);
         return result.IsSuccess 

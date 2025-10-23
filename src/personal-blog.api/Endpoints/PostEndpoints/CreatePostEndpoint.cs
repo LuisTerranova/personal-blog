@@ -20,6 +20,8 @@ public class CreatePostEndpoint : IEndpoint
         ,HttpContext httpContext)
     {
         var user = httpContext.Items["ApplicationUser"] as ApplicationUser;
+        if (user == null) return TypedResults.Unauthorized();
+        
         request.UserId = user.Id;
         
         var result = await handler.CreateAsync(request);

@@ -1,12 +1,6 @@
 @using personal_blog.core.Models
 
-<MudText Typo="Typo.h3" 
-         Align="Align.Center" 
-         Color="Color.Primary">
-    Projects
-</MudText>
-<MudDivider Class="mb-8" />
-@if (Projects == null || !Projects.Any())
+@if (!Projects.Any())
 {
     <MudAlert Severity="Severity.Warning" Class="ma-15" Variant="Variant.Outlined" >
         No related projects found.
@@ -68,6 +62,5 @@ else
     [Parameter] public List<Project?> Projects { get; set; } = [];
     
     private bool _viewerVisible;
-    private Project _selectedProject;
-
+    private Project _selectedProject = null!;
 }

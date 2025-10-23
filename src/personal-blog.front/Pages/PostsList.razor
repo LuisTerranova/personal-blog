@@ -15,7 +15,6 @@
     else
     {
         <MudContainer Class="pa-12">
-            
             <SearchBar @bind-SearchQuery="SearchString" />
             @if (_isLoading)
             {
@@ -34,7 +33,7 @@
             else
             {
                 <MudText Class="d-flex justify-center pa-5 ma-5" 
-                         Color="Color.Primary">Nenhum post encontrado.
+                         Color="Color.Primary">Couldn't find any posts
                 </MudText>
             }
         </MudContainer>
@@ -51,16 +50,14 @@
     private int CurrentPage 
     {
         get => _currentPage;
-        set 
+        set
         {
-            if (_currentPage != value) 
-            {
-                _currentPage = value;
-                _ = LoadPostsAsync(_currentPage);
-            }
+            if (_currentPage == value) return;
+            _currentPage = value;
+            _ = LoadPostsAsync(_currentPage);
         }
     }
-    private int _pageSize = 6; 
+    private readonly int _pageSize = 6; 
     
     private int TotalPages => (int)Math.Ceiling(_totalItems / (double)_pageSize);
 

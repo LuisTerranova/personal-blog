@@ -12,17 +12,17 @@ public partial class CategoriesManager
     #region Services
 
     [Inject]
-    public ISnackbar? Snackbar { get; set; }
+    public ISnackbar Snackbar { get; set; } = null!;
     [Inject]
-    public ICategoryHandler? Handler { get; set; }
+    public ICategoryHandler Handler { get; set; } = null!;
     [Inject]
-    private IDialogService? DialogService { get; set; }
+    private IDialogService DialogService { get; set; } = null!;
     
     #endregion
 
     #region Properties
 
-    private MudTable<Category>? _table;
+    private MudTable<Category> _table = null!;
     private string _searchString = "";
     private string SearchString
     {
@@ -33,7 +33,7 @@ public partial class CategoriesManager
             _table.ReloadServerData();
         }
     }
-    private string? errorMessage;
+    private string? _errorMessage;
 
     #endregion
     
@@ -63,8 +63,8 @@ public partial class CategoriesManager
         }
         catch (Exception ex)
         {
-            errorMessage = $"An unexpected error occurred: {ex.Message}";
-            Snackbar.Add(errorMessage, Severity.Error);
+            _errorMessage = $"An unexpected error occurred: {ex.Message}";
+            Snackbar.Add(_errorMessage, Severity.Error);
         }
         return new TableData<Category>() { TotalItems = 0, Items = new List<Category>() };
     }
@@ -94,11 +94,16 @@ public partial class CategoriesManager
             }
         }
         
-        var dialog = DialogService.Show<CategoryForm>("Create/Edit a Category", parameters);
-        var result = await dialog.Result;
+        var result = await ( await DialogService.ShowAsync<CategoryForm>("Create/Edit a Category", parameters)).Result;
         
-        if (result.Canceled)
+        if (result is { Canceled: true })
             return;
+        
+        if (result?.Data is null)
+        {
+            Snackbar.Add("Form submission failed. Data was not returned correctly.", Severity.Error);
+            return;
+        }
 
         try
         {
@@ -114,7 +119,7 @@ public partial class CategoriesManager
                 }
                 else
                 {
-                    Snackbar.Add(createResult.Message, Severity.Error);
+                    Snackbar.Add(createResult.Message ?? "Creation failed with unknown error", Severity.Error);
                 }
             }
             else 
@@ -124,12 +129,12 @@ public partial class CategoriesManager
                 
                 if (updateResult.IsSuccess)
                 {
-                    Snackbar.Add("Category updated successfully!", Severity.Success);
+                    Snackbar.Add(updateResult.Message ?? "Category updated successfully!", Severity.Success);
                     await _table.ReloadServerData();
                 }
                 else
                 {
-                    Snackbar.Add(updateResult.Message, Severity.Error);
+                    Snackbar.Add(updateResult.Message ?? "Update failed with unknown error", Severity.Error);
                 }
                 
             }
@@ -165,17 +170,17 @@ public partial class CategoriesManager
 
                 if (deleteResult.IsSuccess)
                 {
-                    Snackbar.Add(deleteResult.Message, Severity.Success);
+                    Snackbar.Add(deleteResult.Message ?? "Category deleted successfully", Severity.Success);
                     await _table.ReloadServerData();
                 }
                 else
                 {
-                    Snackbar.Add(deleteResult.Message, Severity.Error);
+                    Snackbar.Add(deleteResult.Message ?? "Deletion failed with unknown error", Severity.Error);
                 }
             }
             catch (Exception ex)
             {
-                Snackbar.Add("An unexpected error occurred while deleting the category.", Severity.Error);
+                Snackbar.Add($"An unexpected error occurred: {ex.Message}", Severity.Error);
             }
         }
     }

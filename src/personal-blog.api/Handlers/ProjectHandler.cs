@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.EntityFrameworkCore;
 using personal_blog.Api.Data;
 using personal_blog.core.Handlers;
@@ -40,11 +39,11 @@ public class ProjectHandler(AppDbContext context, IHttpContextAccessor httpConte
         {
             var project = await context.Projects
                 .FirstOrDefaultAsync(p => p.Id == request.Id);
-            var imageUrl = project.ImageUrl;
             
             if (project == null)
                 return new Response<Project?>(null, "Project not found", 404);
-
+            
+            var imageUrl = project.ImageUrl;
             var fileName = Path.GetFileName(imageUrl);
 
             var basePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "projects");
@@ -150,18 +149,18 @@ public class ProjectHandler(AppDbContext context, IHttpContextAccessor httpConte
         
             if (httpContext == null)
             {
-                throw new InvalidOperationException("Não foi possível obter a URL completa");
+                throw new InvalidOperationException("Wasn't possible to get the complete URL");
             }
         
             var request = httpContext.Request;
             var baseUrl = $"{request.Scheme}://{request.Host}";
             var absoluteUrl = $"{baseUrl}/images/projects/{uniqueFileName}";
         
-            return new Response<string>(absoluteUrl, "Imagem enviada com sucesso", 200);
+            return new Response<string>(absoluteUrl, "Image sent successfully");
         }
         catch (Exception ex)
         {
-            return new Response<string>(null, $"Erro durante o upload: {ex.Message}", 500);
+            return new Response<string>(null, $"Error during upload: {ex.Message}", 500);
         }
     }
 }

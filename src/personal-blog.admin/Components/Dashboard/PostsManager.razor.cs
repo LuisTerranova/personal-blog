@@ -3,7 +3,6 @@ using MudBlazor;
 using personal_blog.admin.Components.Dashboard.Forms;
 using personal_blog.core.DTOs;
 using personal_blog.core.Handlers;
-using personal_blog.core.Models;
 using personal_blog.core.Requests.Posts;
 
 namespace personal_blog.admin.Components.Dashboard;
@@ -13,11 +12,11 @@ public partial class PostsManager
     #region Services
     
     [Inject]
-    public ISnackbar? Snackbar { get; set; }
+    public ISnackbar Snackbar { get; set; } = null!;
     [Inject]
-    public IPostHandler? Handler { get; set; }
+    public IPostHandler Handler { get; set; } = null!;
     [Inject]
-    private IDialogService? DialogService { get; set; }
+    private IDialogService DialogService { get; set; } = null!;
     
     
 
@@ -25,8 +24,8 @@ public partial class PostsManager
     
     #region Properties
     
-    private MudTable<PostDTO>? _table;
-    private string? _searchString;
+    private MudTable<PostDTO> _table = null!;
+    private string _searchString = null!;
     private string SearchString
     {
         get => _searchString;
@@ -101,7 +100,13 @@ public partial class PostsManager
         var dialog = await DialogService.ShowAsync<PostForm>("Create/Update Post", parameters);
         var result = await dialog.Result;
         
-        if (result.Canceled || result.Data == null)
+        if (result?.Data is null)
+        {
+            Snackbar.Add("Form submission failed. Data was not returned correctly.", Severity.Error);
+            return;
+        }
+        
+        if (result.Canceled)
             return; 
         
         try
@@ -113,12 +118,12 @@ public partial class PostsManager
             
                 if (updateResult.IsSuccess)
                 {
-                    Snackbar.Add("Post updated successfully!", Severity.Success);
+                    Snackbar.Add(updateResult.Message ?? "Post updated successfully!", Severity.Success);
                     await _table.ReloadServerData();
                 }
                 else
                 {
-                    Snackbar.Add(updateResult.Message, Severity.Error);
+                    Snackbar.Add(updateResult.Message ?? "Update failed with unknown error", Severity.Error);
                 }
             }
             else 
@@ -128,12 +133,12 @@ public partial class PostsManager
 
                 if (createResult.IsSuccess && createResult.Data is not null)
                 {
-                    Snackbar.Add("Post created successfully!", Severity.Success);
+                    Snackbar.Add(createResult.Message ?? "Post created successfully!", Severity.Success);
                     await _table.ReloadServerData();
                 }
                 else
                 {
-                    Snackbar.Add(createResult.Message, Severity.Error);
+                    Snackbar.Add(createResult.Message ?? "Creation failed with unknown error", Severity.Error);
                 }
             }
         }
@@ -168,17 +173,17 @@ public partial class PostsManager
 
                 if (deleteResult.IsSuccess)
                 {
-                    Snackbar.Add(deleteResult.Message, Severity.Success);
+                    Snackbar.Add(deleteResult.Message ?? "Post delete successfully", Severity.Success);
                     await _table.ReloadServerData();
                 }
                 else
                 {
-                    Snackbar.Add(deleteResult.Message, Severity.Error);
+                    Snackbar.Add(deleteResult.Message ?? "Deletion failed with unknown error", Severity.Error);
                 }
             }
             catch (Exception ex)
             {
-                Snackbar.Add("An unexpected error occurred while deleting the post.", Severity.Error);
+                Snackbar.Add($"An unexpected error occurred while deleting the post.{ex.Message}", Severity.Error);
             }
         }
     }

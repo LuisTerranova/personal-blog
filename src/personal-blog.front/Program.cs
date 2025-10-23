@@ -17,7 +17,7 @@ builder.Services.AddMudServices();
 
 builder.Services.AddHttpClient("API", options =>
 {
-    options.BaseAddress = new Uri("http://localhost:5000");
+    options.BaseAddress = new Uri("http://localhost:5177");
 });
 
 await builder.Build().RunAsync();

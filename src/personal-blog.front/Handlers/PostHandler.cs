@@ -20,8 +20,8 @@ public class PostHandler(IHttpClientFactory httpClientFactory) : IFrontPostHandl
         {
             url += $"&query={HttpUtility.UrlEncode(request.Query)}";
         }
-        return await _client.GetFromJsonAsync<PagedResponse<List<PostDTO>>?>(url)
-               ?? new PagedResponse<List<PostDTO>>(null, "Could not fetch posts", 400);
+        return await _client.GetFromJsonAsync<PagedResponse<List<PostDTO>?>>(url)
+               ?? new PagedResponse<List<PostDTO>?>(null, "Could not fetch posts", 400);
     }
 
     public async Task<Response<Post?>> GetByIdAsync(GetPostByIdRequest request)

@@ -11,21 +11,19 @@ namespace personal_blog.admin.Components.Dashboard;
 public partial class ProjectsManager
 {
     #region Services
-    
-    [Inject]
-    public ISnackbar? Snackbar { get; set; }
-    [Inject]
-    public IProjectHandler? Handler { get; set; }
-    [Inject]
-    private IDialogService? DialogService { get; set; }
-    
-    
 
+    [Inject]
+    public ISnackbar Snackbar { get; set; } = null!;
+    [Inject]
+    public IProjectHandler Handler { get; set; } = null!;
+    [Inject]
+    private IDialogService DialogService { get; set; } = null!;
+    
     #endregion
     
     #region Properties
     
-    private MudTable<Project>? _table;
+    private MudTable<Project> _table = null!;
     private string? _errorMessage;
     
     #endregion
@@ -93,7 +91,13 @@ public partial class ProjectsManager
         var dialog = await DialogService.ShowAsync<ProjectForm>("Create/Update Project", parameters);
         var result = await dialog.Result;
 
-        if (result.Canceled || result.Data == null)
+        if (result?.Data is null)
+        {
+            Snackbar.Add("Project data not found for editing.", Severity.Error);
+            return;
+        }
+        
+        if (result.Canceled)
             return;
 
         try
@@ -117,7 +121,7 @@ public partial class ProjectsManager
                 }
                 else
                 {
-                    Snackbar.Add(updateResult.Message, Severity.Error);
+                    Snackbar.Add(updateResult.Message ?? "Update failed with unknown error", Severity.Error);
                 }
             }
             else
@@ -131,7 +135,7 @@ public partial class ProjectsManager
                 }
                 else
                 {
-                    Snackbar.Add(createResult.Message, Severity.Error);
+                    Snackbar.Add(createResult.Message ?? "Deletion failed with unknown error", Severity.Error);
                 }
             }
         }
@@ -168,17 +172,17 @@ public partial class ProjectsManager
 
                 if (deleteResult.IsSuccess)
                 {
-                    Snackbar.Add(deleteResult.Message, Severity.Success);
+                    Snackbar.Add(deleteResult.Message ?? "Project deleted successfully", Severity.Success);
                     await _table.ReloadServerData();
                 }
                 else
                 {
-                    Snackbar.Add(deleteResult.Message, Severity.Error);
+                    Snackbar.Add(deleteResult.Message ?? "Deletion failed with unknown error", Severity.Error);
                 }
             }
             catch (Exception ex)
             {
-                Snackbar.Add("An unexpected error occurred while deleting the project.", Severity.Error);
+                Snackbar.Add($"An unexpected error occurred: {ex.Message}", Severity.Error);
             }
         }
     }

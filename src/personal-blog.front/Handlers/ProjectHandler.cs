@@ -13,8 +13,8 @@ public class ProjectHandler(IHttpClientFactory httpClientFactory) : IFrontProjec
     private readonly HttpClient _client = httpClientFactory.CreateClient("API");
     public async Task<PagedResponse<List<Project>?>> GetAllAsync(GetAllProjectsRequest request)
     {
-        return await _client.GetFromJsonAsync<PagedResponse<List<Project>>?>("v1/projects")
-               ?? new PagedResponse<List<Project>>(null, "Could not fetch projects", 400);
+        return await _client.GetFromJsonAsync<PagedResponse<List<Project>?>>("v1/projects")
+               ?? new PagedResponse<List<Project>?>(null, "Could not fetch projects", 400);
     }
     public async Task<Response<Project?>> GetByIdAsync(GetProjectByIdRequest request)
         => await _client.GetFromJsonAsync<Response<Project?>>($"v1/projects/{request.Id}")

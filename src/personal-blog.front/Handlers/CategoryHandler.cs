@@ -20,8 +20,8 @@ public class CategoryHandler(IHttpClientFactory httpClientFactory) : IFrontCateg
             url += $"&query={HttpUtility.UrlEncode(request.Query)}";
         }
         
-        return await _client.GetFromJsonAsync<PagedResponse<List<Category>>?>(url)
-               ?? new PagedResponse<List<Category>>(null, "Could not fetch posts", 400);
+        return await _client.GetFromJsonAsync<PagedResponse<List<Category>?>>(url)
+               ?? new PagedResponse<List<Category>?>(null, "Could not fetch posts", 400);
     }
     public async Task<Response<Category?>> GetByIdAsync(GetCategoryByIdRequest request)
         => await _client.GetFromJsonAsync<Response<Category?>>($"v1/categories/{request.Id}")

@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using personal_blog.Api.ApiTesting;
+using personal_blog.Api.Common.MockData;
 using personal_blog.Api.Data;
 
 namespace personal_blog.Api.Common.Api;
@@ -20,20 +20,20 @@ public static class AppExtension
             {
                 var logger = services.GetRequiredService<ILogger<Program>>();
                 
-                logger.LogInformation("A aplicar migrações da base de dados...");
+                logger.LogInformation("Applying data migrations...");
                 var context = services.GetRequiredService<AppDbContext>();
                 
-                await context.Database.MigrateAsync();
-                logger.LogInformation("Migrações aplicadas com sucesso.");
-                logger.LogInformation("A executar o seeding do utilizador Admin...");
+                 await context.Database.MigrateAsync();
+                logger.LogInformation("Migrations applied successfully.");
+                logger.LogInformation("Executing admin seed...");
                 
                 await app.SeedAdminUserAsync(); //Mock data for testing
-                logger.LogInformation("Seeding concluído.");
+                logger.LogInformation("Seeding concluded successfully.");
             }
             catch (Exception ex)
             {
                 var logger = services.GetRequiredService<ILogger<Program>>();
-                logger.LogError(ex, "Ocorreu um erro durante a migração ou seeding.");
+                logger.LogError(ex, "An error occurred while migrating the database.");
             }
     }
 

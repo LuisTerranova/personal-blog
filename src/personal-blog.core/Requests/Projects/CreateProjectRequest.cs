@@ -14,6 +14,7 @@ public class CreateProjectRequest : IProjectRequestWithImage
     public string Description { get; set; } = string.Empty;
     [MaxLength(200, ErrorMessage = "Project summary cannot exceed 200 characters")]
     public string Summary { get; set; } = string.Empty;
+
     [Required(ErrorMessage = "Your project needs a Repo Link")]
-    public string RepoLink { get; set; }
+    public string RepoLink { get; set; } = string.Empty;
 }

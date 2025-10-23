@@ -19,10 +19,11 @@ public class DeletePostEndpoint : IEndpoint
         ,HttpContext httpContext)
     {
         var user = httpContext.Items["ApplicationUser"] as ApplicationUser;
+        if (user == null) return TypedResults.Unauthorized();
         
         var request = new DeletePostRequest
         {
-            UserId = user!.Id,
+            UserId = user.Id,
             Id = id
         };
         var result = await handler.DeleteAsync(request);

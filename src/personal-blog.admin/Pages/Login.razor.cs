@@ -6,21 +6,21 @@ using personal_blog.core.Requests;
 
 namespace personal_blog.admin.Pages;
 
-public class Login_ : ComponentBase
+public partial class Login
 {
     #region Services
+
+    [Inject] 
+    public ISnackbar Snackbar { get; set; } = null!;
     
     [Inject]
-    public ISnackbar? Snackbar { get; set; }
+    public IAccountHandler AccountHandler { get; set; } = null!;
     
     [Inject]
-    public IAccountHandler? AccountHandler { get; set; }
-    
+    public NavigationManager NavigationManager { get; set; } = null!;
+
     [Inject]
-    public NavigationManager? NavigationManager { get; set; }
-    
-    [Inject]
-    public ICookieAuthenticationStateProvider? AuthenticationStateProvider { get; set; }
+    public ICookieAuthenticationStateProvider AuthenticationStateProvider { get; set; } = null!;
     
     #endregion
     
@@ -35,11 +35,11 @@ public class Login_ : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        var authState =  await AuthenticationStateProvider!.GetAuthenticationStateAsync();
+        var authState =  await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
         
         if (user.Identity is {IsAuthenticated: true})
-            NavigationManager!.NavigateTo("/dashboard");
+            NavigationManager.NavigateTo("/dashboard");
     }
     
     #endregion
@@ -56,16 +56,16 @@ public class Login_ : ComponentBase
 
             if (result.IsSuccess)
             {
-                await AuthenticationStateProvider!.GetAuthenticationStateAsync();
+                await AuthenticationStateProvider.GetAuthenticationStateAsync();
                 AuthenticationStateProvider.NotifyAuthenticationStateChanged();
-                NavigationManager!.NavigateTo("/dashboard");
+                NavigationManager.NavigateTo("/dashboard");
             }
             else
-                Snackbar!.Add(result.Message ?? string.Empty, Severity.Error);
+                Snackbar.Add(result.Message ?? "You definitely isn't a admin.", Severity.Error);
         }
         catch (Exception ex)
         {
-            Snackbar!.Add(ex.Message, Severity.Error);
+            Snackbar.Add(ex.Message, Severity.Error);
         }
         finally
         {

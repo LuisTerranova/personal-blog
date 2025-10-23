@@ -22,13 +22,16 @@ public class CreateCategoryEndpoint : IEndpoint
         ,HttpRequest httpRequest)
     {
         var user = httpContext.Items["ApplicationUser"] as ApplicationUser;
-        request.UserId = user!.Id;
+        if (user == null) return TypedResults.Unauthorized();
+        
+        request.UserId = user.Id;
         
         var result = await handler.CreateAsync(request);
 
-        if (!result.IsSuccess) return TypedResults.BadRequest(result.Message);
+        if (!result.IsSuccess || result.Data?.Id == null) return TypedResults.BadRequest(result.Message);
         
         var location = LocationHelper.Location(httpRequest, "category", result.Data.Id);
         return TypedResults.Created(location, result);
+
     }
 }

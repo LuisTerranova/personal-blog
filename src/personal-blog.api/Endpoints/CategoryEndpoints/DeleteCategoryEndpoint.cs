@@ -19,6 +19,7 @@ public class DeleteCategoryEndpoint : IEndpoint
         ,HttpContext httpContext)
     {
         var user = httpContext.Items["ApplicationUser"] as ApplicationUser;
+        if (user == null) return TypedResults.Unauthorized();
         
         var request = new DeleteCategoryRequest
         {
@@ -30,5 +31,6 @@ public class DeleteCategoryEndpoint : IEndpoint
         return result.IsSuccess 
             ? TypedResults.Ok(result) 
             : TypedResults.BadRequest(result);
+
     }
 }

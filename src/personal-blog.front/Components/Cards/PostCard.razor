@@ -1,19 +1,9 @@
-@using HtmlAgilityPack
 @using personal_blog.core.DTOs
-@using personal_blog.core.Handlers
 @using personal_blog.core.Handlers.FrontEndHandlers
 @using personal_blog.core.Models
 @using personal_blog.core.Requests.Posts
 
 <MudGrid Justify="Justify.Center">
-    @if (Posts == null || !Posts.Any())
-    {
-        <MudAlert Severity="Severity.Warning" Class="ma-15" Variant="Variant.Outlined" >
-            No related posts found.
-        </MudAlert>
-    }
-    else
-    {
         <MudOverlay Visible="_viewerVisible"
                     DarkBackground="true"
                     Class="d-flex align-center justify-center"
@@ -53,16 +43,17 @@
                         </MudText>
                     </MudPaper>
             </MudItem>
-        }   
-    }
+        }
 </MudGrid>
 
 @code
 {
-    [Parameter]
-    public List<PostDTO>? Posts { get; set; }
+    [Parameter] 
+    public List<PostDTO> Posts { get; set; } = null!;
     [Inject]
-    public IFrontPostHandler? Handler { get; set; }
+    public IFrontPostHandler Handler { get; set; } = null!;
+    [Inject] 
+    public ISnackbar Snackbar { get; set; } = null!;
 
     private bool _viewerVisible;
     private Post? _selectedPost;
@@ -80,7 +71,7 @@
         }
         else
         {
-            
+            Snackbar.Add(result.Message ?? "Failed to load the selected post. Please try again.", Severity.Error);
         } 
     }
 }

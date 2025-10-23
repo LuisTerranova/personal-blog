@@ -17,46 +17,55 @@
             is interested in hiring. None of the less, here are some
             featured posts for you.
         </MudText>
-        @if (_errorMessage != null)
+        @if (_isLoading)
+        {
+            <MudElement Class="d-flex align-center justify-center">
+                <MudProgressCircular Indeterminate="true"
+                                     Color="Color.Primary"
+                                     Class="my-8"/>
+            </MudElement>
+        } 
+        else if (_errorMessage != null)
         {
             <MudAlert Severity="Severity.Error" Class="mb-5">@_errorMessage</MudAlert>
         }
-        else
-        {
-            <PostCard Posts="_featuredPosts"/>
-        }
+        
+        <PostCard Posts="_featuredPosts"/>
+        
     </MudPaper>
 </MudContainer>
 
 @code {
-    private List<PostDTO>? _featuredPosts;
+    private List<PostDTO>? _featuredPosts = [];
     private string? _errorMessage;
+    private bool _isLoading = true;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
             var request = new GetFeaturedPostsRequest();
-            var response = await Handler.GetFeaturedAsync(request);
-            
-            if (response.IsSuccess)
+            var result = await Handler.GetFeaturedAsync(request);
+
+            if (result.IsSuccess)
             {
-                _featuredPosts = response.Data;
-                StateHasChanged();
+                _featuredPosts = result.Data;
+                _errorMessage = null;
             }
             else
             {
-                _errorMessage = response.Message ?? "Failed to load featured posts with an unknown error.";
-                _featuredPosts = new List<PostDTO>(); 
+                _errorMessage = result.Message ?? "Failed to load featured posts with an unknown error.";
+                _featuredPosts = new List<PostDTO>();
             }
         }
         catch (HttpRequestException ex)
         {
             _errorMessage = $"An error occurred while fetching posts: {ex.Message}";
         }
-        catch
+        finally
         {
-            _errorMessage = "An unexpected error occurred. Please try again later.";
+            _isLoading = false;
+            StateHasChanged();
         }
     }
 

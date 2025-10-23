@@ -5,11 +5,19 @@
 @using personal_blog.front.Components.Cards
 @inject IFrontProjectHandler Handler
 
+<MudText Typo="Typo.h3" 
+         Align="Align.Center" 
+         Color="Color.Primary"
+         Class="ma-5">
+    Projects
+</MudText>
 @if (_projects is null)
 {
-    <MudText>
-        loading projects...
-    </MudText>
+    <MudElement Class="d-flex align-items-center justify-center">
+        <MudProgressCircular Indeterminate="true"
+                             Color="Color.Primary"
+                             Class="my-8"/>
+    </MudElement>
 }
 else
 {

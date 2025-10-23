@@ -1,9 +1,7 @@
 using Microsoft.AspNetCore.Identity;
-using personal_blog.Api.Data;
-using personal_blog.core.Models;
 using ApplicationUser = personal_blog.Api.Models.ApplicationUser;
 
-namespace personal_blog.Api.ApiTesting;
+namespace personal_blog.Api.Common.MockData;
 
 public static class DbInitializer
 {
@@ -28,7 +26,7 @@ public static class DbInitializer
             var adminEmail = configuration["AdminUser:Email"];
             var adminPassword = configuration["AdminUser:Password"];
             
-            if (await userManager.FindByEmailAsync(adminEmail) == null)
+            if (adminEmail != null && await userManager.FindByEmailAsync(adminEmail) == null)
             {
                 var adminUser = new ApplicationUser
                 {
@@ -37,11 +35,14 @@ public static class DbInitializer
                     EmailConfirmed = true 
                 };
 
-                var result = await userManager.CreateAsync(adminUser, adminPassword);
-                
-                if (result.Succeeded)
+                if (adminPassword != null)
                 {
-                    await userManager.AddToRoleAsync(adminUser, adminRole);
+                    var result = await userManager.CreateAsync(adminUser, adminPassword);
+                
+                    if (result.Succeeded)
+                    {
+                        await userManager.AddToRoleAsync(adminUser, adminRole);
+                    }
                 }
             }
         }
