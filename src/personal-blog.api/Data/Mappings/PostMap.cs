@@ -13,23 +13,18 @@ public class PostMap : IEntityTypeConfiguration<Post>
         
         builder.Property(p => p.Title)
             .IsRequired()
-            .HasColumnType("NVARCHAR")
             .HasMaxLength(200);
 
         builder.Property(p => p.Body)
-            .IsRequired()
-            .HasColumnType("NVARCHAR(max)");
-        
+            .IsRequired();
+
         builder.Property(p => p.Created)
-            .IsRequired()
-            .HasColumnType("DATETIME");
-        
+            .IsRequired();
+
         builder.Property(p => p.Updated)
-            .IsRequired()
-            .HasColumnType("DATETIME");
+            .IsRequired();
 
         builder.Property(p => p.UserId)
-            .IsRequired()
-            .HasColumnType("BIGINT");
+            .IsRequired();
     }
 }
