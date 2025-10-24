@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
 
-frontend:
+  frontend:
     build:
       context: .
       dockerfile: ./personal-blog.front/Dockerfile.front
@@ -11,7 +11,7 @@ frontend:
     networks:
       - blog-net
 
-api:
+  api:
     build:
       context: .
       dockerfile: ./personal-blog.api/Dockerfile.api
@@ -27,7 +27,7 @@ api:
     networks:
       - blog-net
 
-admin:
+  admin:
     build:
       context: .
       dockerfile: ./personal-blog.admin/Dockerfile.admin
@@ -36,7 +36,7 @@ admin:
     networks:
       - blog-net
 
-db:
+  db:
     image: "postgres:16-alpine"
     container_name: personal-blog-db
     env_file:
@@ -51,7 +51,7 @@ db:
     networks:
       - blog-net
 
-caddy:
+  caddy:
     image: caddy:latest
     container_name: personal-blog-proxy
     restart: unless-stopped
