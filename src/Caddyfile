@@ -1,0 +1,11 @@
+:80 {
+    reverse_proxy frontend:80
+}
+
+:81 {
+    reverse_proxy admin:80
+}
+
+:82 {
+    reverse_proxy api:8080
+}
