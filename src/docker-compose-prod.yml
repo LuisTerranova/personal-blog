@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+
+frontend:
+    build:
+      context: .
+      dockerfile: ./personal-blog.front/Dockerfile.front
+    container_name: personal-blog-front
+    restart: unless-stopped
+    networks:
+      - blog-net
+
+api:
+    build:
+      context: .
+      dockerfile: ./personal-blog.api/Dockerfile.api
+    env_file:
+      - .env
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=db;Port:5432;Database=${DB_NAME};Username=${DB_USER};Password=${DB_PASSWORD}
+      - ASPNETCORE_ENVIRONMENT=Production
+    depends_on:
+      - db
+    container_name: personal-blog-api
+    restart: unless-stopped
+    networks:
+      - blog-net
+
+admin:
+    build:
+      context: .
+      dockerfile: ./personal-blog.admin/Dockerfile.admin
+    container_name: personal-blog-admin
+    restart: unless-stopped
+    networks:
+      - blog-net
+
+db:
+    image: "postgres:16-alpine"
+    container_name: personal-blog-db
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - blog-net
+
+caddy:
+    image: caddy:latest
+    container_name: personal-blog-proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "81:81"
+      - "82:82"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - blog-net
+
+volumes:
+    postgres_data:
+    caddy_data:
+    caddy_config:
+
+networks:
+    blog-net:
+      driver: bridge
