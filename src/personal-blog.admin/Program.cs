@@ -25,9 +25,16 @@ builder.Services.AddScoped(x =>
 
 builder.Services.AddMudServices();
 
-builder.Services.AddHttpClient("API", options =>
+builder.Services.AddHttpClient("API", (serviceProvider, options) =>
     {
-        options.BaseAddress = new Uri(builder.Configuration.GetValue<string>("ApiBaseAddress"));
+        var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+        var apiBaseAddress = configuration.GetValue<string>("ApiBaseAddress");
+
+        if (string.IsNullOrEmpty(apiBaseAddress))
+        {
+            throw new InvalidOperationException("ApiBaseAddress is not configured. Check wwwroot/appsettings.json.");
+        }
+        options.BaseAddress = new Uri(apiBaseAddress);
     })
     .AddHttpMessageHandler<CookieHandler>();
 
