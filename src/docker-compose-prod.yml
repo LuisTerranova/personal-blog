@@ -66,14 +66,14 @@ services:
       - caddy_config:/config
     networks:
       - blog-net
-
+  
   tunnel:
-     image: cloudflare/cloudflared:latest
-     container_name: personal-blog-tunnel
-     restart: unless-stopped
-     command: tunnel --no-autoupdate run --token ${TUNNEL_TOKEN}
-     networks:
-       - blog-net
+    image: cloudflare/cloudflared:latest
+    container_name: personal-blog-tunnel
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run --token ${TUNNEL_TOKEN}
+    networks:
+      - blog-net
 
 volumes:
     postgres_data:
