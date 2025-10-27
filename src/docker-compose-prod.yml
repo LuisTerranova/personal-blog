@@ -65,7 +65,9 @@ services:
       - caddy_data:/data
       - caddy_config:/config
     networks:
-      - blog-net
+      blog-net:
+        ipv4_address: 172.20.0.10
+      
   
   tunnel:
     image: cloudflare/cloudflared:latest
@@ -83,3 +85,6 @@ volumes:
 networks:
     blog-net:
       driver: bridge
+      ipam:
+        config:
+          - subnet: 172.20.0.10/24
