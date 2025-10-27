@@ -27,7 +27,7 @@ builder.Services.AddMudServices();
 
 builder.Services.AddHttpClient("API", options =>
     {
-        options.BaseAddress = new Uri("http://localhost:5177");
+        options.BaseAddress = new Uri(builder.Configuration.GetValue<string>("ApiBaseAddress"));
     })
     .AddHttpMessageHandler<CookieHandler>();
 
