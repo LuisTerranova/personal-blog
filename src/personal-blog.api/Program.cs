@@ -12,9 +12,7 @@ builder.AddServices();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-    await app.ConfigureDevEnvironment();
-
+await app.ConfigureEnvironment();
 app.UseStaticFiles();
 app.UseCors("BlazorApp");
 app.UseSecurity();

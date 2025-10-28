@@ -6,7 +6,7 @@ namespace personal_blog.Api.Common.Api;
 
 public static class AppExtension
 {
-    public static async Task ConfigureDevEnvironment(this WebApplication app)
+    public static async Task ConfigureEnvironment(this WebApplication app)
     {
             if (app.Environment.IsDevelopment())
             {
