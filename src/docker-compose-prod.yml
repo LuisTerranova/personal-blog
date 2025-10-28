@@ -21,7 +21,8 @@ services:
       - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=${DB_NAME};Username=${DB_USER};Password=${DB_PASSWORD}
       - ASPNETCORE_ENVIRONMENT=Production
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     container_name: personal-blog-api
     restart: unless-stopped
     networks:
@@ -50,6 +51,11 @@ services:
     restart: unless-stopped
     networks:
       - blog-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME} -h localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   caddy:
     image: caddy:latest
