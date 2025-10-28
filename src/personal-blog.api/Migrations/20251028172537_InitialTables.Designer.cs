@@ -12,8 +12,8 @@ using personal_blog.Api.Data;
 namespace personal_blog.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251024212434_InitialPostgre")]
-    partial class InitialPostgre
+    [Migration("20251028172537_InitialTables")]
+    partial class InitialTables
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
