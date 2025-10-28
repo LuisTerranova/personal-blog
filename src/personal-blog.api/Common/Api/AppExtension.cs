@@ -23,7 +23,7 @@ public static class AppExtension
                 logger.LogInformation("Applying data migrations...");
                 var context = services.GetRequiredService<AppDbContext>();
                 
-                //await context.Database.MigrateAsync();
+                await context.Database.MigrateAsync();
                 logger.LogInformation("Migrations applied successfully.");
                 logger.LogInformation("Executing admin seed...");
                 
