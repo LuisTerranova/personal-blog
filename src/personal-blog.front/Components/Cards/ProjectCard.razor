@@ -24,14 +24,12 @@ else
                     @_selectedProject.Title
                 </MudText>
                 <MudText Typo="Typo.body1" Color="Color.Primary"
-                         Class="d-flex align-center justify-center pa-5">
+                         Class="content pa-5">
                     @((MarkupString)_selectedProject.Description)
                 </MudText>
-                <MudLink Typo="Typo.body1" Color="Color.Primary"
-                         Class="ml-5" Href="@_selectedProject.RepoLink"
-                         Target="_blank">
-                    Repository
-                </MudLink>
+                <MudButton Href="@_selectedProject.RepoLink"
+                           Variant="Variant.Filled"
+                           Target="_blank">Repository</MudButton>
             </MudPaper>
         </MudOverlay>
         @foreach (var project in Projects)
