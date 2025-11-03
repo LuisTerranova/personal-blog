@@ -15,8 +15,9 @@ COPY . .
 WORKDIR "/src/personal-blog.front"
 RUN dotnet publish "./personal-blog.front.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
-FROM nginx:alpine AS final
-WORKDIR /usr/share/nginx/html
+FROM caddy:alpine AS final
+WORKDIR /srv
 COPY --from=build /app/publish/wwwroot .
-COPY --from=build /src/personal-blog.front/nginx.conf /etc/nginx/nginx.conf
+COPY Caddyfile /etc/caddy/Caddyfile
 EXPOSE 80
+EXPOSE 443
