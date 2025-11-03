@@ -18,7 +18,6 @@ RUN dotnet publish "personal-blog.admin.csproj" -c $BUILD_CONFIGURATION -o /app/
 FROM caddy:alpine AS final
 WORKDIR /srv
 COPY --from=build /app/publish/wwwroot .
-COPY Caddyfile /etc/caddy/Caddyfile
+COPY personal-blog.admin/Caddyfile /etc/caddy/Caddyfile
 EXPOSE 80
-EXPOSE 443
 
