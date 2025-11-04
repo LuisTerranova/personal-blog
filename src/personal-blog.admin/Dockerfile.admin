@@ -13,6 +13,7 @@ RUN dotnet restore "personal-blog.sln"
 COPY . .
 
 WORKDIR "/src/personal-blog.admin"
+RUN dotnet clean "./personal-blog.admin.csproj" -c $BUILD_CONFIGURATION
 RUN dotnet publish "personal-blog.admin.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM caddy:alpine AS final
