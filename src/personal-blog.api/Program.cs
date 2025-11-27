@@ -20,3 +20,4 @@ app.MapGet("/", () => new {message = "OK"});
 app.MapEndpoints();
 
 app.Run();
+public partial class Program { }

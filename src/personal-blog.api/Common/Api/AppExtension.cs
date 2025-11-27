@@ -13,6 +13,7 @@ public static class AppExtension
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+            
             using var scope = app.Services.CreateScope();
             var services = scope.ServiceProvider;
 
@@ -23,7 +24,10 @@ public static class AppExtension
                 logger.LogInformation("Applying data migrations...");
                 var context = services.GetRequiredService<AppDbContext>();
                 
-                await context.Database.MigrateAsync();
+                if (context.Database.IsRelational())
+                {
+                    await context.Database.MigrateAsync();
+                }
                 logger.LogInformation("Migrations applied successfully.");
                 logger.LogInformation("Executing admin seed...");
                 
