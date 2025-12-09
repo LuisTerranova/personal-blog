@@ -8,7 +8,7 @@ COPY ["personal-blog.core/*.csproj", "personal-blog.core/"]
 COPY ["personal-blog.admin/*.csproj", "personal-blog.admin/"]
 COPY ["personal-blog.front/*.csproj", "personal-blog.front/"]
 
-RUN dotnet restore "personal-blog.sln"
+RUN dotnet restore "personal-blog.front/personal-blog.front.csproj"
 
 COPY . .
 
