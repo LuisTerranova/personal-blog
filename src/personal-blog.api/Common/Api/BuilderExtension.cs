@@ -95,19 +95,18 @@ public static class BuilderExtension
                 (x => { x.UseNpgsql(Configuration.ConnectionString); })  
             .AddIdentity<ApplicationUser, IdentityRole<long>>()
             .AddEntityFrameworkStores<AppDbContext>()
-            .AddApiEndpoints()
             .AddDefaultTokenProviders();
 
         builder.Services.ConfigureApplicationCookie(options =>
         {
-            // Impede o redirecionamento para /Account/Login quando não autenticado
+            // Prevents redirection to /Account/Login when not authenticated.
             options.Events.OnRedirectToLogin = context =>
             {
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                 return Task.CompletedTask;
             };
 
-            // Impede o redirecionamento para /Account/AccessDenied quando sem permissão
+            // Prevents redirection to /Account/AccessDenied when permission is not granted.
             options.Events.OnRedirectToAccessDenied = context =>
             {
                 context.Response.StatusCode = StatusCodes.Status403Forbidden;

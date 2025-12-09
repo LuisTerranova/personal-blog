@@ -61,7 +61,7 @@ public partial class Login
                 NavigationManager.NavigateTo("/dashboard");
             }
             else
-                Snackbar.Add(result.Message ?? "You definitely isn't a admin.", Severity.Error);
+                Snackbar.Add(result.Message ?? "You definitely aren't an admin.", Severity.Error);
         }
         catch (Exception ex)
         {

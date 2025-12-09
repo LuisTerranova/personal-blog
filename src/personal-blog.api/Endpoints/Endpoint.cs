@@ -1,6 +1,7 @@
 using personal_blog.Api.Common.Api;
 using personal_blog.Api.Endpoints.AccountEndpoints;
 using personal_blog.Api.Endpoints.CategoryEndpoints;
+using personal_blog.Api.Endpoints.Identity;
 using personal_blog.Api.Endpoints.PostEndpoints;
 using personal_blog.Api.Endpoints.ProjectEndpoints;
 using ApplicationUser = personal_blog.Api.Models.ApplicationUser;
@@ -39,9 +40,11 @@ public static class Endpoint
             .MapEndpoint<UpdateProjectEndpoint>();
 
         endpoints.MapGroup("v1/identity")
+            .MapEndpoint<LoginEndpoint>()
             .MapEndpoint<GetRolesEndpoint>()
-            .MapEndpoint<LogoutEndpoint>()
-            .MapIdentityApi<ApplicationUser>();
+            .MapEndpoint<GetUserInfoEndpoint>()
+            .MapEndpoint<LogoutEndpoint>();
+            
         
         endpoints.MapGroup("v1/storage")
             .WithTags("Storage")

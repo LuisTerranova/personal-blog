@@ -12,7 +12,7 @@ public class AccountHandler(IHttpClientFactory httpClientFactory) : IAccountHand
     
     public async Task<Response<string>> LoginAsync(LoginRequest request)
     {
-        var result = await _client.PostAsJsonAsync("v1/identity/login?useCookies=true", request);
+        var result = await _client.PostAsJsonAsync("v1/identity/login", request);
         return result.IsSuccessStatusCode
             ? new Response<string>("Successful login", "Successful login")
             : new Response<string>("Unsuccessful login", "Unsuccessful login", 400);
