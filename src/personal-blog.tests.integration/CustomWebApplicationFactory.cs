@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using personal_blog.Api.Data;
@@ -31,6 +32,9 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
                 .AddRoleManager<RoleManager<IdentityRole<long>>>();
             
             services.AddSingleton<IEmailSender<ApplicationUser>, MockEmailSender>();
+            services.AddAuthentication("TestScheme")
+                .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(
+                    "TestScheme", options => { });
         });
     }
 }

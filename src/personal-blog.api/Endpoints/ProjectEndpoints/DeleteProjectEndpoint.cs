@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
 using personal_blog.Api.Common.Api;
 using personal_blog.core.Handlers;
 using personal_blog.core.Requests.Projects;
@@ -9,20 +11,21 @@ public class DeleteProjectEndpoint : IEndpoint
 {
     public static void Map(IEndpointRouteBuilder app) 
         => app.MapDelete("/{id}", HandleAsync)
-            .RequireRole("admin")
+            .RequireAuthorization("AdminPolicy")
             .WithName("Projects : Delete")
             .WithSummary("Deletes a project")
             .WithOrder(2);
 
     private static async Task<IResult> HandleAsync(IProjectHandler handler
         ,int id
-        ,HttpContext httpContext)
+        ,UserManager<ApplicationUser> userManager
+        ,ClaimsPrincipal user)
     {
-        var user = httpContext.Items["ApplicationUser"] as ApplicationUser;
+        var applicationUser = userManager.GetUserAsync(user);
         
         var request = new DeleteProjectRequest
         {
-            UserId = user!.Id,
+            UserId = applicationUser.Id,
             Id = id
         };
         var result = await handler.DeleteAsync(request);

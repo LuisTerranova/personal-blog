@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
 using personal_blog.Api.Common.Api;
 using personal_blog.Api.Common.Api.Helpers;
 using personal_blog.core.Handlers;
@@ -10,7 +12,7 @@ public class UpdateCategoryEndpoint : IEndpoint
 {
     public static void Map(IEndpointRouteBuilder app) 
         => app.MapPut("/{id}", HandleAsync)
-            .RequireRole("admin")
+            .RequireAuthorization("AdminPolicy")
             .WithValidation<UpdateCategoryRequest>()
             .WithName("Categories : Update")
             .WithSummary("Updates a category")
@@ -18,12 +20,13 @@ public class UpdateCategoryEndpoint : IEndpoint
 
     private static async Task<IResult> HandleAsync(ICategoryHandler handler
         , UpdateCategoryRequest request
-        , HttpContext httpContext
+        ,UserManager<ApplicationUser> userManager
+        ,ClaimsPrincipal user
         ,HttpRequest httpRequest
         , int id)
     {
-        var user = httpContext.Items["ApplicationUser"] as ApplicationUser;
-        request.UserId = user!.Id;
+        var applicationUser = userManager.GetUserAsync(user);
+        request.UserId = applicationUser.Id;
         request.Id = id;
         
         var result = await handler.UpdateAsync(request);

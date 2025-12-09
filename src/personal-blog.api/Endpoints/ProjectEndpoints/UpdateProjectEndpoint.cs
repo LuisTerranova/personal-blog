@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
 using personal_blog.Api.Common.Api;
 using personal_blog.core.Handlers;
 using personal_blog.core.Requests.Projects;
@@ -9,7 +11,7 @@ public class UpdateProjectEndpoint : IEndpoint
 {
     public static void Map(IEndpointRouteBuilder app) 
         => app.MapPut("/{id}", HandleAsync)
-            .RequireRole("admin")
+            .RequireAuthorization("AdminPolicy")
             .WithValidation<UpdateProjectRequest>()
             .WithName("Projects : Update")
             .WithSummary("Updates a project")
@@ -17,11 +19,12 @@ public class UpdateProjectEndpoint : IEndpoint
 
     private static async Task<IResult> HandleAsync(IProjectHandler handler
         ,UpdateProjectRequest request
-        ,HttpContext httpContext
+        ,UserManager<ApplicationUser> userManager
+        ,ClaimsPrincipal user
         ,int id)
     {
-        var user = httpContext.Items["ApplicationUser"] as ApplicationUser;
-        request.UserId = user!.Id;
+        var applicationUser = userManager.GetUserAsync(user);
+        request.UserId = applicationUser.Id;
         request.Id = id;
         
         var result = await handler.UpdateAsync(request);

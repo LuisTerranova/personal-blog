@@ -3,8 +3,6 @@ using personal_blog.Api.Endpoints.AccountEndpoints;
 using personal_blog.Api.Endpoints.CategoryEndpoints;
 using personal_blog.Api.Endpoints.PostEndpoints;
 using personal_blog.Api.Endpoints.ProjectEndpoints;
-using personal_blog.Api.Models;
-using personal_blog.core.Models;
 using ApplicationUser = personal_blog.Api.Models.ApplicationUser;
 
 namespace personal_blog.Api.Endpoints;
@@ -25,11 +23,11 @@ public static class Endpoint
         
         endpoints.MapGroup("v1/posts")
             .WithTags("Posts")
+            .MapEndpoint<GetPostByIdEndpoint>()
             .MapEndpoint<CreatePostEndpoint>()
             .MapEndpoint<DeletePostEndpoint>()
             .MapEndpoint<GetAllPostsEndpoint>()
             .MapEndpoint<GetFeaturedPostsEndpoint>()
-            .MapEndpoint<GetPostByIdEndpoint>()
             .MapEndpoint<UpdatePostEndpoint>();
         
         endpoints.MapGroup("v1/projects")
@@ -39,17 +37,21 @@ public static class Endpoint
             .MapEndpoint<GetAllProjectsEndpoint>()
             .MapEndpoint<GetProjectByIdEndpoint>()
             .MapEndpoint<UpdateProjectEndpoint>();
-        
-        endpoints.MapGroup("v1/identity")
-            .MapIdentityApi<ApplicationUser>();
-        
+
         endpoints.MapGroup("v1/identity")
             .MapEndpoint<GetRolesEndpoint>()
-            .MapEndpoint<LogoutEndpoint>();
-
+            .MapEndpoint<LogoutEndpoint>()
+            .MapIdentityApi<ApplicationUser>();
+        
         endpoints.MapGroup("v1/storage")
             .WithTags("Storage")
             .MapEndpoint<ProjectImageStorageEndpoint>();
+        
+        endpoints.MapGet("/debug-claims", (System.Security.Claims.ClaimsPrincipal user) =>
+            {
+                return Results.Ok(user.Claims.Select(c => new { c.Type, c.Value }));
+            })
+            .RequireAuthorization();
     }
     private static IEndpointRouteBuilder MapEndpoint<TEndpoint>(this IEndpointRouteBuilder app)
         where TEndpoint : IEndpoint

@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
 using personal_blog.Api.Common.Api;
 using personal_blog.core.Handlers;
 using personal_blog.core.Requests.Categories;
@@ -9,21 +11,22 @@ public class DeleteCategoryEndpoint : IEndpoint
 {
     public static void Map(IEndpointRouteBuilder app) 
         => app.MapDelete("/{id}", HandleAsync)
-            .RequireRole("admin")
+            .RequireAuthorization("AdminPolicy")
             .WithName("Categories : Delete")
             .WithSummary("Deletes a category")
             .WithOrder(2);
 
     private static async Task<IResult> HandleAsync(ICategoryHandler handler
         ,int id
-        ,HttpContext httpContext)
+        ,UserManager<ApplicationUser> userManager
+        ,ClaimsPrincipal user)
     {
-        var user = httpContext.Items["ApplicationUser"] as ApplicationUser;
-        if (user == null) return TypedResults.Unauthorized();
+        var applicationUser = await userManager.GetUserAsync(user);
+        if (applicationUser == null) return TypedResults.Unauthorized();
         
         var request = new DeleteCategoryRequest
         {
-            UserId = user.Id, 
+            UserId = applicationUser.Id, 
             Id = id
         };
         var result =  await handler.DeleteAsync(request);

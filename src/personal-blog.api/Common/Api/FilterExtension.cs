@@ -8,8 +8,4 @@ public static class FilterExtension
     {
         return builder.AddEndpointFilter<ValidationFilter<T>>();
     }
-    public static RouteHandlerBuilder RequireRole(this RouteHandlerBuilder builder, string requiredRole)
-    {
-        return builder.AddEndpointFilter(new RoleAuthorizationEndpointFilter(requiredRole));
-    }
 }

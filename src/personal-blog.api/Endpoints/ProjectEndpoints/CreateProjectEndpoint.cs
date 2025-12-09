@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
 using personal_blog.Api.Common.Api;
 using personal_blog.Api.Models;
 using personal_blog.core.Handlers;
@@ -9,7 +11,7 @@ public class CreateProjectEndpoint : IEndpoint
 { 
     public static void Map(IEndpointRouteBuilder app) 
             => app.MapPost("/", HandleAsync)
-                .RequireRole("admin")
+                .RequireAuthorization("AdminPolicy")
                 .WithValidation<CreateProjectRequest>()
                 .WithName("Projects : Create")
                 .WithSummary("Creates a new project")
@@ -17,12 +19,13 @@ public class CreateProjectEndpoint : IEndpoint
 
     private static async Task<IResult> HandleAsync(IProjectHandler handler
         ,CreateProjectRequest request
-        ,HttpContext httpContext)
+        ,UserManager<ApplicationUser> userManager
+        ,ClaimsPrincipal user)
     {
-        var user = httpContext.Items["ApplicationUser"] as ApplicationUser;
-        if (user == null) return TypedResults.Unauthorized();
+        var applicationUser = userManager.GetUserAsync(user);
+        if (applicationUser == null) return TypedResults.Unauthorized();
         
-        request.UserId = user.Id;
+        request.UserId = applicationUser.Id;
         
         var result = await handler.CreateAsync(request);
         return result.IsSuccess 

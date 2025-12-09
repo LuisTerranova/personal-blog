@@ -8,7 +8,7 @@ public class ProjectImageStorageEndpoint : IEndpoint
 {
     public static void Map(IEndpointRouteBuilder app)
         => app.MapPost("/upload", HandleAsync)
-            .RequireRole("admin")
+            .RequireAuthorization("AdminPolicy")
             .DisableAntiforgery()
             .WithName("Storage : Upload Image")
             .WithSummary("Uploads a project image to local storage")

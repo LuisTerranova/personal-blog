@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
 using personal_blog.Api.Common.Api;
 using personal_blog.Api.Models;
 using personal_blog.core.Handlers;
@@ -8,8 +10,8 @@ namespace personal_blog.Api.Endpoints.PostEndpoints;
 public class UpdatePostEndpoint : IEndpoint
 {
     public static void Map(IEndpointRouteBuilder app) 
-        => app.MapPut("/{id}", HandleAsync)
-            .RequireRole("admin")
+        => app.MapPut("/{id:int}", HandleAsync)
+            .RequireAuthorization("AdminPolicy")
             .WithValidation<UpdatePostRequest>()
             .WithName("Posts : Update")
             .WithSummary("Updates a post")
@@ -18,10 +20,11 @@ public class UpdatePostEndpoint : IEndpoint
     private static async Task<IResult> HandleAsync(IPostHandler handler
         ,UpdatePostRequest request
         ,int id
-        ,HttpContext httpContext)
+        ,UserManager<ApplicationUser> userManager
+        ,ClaimsPrincipal user)
     {
-        var user = httpContext.Items["ApplicationUser"] as ApplicationUser;
-        request.UserId = user!.Id;
+        var applicationUser = userManager.GetUserAsync(user);
+        request.UserId = applicationUser.Id;
         request.Id = id;
         
         var result = await handler.UpdateAsync(request);

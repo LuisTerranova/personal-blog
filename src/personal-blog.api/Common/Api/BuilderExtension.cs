@@ -30,9 +30,13 @@ public static class BuilderExtension
 
     public static void AddSecurity(this WebApplicationBuilder builder)
     {
-        builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme)
-            .AddIdentityCookies();
-        builder.Services.AddAuthorization();
+        builder.Services.AddAuthorization(options =>
+        {
+            options.AddPolicy("AdminPolicy", policy => 
+            {
+                policy.RequireRole("admin"); 
+            });
+        });
     }
 
     public static void AddServices(this WebApplicationBuilder builder)
@@ -88,11 +92,27 @@ public static class BuilderExtension
         }
         builder.Services
             .AddDbContext<AppDbContext>
-                (x => { x.UseNpgsql(Configuration.ConnectionString); });   
-        builder.Services
-            .AddIdentityCore<ApplicationUser>()
-            .AddRoles<IdentityRole<long>>()
+                (x => { x.UseNpgsql(Configuration.ConnectionString); })  
+            .AddIdentity<ApplicationUser, IdentityRole<long>>()
             .AddEntityFrameworkStores<AppDbContext>()
-            .AddApiEndpoints();
+            .AddApiEndpoints()
+            .AddDefaultTokenProviders();
+
+        builder.Services.ConfigureApplicationCookie(options =>
+        {
+            // Impede o redirecionamento para /Account/Login quando não autenticado
+            options.Events.OnRedirectToLogin = context =>
+            {
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                return Task.CompletedTask;
+            };
+
+            // Impede o redirecionamento para /Account/AccessDenied quando sem permissão
+            options.Events.OnRedirectToAccessDenied = context =>
+            {
+                context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                return Task.CompletedTask;
+            };
+        });
     }
 }

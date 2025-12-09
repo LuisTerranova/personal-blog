@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
 using personal_blog.Api.Common.Api;
 using personal_blog.core.Handlers;
 using personal_blog.core.Requests.Posts;
@@ -9,7 +11,7 @@ public class CreatePostEndpoint : IEndpoint
 { 
     public static void Map(IEndpointRouteBuilder app) 
             => app.MapPost("/", HandleAsync)
-                .RequireRole("admin")
+                .RequireAuthorization("AdminPolicy")
                 .WithValidation<CreatePostRequest>()
                 .WithName("Posts : Create")
                 .WithSummary("Creates a new post")
@@ -17,12 +19,13 @@ public class CreatePostEndpoint : IEndpoint
 
     private static async Task<IResult> HandleAsync(IPostHandler handler
         ,CreatePostRequest request
-        ,HttpContext httpContext)
+        ,UserManager<ApplicationUser> userManager
+        ,ClaimsPrincipal user)
     {
-        var user = httpContext.Items["ApplicationUser"] as ApplicationUser;
-        if (user == null) return TypedResults.Unauthorized();
+        var applicationUser = userManager.GetUserAsync(user);
+        request.UserId = applicationUser.Id;
         
-        request.UserId = user.Id;
+        request.UserId = applicationUser.Id;
         
         var result = await handler.CreateAsync(request);
         return result.IsSuccess 
