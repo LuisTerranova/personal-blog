@@ -22,7 +22,7 @@ public class CreatePostEndpoint : IEndpoint
         ,UserManager<ApplicationUser> userManager
         ,ClaimsPrincipal user)
     {
-        var applicationUser = userManager.GetUserAsync(user);
+        var applicationUser = await userManager.GetUserAsync(user);
         request.UserId = applicationUser.Id;
         
         request.UserId = applicationUser.Id;

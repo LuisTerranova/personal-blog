@@ -23,7 +23,7 @@ public class UpdateProjectEndpoint : IEndpoint
         ,ClaimsPrincipal user
         ,int id)
     {
-        var applicationUser = userManager.GetUserAsync(user);
+        var applicationUser = await userManager.GetUserAsync(user);
         request.UserId = applicationUser.Id;
         request.Id = id;
         

@@ -21,7 +21,7 @@ public class DeleteProjectEndpoint : IEndpoint
         ,UserManager<ApplicationUser> userManager
         ,ClaimsPrincipal user)
     {
-        var applicationUser = userManager.GetUserAsync(user);
+        var applicationUser = await userManager.GetUserAsync(user);
         
         var request = new DeleteProjectRequest
         {

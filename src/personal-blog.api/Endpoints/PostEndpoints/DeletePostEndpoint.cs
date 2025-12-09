@@ -21,7 +21,7 @@ public class DeletePostEndpoint : IEndpoint
         ,UserManager<ApplicationUser> userManager
         ,ClaimsPrincipal user)
     {
-        var applicationUser = userManager.GetUserAsync(user);
+        var applicationUser = await userManager.GetUserAsync(user);
         if (applicationUser == null) return TypedResults.Unauthorized();
         
         var request = new DeletePostRequest

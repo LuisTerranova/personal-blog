@@ -22,7 +22,7 @@ public class CreateProjectEndpoint : IEndpoint
         ,UserManager<ApplicationUser> userManager
         ,ClaimsPrincipal user)
     {
-        var applicationUser = userManager.GetUserAsync(user);
+        var applicationUser = await userManager.GetUserAsync(user);
         if (applicationUser == null) return TypedResults.Unauthorized();
         
         request.UserId = applicationUser.Id;

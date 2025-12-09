@@ -25,7 +25,7 @@ public class UpdateCategoryEndpoint : IEndpoint
         ,HttpRequest httpRequest
         , int id)
     {
-        var applicationUser = userManager.GetUserAsync(user);
+        var applicationUser = await userManager.GetUserAsync(user);
         request.UserId = applicationUser.Id;
         request.Id = id;
         
