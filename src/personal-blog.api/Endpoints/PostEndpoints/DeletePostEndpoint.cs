@@ -10,7 +10,7 @@ namespace personal_blog.Api.Endpoints.PostEndpoints;
 public class DeletePostEndpoint : IEndpoint
 {
     public static void Map(IEndpointRouteBuilder app) 
-        => app.MapDelete("/{id:int}", HandleAsync)
+        => app.MapDelete("/{id}", HandleAsync)
             .RequireAuthorization("AdminPolicy")
             .WithName("Posts : Delete")
             .WithSummary("Deletes a post")
