@@ -1,0 +1,28 @@
+name: build and deploy package
+
+on:
+  push:
+   branches: main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@main
+
+    - name: setup-dotnet
+      uses: actions/setupdotnet@v2
+      with: 
+        dotnet-version: '9.0.x'
+    - name: build-dotnet
+      run: dotnet build --configuration Release
+
+    - name: test-dotnet
+      run: dotnet test
+
+    - name: create-package
+      run: dotnet pack --configuration Release
+    
+    
+  
+    
