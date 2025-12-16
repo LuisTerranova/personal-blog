@@ -11,7 +11,7 @@ jobs:
     - uses: actions/checkout@main
 
     - name: setup-dotnet
-      uses: actions/setupdotnet@v2
+      uses: actions/setup-dotnet@v2
       with: 
         dotnet-version: '9.0.x'
     - name: build-dotnet
