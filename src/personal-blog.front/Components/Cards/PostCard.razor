@@ -12,7 +12,7 @@
             color: #EBE9E1; overflow-y: auto; min-height: 85vh ">
                 <MudIconButton Icon="@Icons.Material.Filled.Close" 
                                Color="Color.Primary" 
-                               OnClick="@(() => _viewerVisible = false)" 
+                               OnClick="CloseOverlay" 
                                Size="Size.Large"
                                Style="position: absolute; top: 8px; right: 8px;" />
                 @if (_selectedPost is not null)
@@ -54,11 +54,37 @@
     public IFrontPostHandler Handler { get; set; } = null!;
     [Inject] 
     public ISnackbar Snackbar { get; set; } = null!;
-
+    [Inject]
+    public NavigationManager Navigation { get; set; } = null!;
     private bool _viewerVisible;
     private Post? _selectedPost;
     
+    protected override async Task OnInitializedAsync()
+    {
+        var uri = new Uri(Navigation.Uri);
+        var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+        var idStr = query.Get("id");
+
+        if (int.TryParse(idStr, out var postId))
+        {
+            await LoadPostData(postId);
+        }
+    }
+    
     private async Task OnItemClick(int postId)
+    {
+        Navigation.NavigateTo($"/posts?={postId}", forceLoad: false);
+        await LoadPostData(postId);
+    }
+    
+    private void CloseOverlay()
+    {
+        _viewerVisible = false;
+        _selectedPost = null;
+        Navigation.NavigateTo("/posts", forceLoad: false);
+    }
+
+    private async Task LoadPostData(int postId)
     {
         var request = new GetPostByIdRequest { Id = postId };
         var result = await Handler.GetByIdAsync(request); 
@@ -73,5 +99,5 @@
         {
             Snackbar.Add(result.Message ?? "Failed to load the selected post. Please try again.", Severity.Error);
         } 
-    }
+    } 
 }
