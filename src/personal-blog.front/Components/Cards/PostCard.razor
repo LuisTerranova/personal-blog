@@ -73,7 +73,7 @@
     
     private async Task OnItemClick(int postId)
     {
-        Navigation.NavigateTo($"/posts?={postId}", forceLoad: false);
+        Navigation.NavigateTo($"/posts?id={postId}", forceLoad: false);
         await LoadPostData(postId);
     }
     
