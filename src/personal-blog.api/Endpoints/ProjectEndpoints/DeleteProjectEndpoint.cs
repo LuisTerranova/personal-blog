@@ -22,6 +22,8 @@ public class DeleteProjectEndpoint : IEndpoint
         ,ClaimsPrincipal user)
     {
         var applicationUser = await userManager.GetUserAsync(user);
+        if (applicationUser == null)
+            return Results.Unauthorized();
         
         var request = new DeleteProjectRequest
         {

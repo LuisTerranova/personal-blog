@@ -10,12 +10,30 @@ namespace personal_blog.tests.integration;
 public class PostCreationTests : IClassFixture<CustomWebApplicationFactory<Program>>
 {
     private readonly HttpClient _client;
-    private readonly CustomWebApplicationFactory<Program> _factory;
+    private readonly Xunit.Abstractions.ITestOutputHelper _output;
     
-    public PostCreationTests(CustomWebApplicationFactory<Program> factory)
+    public PostCreationTests(CustomWebApplicationFactory<Program> factory, Xunit.Abstractions.ITestOutputHelper output)
     {
-        _factory = factory;
-        _client = _factory.CreateClient();
+        _output = output;
+        _client = factory.CreateClient();
+    }
+
+    [Fact]
+    public async Task GetRoot_ReturnsOk()
+    {
+        var response = await _client.GetAsync("/");
+        _output.WriteLine($"Root response: {response.StatusCode}");
+        response.EnsureSuccessStatusCode();
+        var content = await response.Content.ReadAsStringAsync();
+        Assert.Contains("OK", content);
+    }
+     
+    [Fact]
+    public async Task GetAllPosts_ReturnsOk()
+    {
+        var response = await _client.GetAsync("v1/posts");
+        _output.WriteLine($"GetAllPosts response: {response.StatusCode}");
+        Assert.NotEqual(HttpStatusCode.NotFound, response.StatusCode);
     }
 
     [Fact]
@@ -23,22 +41,26 @@ public class PostCreationTests : IClassFixture<CustomWebApplicationFactory<Progr
     {
         _client.DefaultRequestHeaders.Authorization =
             new System.Net.Http.Headers.AuthenticationHeaderValue("TestScheme");
-     
-        
-        var endpointDataSource = _factory.Services.GetRequiredService<EndpointDataSource>();
-        var endpoints = endpointDataSource.Endpoints;
-        
+      
         var response = await _client.PostAsJsonAsync("v1/posts", new CreatePostRequest
         {
             Title = "Test title",
-            Body = "test body"
+            Body = "test body",
+            CategoryId = 1
         });
         
+        if (!response.IsSuccessStatusCode)
+        {
+            var content = await response.Content.ReadAsStringAsync();
+            _output.WriteLine($"CreatePost failed with {response.StatusCode}: {content}");
+        }
+
         response.EnsureSuccessStatusCode();
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
         
         var result = await response.Content.ReadFromJsonAsync<Response<Post?>>();
+        Assert.NotNull(result);
+        Assert.NotNull(result.Data);
         var newPostId = result.Data.Id;
-        
     }
 }

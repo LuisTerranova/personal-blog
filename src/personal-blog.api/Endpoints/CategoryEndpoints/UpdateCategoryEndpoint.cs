@@ -1,7 +1,6 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using personal_blog.Api.Common.Api;
-using personal_blog.Api.Common.Api.Helpers;
 using personal_blog.core.Handlers;
 using personal_blog.core.Requests.Categories;
 using ApplicationUser = personal_blog.Api.Models.ApplicationUser;
@@ -26,6 +25,9 @@ public class UpdateCategoryEndpoint : IEndpoint
         , int id)
     {
         var applicationUser = await userManager.GetUserAsync(user);
+        if (applicationUser == null)
+            return Results.Unauthorized();
+
         request.UserId = applicationUser.Id;
         request.Id = id;
         

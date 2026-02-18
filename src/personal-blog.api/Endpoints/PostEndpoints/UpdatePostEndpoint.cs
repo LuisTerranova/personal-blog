@@ -24,6 +24,9 @@ public class UpdatePostEndpoint : IEndpoint
         ,ClaimsPrincipal user)
     {
         var applicationUser = await userManager.GetUserAsync(user);
+        if (applicationUser == null)
+            return Results.Unauthorized();
+
         request.UserId = applicationUser.Id;
         request.Id = id;
         

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using personal_blog.Api.Data;
 using personal_blog.Api.Models;
+using Microsoft.AspNetCore.TestHost;
 
 
 namespace personal_blog.tests.integration;
@@ -13,7 +14,7 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseEnvironment("Testing");
-        builder.ConfigureServices(services =>
+        builder.ConfigureTestServices(services =>
         {
             var descriptor = services.SingleOrDefault(
                 d => d.ServiceType == typeof(DbContextOptions<AppDbContext>));
@@ -25,16 +26,15 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
                 options.UseInMemoryDatabase("InMemoryDbForTesting");
             });
             
-            services.AddIdentityCore<ApplicationUser>()
-                .AddRoles<IdentityRole<long>>()
-                .AddEntityFrameworkStores<AppDbContext>()
-                .AddUserManager<UserManager<ApplicationUser>>()
-                .AddRoleManager<RoleManager<IdentityRole<long>>>();
-            
             services.AddSingleton<IEmailSender<ApplicationUser>, MockEmailSender>();
-            services.AddAuthentication("TestScheme")
+            
+            services.AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = "TestScheme";
+                    options.DefaultChallengeScheme = "TestScheme";
+                })
                 .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(
-                    "TestScheme", options => { });
+                    "TestScheme", _ => { });
         });
     }
 }

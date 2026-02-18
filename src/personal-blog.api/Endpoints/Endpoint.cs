@@ -12,7 +12,7 @@ public static class Endpoint
 {
     public static void MapEndpoints(this WebApplication app)
     {
-        var endpoints = app.MapGroup("");
+        var endpoints = (IEndpointRouteBuilder)app;
 
         endpoints.MapGroup("v1/categories")
             .WithTags("Categories")

@@ -29,7 +29,7 @@ public class CreateProjectEndpoint : IEndpoint
         
         var result = await handler.CreateAsync(request);
         return result.IsSuccess 
-            ? TypedResults.Created($"/{result.Data.Id}", result) 
+            ? TypedResults.Created($"/{result.Data?.Id}", result) 
             : TypedResults.BadRequest(result);
     }
 }

@@ -5,7 +5,6 @@ using personal_blog.Api.Handlers;
 using personal_blog.Api.Models;
 using personal_blog.core;
 using personal_blog.core.Handlers;
-using EnvironmentName = Microsoft.AspNetCore.Hosting.EnvironmentName;
 
 namespace personal_blog.Api.Common.Api;
 
@@ -86,13 +85,14 @@ public static class BuilderExtension
 
     public static void AddDataContext(this WebApplicationBuilder builder)
     {
-        if (builder.Environment.IsEnvironment("Testing"))
-        {
-            return;
-        }
         builder.Services
-            .AddDbContext<AppDbContext>
-                (x => { x.UseNpgsql(Configuration.ConnectionString); })  
+            .AddDbContext<AppDbContext>(x => 
+            { 
+                if (!builder.Environment.IsEnvironment("Testing"))
+                {
+                    x.UseNpgsql(Configuration.ConnectionString); 
+                }
+            })  
             .AddIdentity<ApplicationUser, IdentityRole<long>>()
             .AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders();

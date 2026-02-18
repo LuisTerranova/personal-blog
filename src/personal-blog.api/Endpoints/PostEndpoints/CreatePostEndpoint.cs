@@ -10,7 +10,7 @@ namespace personal_blog.Api.Endpoints.PostEndpoints;
 public class CreatePostEndpoint : IEndpoint
 { 
     public static void Map(IEndpointRouteBuilder app) 
-            => app.MapPost("/", HandleAsync)
+            => app.MapPost("", HandleAsync)
                 .RequireAuthorization("AdminPolicy")
                 .WithValidation<CreatePostRequest>()
                 .WithName("Posts : Create")
@@ -23,13 +23,14 @@ public class CreatePostEndpoint : IEndpoint
         ,ClaimsPrincipal user)
     {
         var applicationUser = await userManager.GetUserAsync(user);
-        request.UserId = applicationUser.Id;
-        
+        if (applicationUser == null)
+            return Results.Unauthorized();
+
         request.UserId = applicationUser.Id;
         
         var result = await handler.CreateAsync(request);
         return result.IsSuccess 
-            ? TypedResults.Created($"/{result.Data.Id}", result) 
+            ? TypedResults.Created($"/{result.Data?.Id}", result) 
             : TypedResults.BadRequest(result);
     }
 }
