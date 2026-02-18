@@ -1,32 +1,31 @@
-name: build and deploy package
+name: Deploy Trash Tech Blog
 
 on:
   push:
-   branches: main
+    branches: [ "main" ]
 
 jobs:
-  build-and-deploy:
+  build-and-test:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: src
-        
     steps:
-    - uses: actions/checkout@main
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+      - name: Build
+        run: dotnet build --configuration Release
+      - name: Test
+        run: dotnet test
 
-    - name: setup-dotnet
-      uses: actions/setup-dotnet@v2
-      with: 
-        dotnet-version: '9.0.x'
-    - name: build-dotnet
-      run: dotnet build --configuration Release
-
-    - name: test-dotnet
-      run: dotnet test
-
-    - name: create-package
-      run: dotnet pack --configuration Release
-    
-    
-  
-    
+  deploy:
+    needs: build-and-test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: [self-hosted, raspi5]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and Restart Docker
+        run: |
+          docker compose build
+          docker compose up -d
+          docker image prune -f
