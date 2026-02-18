@@ -27,9 +27,14 @@ jobs:
     runs-on: [self-hosted, raspi5]
     steps:
       - uses: actions/checkout@v4
+
+      - name: Create .env file
+        run: |
+          echo "${{ secrets.ENV_FILE }}" > src/.env
+
       - name: Build and Restart Docker
         run: |
           cd src
-          docker compose -f docker-compose-prod.yml build
-          docker compose -f docker-compose-prod.yml up -d
+          docker compose -f docker-compose-prod.yml -p src build
+          docker compose -f docker-compose-prod.yml -p src up -d
           docker image prune -f
