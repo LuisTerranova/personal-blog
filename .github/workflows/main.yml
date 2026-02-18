@@ -29,6 +29,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build and Restart Docker
         run: |
+          cd src
           docker compose build
           docker compose up -d
           docker image prune -f
