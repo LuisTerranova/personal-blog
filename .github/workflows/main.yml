@@ -30,6 +30,6 @@ jobs:
       - name: Build and Restart Docker
         run: |
           cd src
-          docker compose build
-          docker compose up -d
+          docker compose -f docker-compose-prod.yml build
+          docker compose -f docker-compose-prod.yml up -d
           docker image prune -f
