@@ -23,7 +23,7 @@
                         Created At: @_selectedPost.Created
                     </MudText>
                     <MudText Typo="Typo.body2" Color="Color.Primary" Class="ma-2">
-                        Category: @_selectedPost.Category.Title
+                        Category: @(_selectedPost.Category?.Title ?? "None")
                     </MudText>
                     <MudDivider/>
                     <MudText Color="Color.Primary" Typo="Typo.subtitle1" Class="content pa-5">

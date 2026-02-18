@@ -21,13 +21,13 @@ else
                                Style="position: absolute; top: 8px; right: 8px;" />
                 <MudText Typo="Typo.h4" Color="Color.Primary" GutterBottom="true"
                          Class="d-flex align-center justify-center pa-2">
-                    @_selectedProject.Title
+                    @_selectedProject?.Title
                 </MudText>
                 <MudText Typo="Typo.body1" Color="Color.Primary"
                          Class="content pa-5">
-                    @((MarkupString)_selectedProject.Description)
+                    @((MarkupString)(_selectedProject?.Description ?? string.Empty))
                 </MudText>
-                <MudButton Href="@_selectedProject.RepoLink"
+                <MudButton Href="@_selectedProject?.RepoLink"
                            Variant="Variant.Filled"
                            Class="ma-2"
                            Color="Color.Primary"
@@ -41,8 +41,8 @@ else
                 <MudCard Style="background-color: #EBE9E1">
                     <MudCardMedia Image="@project.ImageUrl" Class="card-media-responsive"/>
                     <MudCardContent Class="mud-theme-primary">
-                        <MudText Typo="Typo.h5">@project.Title</MudText>
-                        <MudText Typo="Typo.body2">@project.Summary</MudText>
+                        <MudText Typo="Typo.h5">@(project?.Title ?? string.Empty)</MudText>
+                        <MudText Typo="Typo.body2">@(project?.Summary ?? string.Empty)</MudText>
                     </MudCardContent>
                     <MudCardActions Class="mud-theme-primary">
                         <MudButton Class="ma-2"
@@ -59,8 +59,8 @@ else
 }
 
 @code {
-    [Parameter] public List<Project?> Projects { get; set; } = [];
+    [Parameter] public List<Project> Projects { get; set; } = [];
     
     private bool _viewerVisible;
-    private Project _selectedProject = null!;
+    private Project? _selectedProject;
 }
