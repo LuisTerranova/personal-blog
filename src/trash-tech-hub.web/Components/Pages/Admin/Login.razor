@@ -1,0 +1,83 @@
+@page "/admin/login"
+@layout MainLayout
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+@using System.Security.Claims
+@inject IAuthService AuthService
+@inject NavigationManager NavigationManager
+
+<div style="min-height: 85vh;" class="d-flex justify-center align-center">
+    <MudContainer MaxWidth="MaxWidth.Small">
+        <MudGrid>
+            <MudItem xs="12" Class="align-items-center">
+                <!-- Standard HTML Form PostDto with anti-forgery support -->
+                <form method="post" @onsubmit="HandleLogin" @formname="LoginForm">
+                    <AntiforgeryToken />
+                    <MudCard Class="pa-10 ma-3" Style="background-color: var(--mud-palette-surface); border: 1px solid var(--mud-palette-primary); border-radius: 8px;">
+                        <MudText Typo="Typo.h4" Color="Color.Primary" Class="font-weight-bold d-flex justify-center mb-6">Admin Login</MudText>
+                        
+                        @if (!string.IsNullOrEmpty(_errorMessage))
+                        {
+                            <MudAlert Severity="Severity.Error" Variant="Variant.Outlined" Class="mb-4">@_errorMessage</MudAlert>
+                        }
+
+                        <MudCardContent>
+                            <MudTextField Label="Email" name="InputModel.Email" @bind-Value="InputModel!.Email" Variant="Variant.Outlined" Class="mb-4" InputType="InputType.Email"/>
+                            <MudTextField Label="Password" name="InputModel.Password" InputType="InputType.Password" @bind-Value="InputModel!.Password" Variant="Variant.Outlined"/>
+                        </MudCardContent>
+                        <MudButton Color="Color.Primary" Variant="Variant.Filled" ButtonType="ButtonType.Submit" FullWidth="true" Class="mt-6 py-3" Style="font-weight: bold;">
+                            Login
+                        </MudButton>
+                    </MudCard>
+                </form>
+            </MudItem>
+        </MudGrid>
+    </MudContainer>    
+</div>
+
+@code {
+    [CascadingParameter]
+    public HttpContext? HttpContext { get; set; }
+
+    [SupplyParameterFromForm]
+    public LoginInputModel? InputModel { get; set; }
+
+    private string? _errorMessage;
+
+    protected override void OnInitialized()
+    {
+        InputModel ??= new();
+    }
+
+    public async Task HandleLogin()
+    {
+        if (HttpContext == null || InputModel == null) return;
+
+        if (await AuthService.ValidateAdminAsync(InputModel.Email, InputModel.Password))
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, InputModel.Email),
+                new Claim(ClaimTypes.Role, "admin")
+            };
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity),
+                new AuthenticationProperties { IsPersistent = true });
+
+            NavigationManager.NavigateTo("/admin");
+        }
+        else
+        {
+            _errorMessage = "Invalid credentials. Access Denied.";
+        }
+    }
+
+    public class LoginInputModel
+    {
+        public string Email { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+    }
+}

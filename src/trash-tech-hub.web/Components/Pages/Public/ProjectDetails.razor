@@ -1,0 +1,153 @@
+@page "/projects/{Slug}"
+@using TrashTechHub.Core.Requests.Projects
+@using TrashTechHub.Core.Models
+@inject IProjectService ProjectService
+@inject NavigationManager NavigationManager
+@inject ILogger<ProjectDetails> Logger
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="my-12">
+    <!-- Back to projects link -->
+    <MudButton StartIcon="@Icons.Material.Filled.ArrowBack" 
+               Color="Color.Primary" 
+               Href="/projects" 
+               Class="mb-6 font-weight-bold"
+               Style="text-transform: none;">
+        Back to Projects
+    </MudButton>
+
+    @if (_isLoading)
+    {
+        <div class="d-flex justify-center my-16">
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large" />
+        </div>
+    }
+    else if (_errorMessage != null || _project == null)
+    {
+        <MudAlert Severity="Severity.Error" Variant="Variant.Outlined" Class="my-8">
+            @(_errorMessage ?? "The requested project could not be found.")
+        </MudAlert>
+    }
+    else
+    {
+        <PageTitle>@_project.Title — Project Showcase | Trash Tech Hub</PageTitle>
+        <HeadContent>
+            <meta name="description" content="@_project.Summary" />
+            <link rel="canonical" href="https://trashtechhub.com/projects/@_project.Slug" />
+            <!-- Open Graph -->
+            <meta property="og:title" content="@_project.Title — Project Showcase | Trash Tech Hub" />
+            <meta property="og:description" content="@_project.Summary" />
+            <meta property="og:type" content="website" />
+            <meta property="og:url" content="https://trashtechhub.com/projects/@_project.Slug" />
+            @if (!string.IsNullOrEmpty(_project.ImageUrl))
+            {
+                <meta property="og:image" content="@_project.ImageUrl" />
+            }
+            else
+            {
+                <meta property="og:image" content="https://trashtechhub.com/Images/trash-tech-hub-logo-bg-removed.png" />
+            }
+            <!-- Twitter Card -->
+            <meta name="twitter:card" content="summary_large_image" />
+            <meta name="twitter:title" content="@_project.Title" />
+            <meta name="twitter:description" content="@_project.Summary" />
+            @if (!string.IsNullOrEmpty(_project.ImageUrl))
+            {
+                <meta name="twitter:image" content="@_project.ImageUrl" />
+            }
+
+            <script type="application/ld+json">
+            {
+              "@@context": "https://schema.org",
+              "@@type": "SoftwareApplication",
+              "name": @System.Text.Json.JsonSerializer.Serialize(_project.Title),
+              "applicationCategory": "DeveloperApplication",
+              "operatingSystem": "All",
+              "description": @System.Text.Json.JsonSerializer.Serialize(_project.Summary),
+              "downloadUrl": @System.Text.Json.JsonSerializer.Serialize(_project.RepoLink),
+              "author": {
+                "@@type": "Person",
+                "name": "Luis Magno Terranova"
+              }
+            }
+            </script>
+        </HeadContent>
+
+        <article class="project-article">
+            <header class="mb-8">
+                <MudText Typo="Typo.h3" HtmlTag="h1" Color="Color.Primary" Class="font-weight-800 mb-4" Style="line-height: 1.15;">
+                    @_project.Title
+                </MudText>
+                <div class="d-flex align-center flex-wrap gap-4 mb-4">
+                    <span style="color: var(--mud-palette-text-secondary); font-size: 0.9rem;">
+                        Project published on @_project.Created.ToString("MMMM dd, yyyy")
+                    </span>
+                </div>
+                <MudDivider Style="background-color: var(--mud-palette-divider);" />
+            </header>
+
+            @if (!string.IsNullOrEmpty(_project.ImageUrl))
+            {
+                <div class="mb-8 rounded-lg overflow-hidden d-flex justify-center" style="border: 1px solid var(--mud-palette-lines-default); background-color: var(--mud-palette-secondary);">
+                    <img src="@_project.ImageUrl" alt="@_project.Title Screenshot" style="max-width: 100%; max-height: 400px; object-fit: contain;" />
+                </div>
+            }
+
+            <!-- Project Details Description -->
+            <div class="project-content py-4" style="color: var(--mud-palette-text-primary); line-height: 1.7; font-size: 1.1rem;">
+                @((MarkupString)_project.Description)
+            </div>
+
+            <footer class="mt-12 pt-6" style="border-top: 1px solid var(--mud-palette-lines-default);">
+                <div class="d-flex justify-space-between align-center flex-wrap gap-4">
+                    @if (!string.IsNullOrEmpty(_project.RepoLink))
+                    {
+                        <MudButton Href="@_project.RepoLink"
+                                   Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   Target="_blank"
+                                   StartIcon="@Icons.Custom.Brands.GitHub"
+                                   Style="font-weight: bold; text-transform: none;">
+                            View Source Code on GitHub
+                        </MudButton>
+                    }
+                </div>
+            </footer>
+        </article>
+    }
+</MudContainer>
+
+@code {
+    [Parameter]
+    public string Slug { get; set; } = string.Empty;
+
+    private ProjectDto? _project;
+    private bool _isLoading = true;
+    private string? _errorMessage;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadProject();
+    }
+
+    private async Task LoadProject()
+    {
+        _isLoading = true;
+        _errorMessage = null;
+        try
+        {
+            _project = await ProjectService.GetBySlugAsync(Slug);
+
+            if (_project == null)
+                _errorMessage = "Project not found.";
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Failed to load project details for slug: {Slug}", Slug);
+            _errorMessage = "An error occurred while loading this project.";
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+}

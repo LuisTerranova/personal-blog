@@ -1,0 +1,21 @@
+@using Microsoft.AspNetCore.Components.Routing
+@using TrashTechHub.Web.Components.Layout
+
+<Router AppAssembly="@typeof(Program).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+    </Found>
+    <NotFound>
+        <PageTitle>Not Found</PageTitle>
+        <LayoutView Layout="@typeof(MainLayout)">
+            <MudContainer Class="d-flex align-center justify-center" Style="min-height: 70vh;">
+                <MudPaper Class="pa-10 d-flex flex-column align-center" Style="background-color: var(--mud-palette-background); border: 1px solid var(--mud-palette-primary);">
+                    <MudText Typo="Typo.h1" Color="Color.Primary">404</MudText>
+                    <MudText Typo="Typo.h5" Class="my-4" Color="Color.Inherit">Oops! There's nothing at this address.</MudText>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="/">Go Home</MudButton>
+                </MudPaper>
+            </MudContainer>
+        </LayoutView>
+    </NotFound>
+</Router>

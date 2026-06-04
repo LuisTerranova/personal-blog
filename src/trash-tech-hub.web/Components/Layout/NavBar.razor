@@ -1,0 +1,35 @@
+<MudAppBar Elevation="2" Fixed="true" Style="background-color: var(--mud-palette-appbar-background); border-bottom: 2px solid var(--mud-palette-primary); z-index: 1100;">
+    <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="d-flex align-center w-100 px-0">
+        <a href="/" class="d-flex align-center cursor-pointer" style="gap: 12px; cursor: pointer; text-decoration: none;">
+            <MudImage Src="Images/trash-tech-hub-logo-bg-removed.png" Alt="Logo" Width="40" Height="40" />
+            <MudText Typo="Typo.h6" Class="font-weight-bold" Color="Color.Primary" Style="letter-spacing: 1px;">
+                TRASH TECH HUB
+            </MudText>
+        </a>
+
+        <MudSpacer />
+
+        <!-- Desktop Navigation Links -->
+        <div class="d-none d-md-flex align-center" style="gap: 8px;">
+            <MudButton Href="/" Color="Color.Inherit" Class="px-4 py-2" Style="font-weight: 500; font-size: 0.95rem;">Home</MudButton>
+            <MudButton Href="/blog" Color="Color.Inherit" Class="px-4 py-2" Style="font-weight: 500; font-size: 0.95rem;">Blog</MudButton>
+            <MudButton Href="/projects" Color="Color.Inherit" Class="px-4 py-2" Style="font-weight: 500; font-size: 0.95rem;">Projects</MudButton>
+            <MudButton Href="/about" Color="Color.Inherit" Class="px-4 py-2" Style="font-weight: 500; font-size: 0.95rem;">About</MudButton>
+        </div>
+
+        <MudDivider Vertical="true" FlexItem="true" Class="mx-4 my-2 d-none d-md-block" Style="background-color: var(--mud-palette-divider);" />
+
+        <div class="d-flex align-center" style="gap: 4px;">
+            <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Href="https://github.com/LuisTerranova/" Target="_blank" Color="Color.Inherit" />
+            <MudIconButton Icon="@Icons.Custom.Brands.LinkedIn" Href="https://www.linkedin.com/in/luis-magno-brito-6270941b8/" Target="_blank" Color="Color.Inherit" />
+        </div>
+    </MudContainer>
+</MudAppBar>
+
+<!-- Mobile Navigation Sub-Bar (Fixed at top, below main navbar) -->
+<div class="d-flex d-md-none justify-space-around py-2 w-100" style="background-color: var(--mud-palette-surface); border-bottom: 1px solid var(--mud-palette-lines-default); position: fixed; top: 64px; left: 0; z-index: 1000; height: 40px; align-items: center;">
+    <MudLink Href="/" Color="Color.Inherit" Underline="Underline.None" Class="px-2 py-1 font-weight-medium" Style="font-size: 0.9rem;">Home</MudLink>
+    <MudLink Href="/blog" Color="Color.Inherit" Underline="Underline.None" Class="px-2 py-1 font-weight-medium" Style="font-size: 0.9rem;">Blog</MudLink>
+    <MudLink Href="/projects" Color="Color.Inherit" Underline="Underline.None" Class="px-2 py-1 font-weight-medium" Style="font-size: 0.9rem;">Projects</MudLink>
+    <MudLink Href="/about" Color="Color.Inherit" Underline="Underline.None" Class="px-2 py-1 font-weight-medium" Style="font-size: 0.9rem;">About</MudLink>
+</div>

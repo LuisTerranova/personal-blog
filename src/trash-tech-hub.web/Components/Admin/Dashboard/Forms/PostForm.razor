@@ -1,0 +1,90 @@
+@using TrashTechHub.Core.Services
+@using TrashTechHub.Core.Requests.Posts
+@using TrashTechHub.Core.Models
+@using TrashTechHub.Core.Requests.Categories
+@inject ICategoryService CategoryService
+
+<MudDialog Style="min-width: 800px; min-height: 500px ">
+    <TitleContent>
+        <MudText Typo="Typo.h6">@(IsUpdateMode ? "Update Post" : "Create Post")</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTextField @bind-Value="UpdateModel.Title" Label="Title" 
+                      Variant="Variant.Outlined" Class="mb-3"/>
+        <MudTextField @bind-Value="UpdateModel.Body" Label="Body" 
+                      Variant="Variant.Outlined" Lines="10"
+                      Class="mb-3"/>
+        <MudSelect T="int" @bind-Value="UpdateModel.CategoryId" Label="Category" Variant="Variant.Outlined">
+            @foreach (var category in _categories)
+            { 
+                <MudSelectItem Value="@category.Id">@category.Title</MudSelectItem>
+            }
+        </MudSelect>
+        <MudSwitch T="bool" @bind-Value="UpdateModel.IsFeatured" 
+                   Label="Featured Post" 
+                   Color="Color.Warning"
+                   Class="mt-3"/>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        @if (IsUpdateMode)
+        {
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Update">Update</MudButton>
+        }
+        else
+        {
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Create">Create</MudButton>
+        }
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] private IMudDialogInstance DialogInstance { get; set; } = null!;
+    
+    [Parameter]
+    public UpdatePostRequest? InitialUpdateModel { get; set; }
+    
+    private UpdatePostRequest UpdateModel { get; set; } = new();
+    private List<CategoryDto> _categories = new(); 
+    
+    private bool IsUpdateMode => InitialUpdateModel != null && InitialUpdateModel.Id != 0;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var request = new GetAllCategoriesRequest()
+        {
+            PageSize = 100,
+            PageNumber = 1
+        };
+        var result = await CategoryService.GetAllAsync(request);
+        _categories = result.Items;
+        
+        if (IsUpdateMode && InitialUpdateModel != null)
+        {
+            UpdateModel = InitialUpdateModel;
+        }
+    }
+
+    private void Cancel()
+    {
+        DialogInstance.Cancel();
+    }
+
+    private void Create()
+    {
+            var createRequest = new CreatePostRequest
+            {
+                Title = UpdateModel.Title,
+                Body = UpdateModel.Body,
+                CategoryId = UpdateModel.CategoryId,
+                IsFeatured = UpdateModel.IsFeatured,
+            };
+            DialogInstance.Close(DialogResult.Ok(createRequest));
+    }
+    
+    private void Update()
+    {
+        DialogInstance.Close(DialogResult.Ok(UpdateModel));
+    }
+
+}

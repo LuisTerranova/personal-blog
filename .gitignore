@@ -4,7 +4,7 @@
 *.sln.docstates
 
 .vs/
-.idea/
+**/.idea/
 *.sln.iml
 
 [Oo]bj/

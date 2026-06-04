@@ -1,0 +1,18 @@
+@inject IMarkdownService MarkdownService
+
+<div class="content markdown-body">
+    @((MarkupString)_parsedHtml)
+</div>
+
+@code {
+    [Parameter]
+    public string Content { get; set; } = string.Empty;
+
+    private string _parsedHtml = string.Empty;
+
+    protected override void OnParametersSet()
+    {
+        _parsedHtml = string.IsNullOrEmpty(Content) ? string.Empty : MarkdownService.ToHtml(Content);
+    }
+}
+

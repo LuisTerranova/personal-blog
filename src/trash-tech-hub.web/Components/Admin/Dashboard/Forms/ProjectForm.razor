@@ -1,0 +1,96 @@
+@using TrashTechHub.Core.Requests.Projects
+
+<MudDialog Style="min-width: 800px; min-height: 500px ">
+    <TitleContent>
+        <MudText Typo="Typo.h6">@(IsUpdateMode ? "Update Project" : "Create Project")</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTextField @bind-Value="Model.Title" Label="Title"
+                      Variant="Variant.Outlined" Class="mb-3"/>
+        <MudTextField @bind-Value="Model.Summary" Label="Summary"
+                      Variant="Variant.Outlined" Lines="5"
+                      Class="mb-3"/>
+        <MudTextField @bind-Value="Model.Description" Label="Description"
+                      Variant="Variant.Outlined" Lines="10"
+                      Class="mb-3"/>
+        <MudTextField @bind-Value="Model.RepoLink" Label="Repolink"
+                      Variant="Variant.Outlined" Class="mb-3"/>
+
+        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+        {
+            <MudText Typo="Typo.subtitle2" Class="mt-3">Imagem Atual:</MudText>
+            <img src="@Model.ImageUrl" style="max-width: 150px; height: auto;"/>
+        }
+
+        <MudFileUpload T="IBrowserFile" FilesChanged="HandleFileUpload" Context="fileUpload">
+            <CustomContent>
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.CloudUpload"
+                           OnClick="@(() => fileUpload.OpenFilePickerAsync())">
+                    @(Model.ImageFile is null ? "Upload Image" : $"File: {Model.ImageFile.Name}")
+                </MudButton>
+            </CustomContent>
+        </MudFileUpload>
+
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        @if (IsUpdateMode)
+        {
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Update">Update</MudButton>
+        }
+        else
+        {
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Create">Create</MudButton>
+        }
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] private IMudDialogInstance DialogInstance { get; set; } = null!;
+
+    [Parameter]
+    public UpdateProjectRequest? InitialUpdateModel { get; set; }
+    
+    private UpdateProjectRequest Model { get; set; } = new();
+
+    private bool IsUpdateMode => InitialUpdateModel != null && InitialUpdateModel.Id != 0;
+
+    protected override void OnInitialized()
+    {
+        if (IsUpdateMode && InitialUpdateModel != null)
+        {
+            Model = InitialUpdateModel;
+        }
+    }
+
+    private void Cancel()
+    {
+        DialogInstance.Cancel();
+    }
+
+    private void Create()
+    {
+        var createRequest = new CreateProjectRequest
+        {
+            Title = Model.Title,
+            Description = Model.Description,
+            Summary = Model.Summary,
+            RepoLink = Model.RepoLink,
+            ImageUrl = Model.ImageUrl,
+            ImageFile = Model.ImageFile
+        };
+        DialogInstance.Close(DialogResult.Ok(createRequest));
+    }
+
+    private void Update()
+    {
+        DialogInstance.Close(DialogResult.Ok(Model));
+    }
+
+    private void HandleFileUpload(IBrowserFile file)
+    {
+        Model.ImageFile = file;
+    }
+}

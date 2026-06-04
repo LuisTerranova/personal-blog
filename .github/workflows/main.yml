@@ -4,6 +4,9 @@ on:
   push:
     branches: [ "main" ]
 
+env:
+  DOTNET_NUGET_SIGN_VERIFICATION: false
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
@@ -11,22 +14,40 @@ jobs:
       run:
         working-directory: src
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+      - uses: actions/checkout@v6
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
         with:
-          dotnet-version: '9.0.x'
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/*.sln') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+
       - name: Build
         run: dotnet build --configuration Release
+
       - name: Test
-        run: dotnet test
+        run: dotnet test trash-tech-hub.tests/trash-tech-hub.tests.csproj --configuration Release --logger trx --results-directory ./TestResults
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: src/TestResults
+        if: always()
 
   deploy:
     needs: build-and-test
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: [self-hosted, raspi5]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Create .env file
         run: |
@@ -34,7 +55,13 @@ jobs:
 
       - name: Build and Restart Docker
         run: |
-          cd src #
+          cd src
           docker compose -f docker-compose-prod.yml -p src build
           docker compose -f docker-compose-prod.yml -p src up -d
-          docker image prune -f
+
+      - name: Clean up .env file
+        run: rm -f src/.env
+        if: always()
+
+      - name: Prune old images
+        run: docker image prune -f

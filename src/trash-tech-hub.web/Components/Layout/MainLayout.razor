@@ -1,0 +1,26 @@
+@inherits LayoutComponentBase
+
+<MudThemeProvider Theme="CustomTheme.mudTheme"/>
+<MudPopoverProvider @rendermode="InteractiveServer"/>
+<MudDialogProvider @rendermode="InteractiveServer"/>
+<MudSnackbarProvider @rendermode="InteractiveServer"/>
+
+<MudLayout>
+    <NavBar />
+    
+    <MudMainContent Class="mud-main-content">
+        @Body
+    </MudMainContent>
+
+    <footer style="width: 100%; padding: 40px 20px; border-top: 1px solid var(--mud-palette-lines-default); background-color: var(--mud-palette-appbar-background); margin-top: auto;">
+        <div class="d-flex flex-column align-center" style="gap: 8px;">
+            <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-primary);">
+                &copy; @DateTime.Now.Year Trash Tech Hub. All rights reserved.
+            </MudText>
+            <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-primary);">
+                Built with Blazor Web App &amp; MudBlazor (.NET 10)
+            </MudText>
+        </div>
+    </footer>
+</MudLayout>
+

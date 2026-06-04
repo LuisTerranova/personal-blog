@@ -1,0 +1,44 @@
+@using TrashTechHub.Core.Models
+
+<MudTable @ref="_table" 
+          ServerData="new Func<TableState, CancellationToken, Task<TableData<PostDto>>>(ServerReload)" 
+          Dense="true">
+    <ToolBarContent>
+        <MudText Typo="Typo.h5" Class="ma-5">Posts</MudText>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => OpenForm()">
+            Create
+        </MudButton>
+        <MudSpacer/>
+        <SearchBar @bind-SearchQuery="SearchString"/>
+    </ToolBarContent>
+        <HeaderContent>
+            <MudTh Class="pa-5">Id</MudTh>
+            <MudTh>Title</MudTh>
+            <MudTh>Category</MudTh>
+            <MudTh>Featured</MudTh>
+            <MudTh>Created</MudTh>
+            <MudTh>Updated</MudTh>
+        </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Id">@context.Id</MudTd>   
+        <MudTd DataLabel="Title">@context.Title</MudTd>   
+        <MudTd DataLabel="Category">@context.Category?.Title</MudTd>
+        <MudTd DataLabel="Featured">
+            <MudIcon Icon="@(context.IsFeatured ? Icons.Material.Filled.Star : Icons.Material.Outlined.StarOutline)"
+                     Color="@(context.IsFeatured ? Color.Warning : Color.Default)" />
+        </MudTd>
+        <MudTd DataLabel="CreatedDate">@context.Created.ToString("yyyy-MM-dd")</MudTd>   
+        <MudTd DataLabel="UpdatedDate">@context.Updated?.ToString("yyyy-MM-dd")</MudTd>   
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-4 ma-2" Size="Size.Medium"
+                   OnClick="()=>OpenForm(context.Id)">
+            Edit
+        </MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Error" Class="mt-4 ma-2" Size="Size.Medium"
+                   OnClick="() => Delete(context.Id)">
+            Delete
+        </MudButton>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager/>
+    </PagerContent>
+</MudTable>   

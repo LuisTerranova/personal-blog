@@ -1,0 +1,256 @@
+@page "/blog"
+@using TrashTechHub.Core.Requests.Posts
+@using TrashTechHub.Core.Requests.Categories
+@using TrashTechHub.Core.Models
+@inject IPostService PostService
+@inject ICategoryService CategoryService
+@inject NavigationManager NavigationManager
+@inject ILogger<Blog> Logger
+
+<PageTitle>The Tech Log — Luis Terranova | Backend & Cloud Engineering Blog</PageTitle>
+<HeadContent>
+    <meta name="description" content="Read tutorials, architectural thoughts, and deep-dives into backend engineering, .NET, cloud databases, and clean systems architecture." />
+    <meta name="keywords" content="blog, programming tutorials, backend architecture, .NET 10, C# tutorials, cloud computing, database design" />
+    <link rel="canonical" href="https://trashtechhub.com/blog" />
+    <!-- Open Graph -->
+    <meta property="og:title" content="The Tech Log — Luis Terranova | Trash Tech Hub" />
+    <meta property="og:description" content="Thoughts, tutorials, and deep-dives into backend & cloud engineering." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://trashtechhub.com/blog" />
+    <meta property="og:image" content="https://trashtechhub.com/Images/trash-tech-hub-logo-bg-removed.png" />
+</HeadContent>
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="my-12">
+    <div class="text-center mb-10">
+        <MudText Typo="Typo.h3" HtmlTag="h1" Color="Color.Primary" Class="font-weight-800" Style="letter-spacing: 1px;">THE TECH LOG</MudText>
+        <MudText Typo="Typo.subtitle1" Style="color: var(--mud-palette-text-secondary);" Class="mt-2">Thoughts, tutorials, and deep-dives into backend &amp; cloud engineering</MudText>
+    </div>
+
+    <!-- Filter & Search Toolbar -->
+    <MudPaper Class="pa-6 mb-8 rounded-lg" Style="background-color: var(--mud-palette-surface); border: 1px solid var(--mud-palette-lines-default);">
+        <MudGrid Class="align-center">
+            <!-- Search Input Form -->
+            <MudItem xs="12" md="6">
+                <form method="get" action="/blog" data-enhance class="d-flex align-center gap-2" style="width: 100%;">
+                    @if (_selectedCategoryId.HasValue)
+                    {
+                        <input type="hidden" name="categoryId" value="@_selectedCategoryId.Value" />
+                    }
+                    <input type="text" 
+                           name="q" 
+                           placeholder="Search articles..." 
+                           value="@_searchQuery" 
+                           class="mud-input-slot mud-input-root mud-input-root-outlined mud-input-outlined-input"
+                           style="flex-grow: 1; padding: 12px 14px; border: 1px solid var(--mud-palette-lines-default); border-radius: 4px; background: transparent; color: var(--mud-palette-text-primary); font-size: 1rem;" />
+                    <button type="submit" 
+                            class="mud-button-root mud-button mud-button-filled mud-button-filled-primary mud-button-size-medium font-weight-bold"
+                            style="height: 46px; text-transform: none;">
+                        Search
+                    </button>
+                </form>
+            </MudItem>
+            <!-- Categories Filter -->
+            <MudItem xs="12" md="6">
+                <div class="d-flex flex-wrap gap-2 align-center">
+                    <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary);" Class="mr-2">Filter by Category:</MudText>
+                    <a href="/blog@(GetFilterQueryString(null))" 
+                       class="mud-chip mud-chip-filled mud-chip-size-medium @(_selectedCategoryId == null ? "mud-chip-color-primary" : "mud-chip-color-default") font-weight-bold"
+                       style="text-decoration: none; padding: 6px 12px; border-radius: 16px; font-size: 0.85rem; display: inline-flex; align-items: center; justify-content: center; height: 32px;">
+                        All
+                    </a>
+                    @foreach (var category in _categories)
+                    {
+                        var catId = category.Id;
+                        <a href="/blog@(GetFilterQueryString(catId))" 
+                           class="mud-chip mud-chip-filled mud-chip-size-medium @(_selectedCategoryId == catId ? "mud-chip-color-primary" : "mud-chip-color-default") font-weight-bold"
+                           style="text-decoration: none; padding: 6px 12px; border-radius: 16px; font-size: 0.85rem; display: inline-flex; align-items: center; justify-content: center; height: 32px; margin-right: 4px;">
+                            @category.Title
+                        </a>
+                    }
+                </div>
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
+
+    <!-- Blog Posts Grid -->
+    @if (_isLoading)
+    {
+        <div class="d-flex justify-center my-16">
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large" />
+        </div>
+    }
+    else if (_posts == null || !_posts.Any())
+    {
+        <div class="text-center my-16 pa-12 rounded-lg" style="background-color: var(--mud-palette-surface); border: 1px dashed var(--mud-palette-lines-default);">
+            <MudIcon Icon="@Icons.Material.Filled.Warning" Color="Color.Primary" Style="font-size: 3rem;" Class="mb-4" />
+            <MudText Typo="Typo.h5" Style="color: var(--mud-palette-text-primary);">No posts found</MudText>
+            <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary);" Class="mt-1">Try resetting the search or category filters.</MudText>
+        </div>
+    }
+    else
+    {
+        <MudGrid>
+            @foreach (var post in _posts)
+            {
+                <MudItem xs="12" sm="6" md="4">
+                    <a href="/blog/@post.Slug" class="post-card-link" style="text-decoration: none; display: block; height: 100%;">
+                        <MudCard Style="background-color: var(--mud-palette-surface); border: 1px solid var(--mud-palette-lines-default); border-radius: 8px; height: 100%; display: flex; flex-direction: column; transition: transform 0.2s, box-shadow 0.2s;" 
+                                 Class="post-card">
+                            <MudCardContent Class="flex-grow-1 pa-6">
+                                <div class="d-flex justify-space-between align-center mb-3">
+                                    <MudText Typo="Typo.caption" Color="Color.Tertiary" Class="font-weight-bold text-uppercase">
+                                        @(post.Category?.Title ?? "General")
+                                    </MudText>
+                                    <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary);">@post.Created.ToString("MMMM dd, yyyy")</MudText>
+                                </div>
+                                <MudText Typo="Typo.h5" Class="font-weight-bold mb-3" Style="color: var(--mud-palette-text-primary); line-height: 1.2;">
+                                    @post.Title
+                                </MudText>
+                                <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary); line-height: 1.6;">
+                                    @post.Body
+                                </MudText>
+                            </MudCardContent>
+                            <MudCardActions Style="border-top: 1px solid var(--mud-palette-lines-default);" Class="pa-4">
+                                <MudText Color="Color.Primary" Style="font-weight: 600;">
+                                    Read Article &rarr;
+                                </MudText>
+                            </MudCardActions>
+                        </MudCard>
+                    </a>
+                </MudItem>
+            }
+        </MudGrid>
+
+        <!-- Pagination -->
+        @if (_totalPages > 1)
+        {
+            <div class="d-flex justify-center align-center mt-12 gap-4">
+                @if (_currentPage > 1)
+                {
+                    <a href="/blog@(GetPageQueryString(_currentPage - 1))" 
+                       class="mud-button-root mud-button mud-button-filled mud-button-filled-default mud-button-size-medium font-weight-bold"
+                       style="text-decoration: none; padding: 8px 16px; border-radius: 4px; color: var(--mud-palette-text-primary); background-color: var(--mud-palette-surface); border: 1px solid var(--mud-palette-lines-default); text-transform: none;">
+                        &laquo; Prev
+                    </a>
+                }
+                <span class="mud-text-secondary font-weight-bold">Page @_currentPage of @_totalPages</span>
+                @if (_currentPage < _totalPages)
+                {
+                    <a href="/blog@(GetPageQueryString(_currentPage + 1))" 
+                       class="mud-button-root mud-button mud-button-filled mud-button-filled-default mud-button-size-medium font-weight-bold"
+                       style="text-decoration: none; padding: 8px 16px; border-radius: 4px; color: var(--mud-palette-text-primary); background-color: var(--mud-palette-surface); border: 1px solid var(--mud-palette-lines-default); text-transform: none;">
+                        Next &raquo;
+                    </a>
+                }
+            </div>
+        }
+    }
+</MudContainer>
+
+@code {
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "q")]
+    public string? Q { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "categoryId")]
+    public int? CategoryId { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "page")]
+    public int? Page { get; set; }
+
+    private List<PostDto> _posts = [];
+    private List<CategoryDto> _categories = [];
+    private bool _isLoading = true;
+    private string _searchQuery = string.Empty;
+    private int? _selectedCategoryId;
+    
+    private int _currentPage = 1;
+    private int _pageSize = 6;
+    private int _totalPages = 1;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCategories();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _searchQuery = Q ?? string.Empty;
+        _selectedCategoryId = CategoryId;
+        _currentPage = Page ?? 1;
+        await LoadPosts();
+    }
+
+    private async Task LoadCategories()
+    {
+        try
+        {
+            var result = await CategoryService.GetAllAsync(new GetAllCategoriesRequest());
+            _categories = result.Items;
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Failed to load categories");
+            _categories = [];
+        }
+    }
+
+    private async Task LoadPosts()
+    {
+        _isLoading = true;
+        try
+        {
+            var request = new GetAllPostsRequest
+            {
+                PageNumber = _currentPage,
+                PageSize = _pageSize,
+                Query = _searchQuery,
+                CategoryId = _selectedCategoryId
+            };
+
+            var result = await PostService.GetAllAsync(request);
+            _posts = result.Items;
+            _totalPages = result.TotalPages;
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Failed to load posts");
+            _posts = [];
+            _totalPages = 1;
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    private string GetFilterQueryString(int? categoryId)
+    {
+        var queries = new List<string>();
+        if (!string.IsNullOrEmpty(_searchQuery))
+        {
+            queries.Add($"q={Uri.EscapeDataString(_searchQuery)}");
+        }
+        if (categoryId.HasValue)
+        {
+            queries.Add($"categoryId={categoryId.Value}");
+        }
+        return queries.Count > 0 ? "?" + string.Join("&", queries) : "";
+    }
+
+    private string GetPageQueryString(int page)
+    {
+        var queries = new List<string> { $"page={page}" };
+        if (!string.IsNullOrEmpty(_searchQuery))
+        {
+            queries.Add($"q={Uri.EscapeDataString(_searchQuery)}");
+        }
+        if (_selectedCategoryId.HasValue)
+        {
+            queries.Add($"categoryId={_selectedCategoryId.Value}");
+        }
+        return "?" + string.Join("&", queries);
+    }
+}

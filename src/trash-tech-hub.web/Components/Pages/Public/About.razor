@@ -1,0 +1,98 @@
+@page "/about"
+
+<PageTitle>About Me — Luis Terranova | Trash Tech Hub</PageTitle>
+<HeadContent>
+    <meta name="description" content="Learn more about Luis Magno Terranova, a Backend Architect & Full-Stack Engineer specializing in .NET 10, ASP.NET Core, PostgreSQL, and Clean Architecture." />
+    <meta name="keywords" content="Luis Terranova, software engineer, backend architect, C# developer, .NET expert, clean architecture, DevOps" />
+    <link rel="canonical" href="https://trashtechhub.com/about" />
+    <meta property="og:title" content="About Me — Luis Terranova | Trash Tech Hub" />
+    <meta property="og:description" content="Backend Architect & Full-Stack Engineer specializing in C#, .NET, Docker, and distributed systems." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://trashtechhub.com/about" />
+    <meta property="og:image" content="https://trashtechhub.com/Images/trash-tech-hub-logo-bg-removed.png" />
+</HeadContent>
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="my-12">
+    <div class="text-center mb-10">
+        <MudText Typo="Typo.h3" Color="Color.Primary" Class="font-weight-800" Style="letter-spacing: 1px;">ABOUT ME</MudText>
+        <MudText Typo="Typo.subtitle1" Style="color: var(--mud-palette-text-secondary);" Class="mt-2">Luis Magno Terranova — Backend Architect &amp; Full-Stack Engineer</MudText>
+    </div>
+
+    <div class="pa-8 rounded-lg mb-8" style="background-color: var(--mud-palette-surface); border: 1px solid var(--mud-palette-lines-default);">
+        <MudGrid>
+            <!-- Avatar / Icon -->
+            <MudItem xs="12" md="4" Class="d-flex flex-column align-center justify-center pb-6 pb-md-0">
+                <div class="d-flex align-center justify-center mb-4" style="width: 150px; height: 150px; border-radius: 50%; background-color: var(--mud-palette-secondary); border: 3px solid var(--mud-palette-primary);">
+                    <MudIcon Icon="@Icons.Material.Filled.Terminal" Style="font-size: 5rem; color: var(--mud-palette-tertiary);" />
+                </div>
+                <MudText Typo="Typo.h5" Class="font-weight-bold" Style="color: var(--mud-palette-text-primary);">Luis Terranova</MudText>
+                <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary);">Brazil</MudText>
+            </MudItem>
+
+            <!-- Biography -->
+            <MudItem xs="12" md="8">
+                <MudText Typo="Typo.h5" Color="Color.Primary" Class="font-weight-bold mb-4">Who I Am</MudText>
+                <MudText Typo="Typo.body1" Style="color: var(--mud-palette-text-primary); line-height: 1.7;" Class="mb-4">
+                    I am a software engineer focused on building robust, high-performance web APIs and distributed systems using modern Microsoft technologies. I specialize in the .NET ecosystem, Entity Framework Core, PostgreSQL, and containerized deployments using Docker and Kubernetes.
+                </MudText>
+                <MudText Typo="Typo.body1" Style="color: var(--mud-palette-text-primary); line-height: 1.7;">
+                    My philosophy is to engineer simple, reliable, and testable code (following DDD and clean architecture principles) to solve complex business problems. I created the <strong>Trash Tech Hub</strong> as a playground to share tutorials, architectural concepts, and showcase projects I've built.
+                </MudText>
+            </MudItem>
+        </MudGrid>
+    </div>
+
+    <!-- Tech Stack / Skills -->
+    <div class="mb-8">
+        <MudText Typo="Typo.h4" Color="Color.Primary" Class="font-weight-700 mb-6">Technical Arsenal</MudText>
+        <MudGrid>
+            <!-- Backend -->
+            <MudItem xs="12" sm="6">
+                <MudPaper Class="pa-6 h-100" Style="background-color: var(--mud-palette-surface); border: 1px solid var(--mud-palette-lines-default);">
+                    <div class="d-flex align-center mb-4" style="gap: 10px;">
+                        <MudIcon Icon="@Icons.Material.Filled.Dns" Style="color: var(--mud-palette-tertiary);" />
+                        <MudText Typo="Typo.h6" Color="Color.Primary" Class="font-weight-bold">Backend &amp; Database</MudText>
+                    </div>
+                    <ul style="color: var(--mud-palette-text-primary); padding-left: 20px; list-style-type: square; line-height: 1.8;">
+                        <li>C# / .NET 10 / ASP.NET Core</li>
+                        <li>Entity Framework Core / Dapper</li>
+                        <li>PostgreSQL / SQL Server / SQLite</li>
+                        <li>RESTful APIs / Minimal APIs / gRPC</li>
+                        <li>Clean Architecture &amp; DDD</li>
+                    </ul>
+                </MudPaper>
+            </MudItem>
+
+            <!-- Frontend & DevOps -->
+            <MudItem xs="12" sm="6">
+                <MudPaper Class="pa-6 h-100" Style="background-color: var(--mud-palette-surface); border: 1px solid var(--mud-palette-lines-default);">
+                    <div class="d-flex align-center mb-4" style="gap: 10px;">
+                        <MudIcon Icon="@Icons.Material.Filled.SettingsSuggest" Style="color: var(--mud-palette-tertiary);" />
+                        <MudText Typo="Typo.h6" Color="Color.Primary" Class="font-weight-bold">Frontend &amp; Platform</MudText>
+                    </div>
+                    <ul style="color: var(--mud-palette-text-primary); padding-left: 20px; list-style-type: square; line-height: 1.8;">
+                        <li>Blazor Server / Blazor WASM</li>
+                        <li>MudBlazor / Tailwind CSS / CSS3</li>
+                        <li>Docker / Docker Compose</li>
+                        <li>GitHub Actions CI/CD</li>
+                        <li>xUnit / Integration &amp; Unit Testing</li>
+                    </ul>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+    </div>
+
+    <!-- Contact & Socials -->
+    <MudPaper Class="pa-6 rounded-lg text-center" Style="background-color: var(--mud-palette-surface); border: 1px solid var(--mud-palette-primary);">
+        <MudText Typo="Typo.h5" Color="Color.Primary" Class="font-weight-bold mb-3">Let's Connect</MudText>
+        <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary);" Class="mb-4">Feel free to reach out for project proposals, questions, or just a chat about technology.</MudText>
+        <div class="d-flex justify-center flex-wrap gap-4">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Custom.Brands.GitHub" Href="https://github.com/LuisTerranova/" Target="_blank" Style="font-weight: bold;">
+                GitHub
+            </MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Custom.Brands.LinkedIn" Href="https://www.linkedin.com/in/luis-magno-brito-6270941b8/" Target="_blank" Style="font-weight: bold;">
+                LinkedIn
+            </MudButton>
+        </div>
+    </MudPaper>
+</MudContainer>

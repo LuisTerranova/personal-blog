@@ -1,0 +1,27 @@
+@page "/admin"
+@page "/admin/dashboard"
+@rendermode @(RenderMode.InteractiveServer)
+@using Microsoft.AspNetCore.Authorization
+@using TrashTechHub.Web.Components.Admin.Dashboard
+@attribute [Authorize(Roles = "admin")]
+
+<MudContainer Class="pa-10 align-items-center">
+    <div class="d-flex justify-end mb-4">
+        <form method="post" action="/logout">
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Error" Variant="Variant.Outlined" Size="Size.Small">
+                Logout
+            </MudButton>
+        </form>
+    </div>
+    <MudTabs Centered="true" Rounded="true" ApplyEffectsToContainer="true" Color="Color.Primary">
+        <MudTabPanel Text="Posts">
+            <PostsManager/>
+        </MudTabPanel>
+        <MudTabPanel Text="Categories">
+            <CategoriesManager/>
+        </MudTabPanel>
+        <MudTabPanel Text="Projects">
+            <ProjectsManager/>
+        </MudTabPanel>
+    </MudTabs>
+</MudContainer>

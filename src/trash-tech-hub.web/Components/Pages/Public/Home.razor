@@ -1,0 +1,235 @@
+@page "/"
+@using TrashTechHub.Core.Requests.Posts
+@using TrashTechHub.Core.Requests.Projects
+@using TrashTechHub.Core.Models
+@inject IPostService PostService
+@inject IProjectService ProjectService
+@inject ILogger<Home> Logger
+
+<PageTitle>Trash Tech Hub — Luis Terranova | .NET & Backend Engineering Blog</PageTitle>
+<HeadContent>
+    <meta name="description" content="Hi, I'm Luis Magno Terranova. I build highly-scalable backend systems and modern frontend applications using ASP.NET Core, Blazor, and cloud technologies. Read my software architecture thoughts and tutorials." />
+    <meta name="keywords" content="ASP.NET Core, Blazor, .NET, backend engineering, clean architecture, DDD, PostgreSQL, Docker" />
+    <link rel="canonical" href="https://trashtechhub.com/" />
+    <!-- Open Graph -->
+    <meta property="og:title" content="Trash Tech Hub — Luis Terranova" />
+    <meta property="og:description" content="Luis Terranova's personal blog on .NET, ASP.NET Core, Blazor, clean architecture, and cloud engineering." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://trashtechhub.com/" />
+    <meta property="og:image" content="https://trashtechhub.com/Images/trash-tech-hub-logo-bg-removed.png" />
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Trash Tech Hub — Luis Terranova" />
+    <meta name="twitter:description" content="Luis Terranova's personal blog on .NET, ASP.NET Core, Blazor, clean architecture, and cloud engineering." />
+    <meta name="twitter:image" content="https://trashtechhub.com/Images/trash-tech-hub-logo-bg-removed.png" />
+    <script type="application/ld+json">
+    {
+      "@@context": "https://schema.org",
+      "@@type": "Person",
+      "name": "Luis Magno Terranova",
+      "url": "https://trashtechhub.com",
+      "sameAs": [
+        "https://github.com/LuisTerranova/",
+        "https://www.linkedin.com/in/luis-magno-brito-6270941b8/"
+      ],
+      "jobTitle": "Software Engineer",
+      "knowsAbout": [".NET", "ASP.NET Core", "Blazor", "PostgreSQL", "Clean Architecture"]
+    }
+    </script>
+</HeadContent>
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="my-12">
+    <!-- Hero / Intro Section -->
+    <div class="hero-section pa-8 pa-md-12 rounded-lg mb-12" style="background-color: var(--mud-palette-surface); border: 1px solid var(--mud-palette-primary);">
+        <MudGrid Class="align-center">
+            <MudItem xs="12" md="8">
+                <MudText Typo="Typo.h2" HtmlTag="h1" Color="Color.Primary" Class="font-weight-800 mb-4" Style="line-height: 1.1;">
+                    Welcome to the<br />Trash Tech Hub
+                </MudText>
+                <MudText Typo="Typo.h6" Style="color: var(--mud-palette-text-primary);" Class="mb-6 font-weight-regular">
+                    Hi, I'm Luis Magno Terranova. I build highly-scalable backend systems and modern frontend applications using ASP.NET Core, Blazor, and cloud technologies. Here I share my projects, thoughts on software architecture, and coding tutorials.
+                </MudText>
+                <div class="d-flex flex-wrap gap-4">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Href="/projects" Style="font-weight: bold;">
+                        View Projects
+                    </MudButton>
+                    <MudButton Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Large" Href="/blog" Style="font-weight: bold;">
+                        Read Blog
+                    </MudButton>
+                </div>
+            </MudItem>
+            <MudItem xs="12" md="4" Class="d-flex justify-center">
+                <div class="trash-animation d-none d-md-flex align-center" style="gap: 0;">
+                    <div class="trash-can-wrapper">
+                        <img src="Images/trash-tech-hub-tampa.png" alt="Lid" class="trash-lid" />
+                        <img src="Images/trash-tech-hub-lata.png" alt="Trash Can" class="trash-bin" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-lifter" style="left: -4%; --delay: 0s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-lifter" style="left: 8%; --delay: 0.05s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-lifter" style="left: 20%; --delay: 0.1s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-lifter" style="left: 32%; --delay: 0.15s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-lifter" style="left: 44%; --delay: 0.2s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-lifter" style="left: 56%; --delay: 0.25s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-lifter" style="left: 68%; --delay: 0.3s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-lifter" style="left: 80%; --delay: 0.35s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ejector-left" style="left: 0%; --delay: 2.3s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ejector-left" style="left: 18%; --delay: 2.4s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ejector-left" style="left: 36%; --delay: 2.5s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ejector-right" style="left: 46%; --delay: 2.3s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ejector-right" style="left: 64%; --delay: 2.4s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ejector-right" style="left: 82%; --delay: 2.5s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-dribbler" style="left: 4%; --delay: 2.6s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-dribbler" style="left: 36%; --delay: 2.7s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-dribbler" style="left: 58%; --delay: 2.8s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-dribbler" style="left: 88%; --delay: 2.9s;" />
+                    </div>
+                    <img src="Images/trash-tech-hub-name.png" alt="Trash Tech Hub" class="trash-name" />
+                </div>
+            </MudItem>
+        </MudGrid>
+    </div>
+
+    <!-- Featured Content Section -->
+    <MudGrid>
+        <!-- Recent Blog Posts -->
+        <MudItem xs="12" md="7">
+            <div class="mb-4">
+                <MudText Typo="Typo.h4" Color="Color.Primary" Class="font-weight-700 mb-2">Latest Articles</MudText>
+                <MudDivider Style="background-color: var(--mud-palette-divider);" />
+            </div>
+
+            @if (_isLoadingPosts)
+            {
+                <div class="d-flex justify-center my-8">
+                    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+                </div>
+            }
+            else if (_posts == null || !_posts.Any())
+            {
+                <MudAlert Severity="Severity.Normal" Variant="Variant.Outlined" Class="mud-theme-primary">
+                    No articles published yet. Check back soon!
+                </MudAlert>
+            }
+            else
+            {
+                <div class="d-flex flex-column gap-6">
+                    @foreach (var post in _posts)
+                    {
+                        <a href="/blog/@post.Slug" class="post-preview-card pa-6 rounded-lg d-block" 
+                           style="background-color: var(--mud-palette-surface); border-left: 4px solid var(--mud-palette-primary); transition: transform 0.2s, box-shadow 0.2s; text-decoration: none; color: inherit;">
+                            <div class="d-flex justify-space-between align-center mb-2">
+                                <MudChip T="string" Color="Color.Tertiary" Variant="Variant.Outlined" Size="Size.Small" Class="font-weight-bold">
+                                    @(post.Category?.Title ?? "General")
+                                </MudChip>
+                                <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary);">@post.Created.ToString("MMMM dd, yyyy")</MudText>
+                            </div>
+                            <MudText Typo="Typo.h5" Class="font-weight-bold mb-2" Style="color: var(--mud-palette-text-primary);">@post.Title</MudText>
+                            <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary); line-height: 1.5;" Class="mb-3">
+                                @post.Body
+                            </MudText>
+                            <MudText Color="Color.Primary" Style="font-weight: 600; text-decoration: none;">
+                                Read More &rarr;
+                            </MudText>
+                        </a>
+                    }
+                </div>
+            }
+        </MudItem>
+
+        <!-- Featured ProjectDto Card -->
+        <MudItem xs="12" md="5">
+            <div class="mb-4">
+                <MudText Typo="Typo.h4" Color="Color.Primary" Class="font-weight-700 mb-2">Featured Project</MudText>
+                <MudDivider Style="background-color: var(--mud-palette-divider);" />
+            </div>
+
+            @if (_isLoadingProjects)
+            {
+                <div class="d-flex justify-center my-8">
+                    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+                </div>
+            }
+            else if (_featuredProject == null)
+            {
+                <MudAlert Severity="Severity.Normal" Variant="Variant.Outlined" Class="mud-theme-primary">
+                    No projects listed yet.
+                </MudAlert>
+            }
+            else
+            {
+                <MudCard Style="background-color: var(--mud-palette-surface); border: 1px solid var(--mud-palette-lines-default); border-radius: 8px; overflow: hidden;">
+                    @if (!string.IsNullOrEmpty(_featuredProject.ImageUrl))
+                    {
+                        <MudCardMedia Image="@_featuredProject.ImageUrl" Height="200" />
+                    }
+                    else
+                    {
+                        <div class="d-flex align-center justify-center" style="height: 200px; background-color: var(--mud-palette-secondary); border-bottom: 1px solid var(--mud-palette-lines-default);">
+                            <MudIcon Icon="@Icons.Material.Filled.Code" Style="font-size: 5rem; color: var(--mud-palette-primary);" />
+                        </div>
+                    }
+                    <MudCardContent Class="flex-grow-1">
+                        <MudText Typo="Typo.h5" Class="font-weight-bold mb-2" Style="color: var(--mud-palette-text-primary);">@_featuredProject.Title</MudText>
+                        <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary); line-height: 1.6;" Class="mb-4 project-summary">
+                            @_featuredProject.Summary
+                        </MudText>
+                    </MudCardContent>
+                    <MudCardActions Style="border-top: 1px solid var(--mud-palette-lines-default);" Class="pa-4">
+                        <MudButton Href="@($"/projects/{_featuredProject.Slug}")" Variant="Variant.Text" Color="Color.Primary" Style="font-weight: bold;">
+                            View Details
+                        </MudButton>
+                        <MudSpacer />
+                        @if (!string.IsNullOrEmpty(_featuredProject.RepoLink))
+                        {
+                            <MudButton Href="@_featuredProject.RepoLink" Target="_blank" Variant="Variant.Outlined" Color="Color.Primary" Style="font-weight: bold; border-width: 2px;">
+                                GitHub
+                            </MudButton>
+                        }
+                    </MudCardActions>
+                </MudCard>
+            }
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+@code {
+    private List<PostDto> _posts = [];
+    private ProjectDto? _featuredProject;
+    private bool _isLoadingPosts = true;
+    private bool _isLoadingProjects = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var featuredRequest = new GetFeaturedPostsRequest { PageSize = 3 };
+            var result = await PostService.GetFeaturedAsync(featuredRequest);
+            _posts = result.Items;
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Failed to load featured posts");
+            _posts = [];
+        }
+        finally
+        {
+            _isLoadingPosts = false;
+        }
+
+        try
+        {
+            var projectsRequest = new GetAllProjectsRequest { PageNumber = 1, PageSize = 1 };
+            var result = await ProjectService.GetAllAsync(projectsRequest);
+            _featuredProject = result.Items.FirstOrDefault();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Failed to load featured project");
+            _featuredProject = null;
+        }
+        finally
+        {
+            _isLoadingProjects = false;
+        }
+    }
+}
+

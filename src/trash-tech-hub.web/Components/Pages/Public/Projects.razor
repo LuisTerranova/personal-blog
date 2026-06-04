@@ -1,0 +1,118 @@
+@page "/projects"
+@using TrashTechHub.Core.Requests.Projects
+@using TrashTechHub.Core.Models
+@inject IProjectService ProjectService
+@inject ILogger<Projects> Logger
+
+<PageTitle>Project Showcase — Luis Terranova | Trash Tech Hub</PageTitle>
+<HeadContent>
+    <meta name="description" content="Explore the open-source projects, architectural research, and backend tools engineered by Luis Magno Terranova." />
+    <meta name="keywords" content="projects showcase, portfolio, open source, github projects, dot net, blazor, systems engineering" />
+    <link rel="canonical" href="https://trashtechhub.com/projects" />
+    <!-- Open Graph -->
+    <meta property="og:title" content="Project Showcase — Luis Terranova | Trash Tech Hub" />
+    <meta property="og:description" content="Explore open-source projects, developer tools, and software architectures engineered by Luis Terranova." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://trashtechhub.com/projects" />
+    <meta property="og:image" content="https://trashtechhub.com/Images/trash-tech-hub-logo-bg-removed.png" />
+</HeadContent>
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="my-12">
+    <div class="text-center mb-10">
+        <MudText Typo="Typo.h3" HtmlTag="h1" Color="Color.Primary" Class="font-weight-800" Style="letter-spacing: 1px;">PROJECT SHOWCASE</MudText>
+        <MudText Typo="Typo.subtitle1" Style="color: var(--mud-palette-text-secondary);" Class="mt-2">Open source projects, research tools, and applications I've engineered</MudText>
+    </div>
+
+    <!-- Projects Grid -->
+    @if (_isLoading)
+    {
+        <div class="d-flex justify-center my-16">
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large" />
+        </div>
+    }
+    else if (_projects == null || !_projects.Any())
+    {
+        <div class="text-center my-16 pa-12 rounded-lg" style="background-color: var(--mud-palette-surface); border: 1px dashed var(--mud-palette-lines-default);">
+            <MudIcon Icon="@Icons.Material.Filled.Code" Color="Color.Primary" Style="font-size: 3rem;" Class="mb-4" />
+            <MudText Typo="Typo.h5" Style="color: var(--mud-palette-text-primary);">No projects posted yet</MudText>
+            <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary);" Class="mt-1">Check back later for updates.</MudText>
+        </div>
+    }
+    else
+    {
+        <MudGrid>
+            @foreach (var project in _projects)
+            {
+                <MudItem xs="12" sm="6" md="4">
+                    <MudCard Style="background-color: var(--mud-palette-surface); border: 1px solid var(--mud-palette-lines-default); border-radius: 8px; overflow: hidden; height: 100%; display: flex; flex-direction: column; transition: transform 0.2s, box-shadow 0.2s;"
+                             Class="project-card">
+                        @if (!string.IsNullOrEmpty(project.ImageUrl))
+                        {
+                            <MudCardMedia Image="@project.ImageUrl" Class="card-media-responsive" Style="height: 180px; object-fit: cover;" />
+                        }
+                        else
+                        {
+                            <div class="d-flex align-center justify-center" style="height: 180px; background-color: var(--mud-palette-secondary); border-bottom: 1px solid var(--mud-palette-lines-default);">
+                                <MudIcon Icon="@Icons.Material.Filled.Code" Style="font-size: 4rem; color: var(--mud-palette-primary);" />
+                            </div>
+                        }
+                        <MudCardContent Class="flex-grow-1 pa-6">
+                            <MudText Typo="Typo.h5" Class="font-weight-bold mb-2" Style="color: var(--mud-palette-text-primary);">@project.Title</MudText>
+                            <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary); line-height: 1.5;">@project.Summary</MudText>
+                        </MudCardContent>
+                        <MudCardActions Style="border-top: 1px solid var(--mud-palette-lines-default);" Class="pa-4 gap-2">
+                            <MudButton Variant="Variant.Filled" 
+                                       Color="Color.Tertiary"
+                                       Href="@($"/projects/{project.Slug}")"
+                                       Size="Size.Small"
+                                       Style="font-weight: bold; text-transform: none;">
+                                Details
+                            </MudButton>
+                            @if (!string.IsNullOrEmpty(project.RepoLink))
+                            {
+                                <MudButton Href="@project.RepoLink"
+                                           Variant="Variant.Outlined"
+                                           Color="Color.Primary"
+                                           Target="_blank"
+                                           Style="font-weight: bold; border-width: 2px; text-transform: none;"
+                                           Size="Size.Small">
+                                    Repo
+                                </MudButton>
+                            }
+                        </MudCardActions>
+                    </MudCard>
+                </MudItem>
+            }
+        </MudGrid>
+    }
+</MudContainer>
+
+@code {
+    private List<ProjectDto> _projects = [];
+    private bool _isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadProjects();
+    }
+
+    private async Task LoadProjects()
+    {
+        _isLoading = true;
+        try
+        {
+            var request = new GetAllProjectsRequest { PageNumber = 1, PageSize = 50 };
+            var result = await ProjectService.GetAllAsync(request);
+            _projects = result.Items;
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Failed to load projects");
+            _projects = [];
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+}
