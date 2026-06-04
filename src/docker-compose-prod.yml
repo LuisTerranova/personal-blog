@@ -20,6 +20,7 @@ services:
     restart: unless-stopped
     networks:
       - blog-net
+      - landing-page-isis_default
   db:
     image: "postgres:16-alpine"
     container_name: trash-tech-hub-db
@@ -44,3 +45,5 @@ volumes:
 networks:
     blog-net:
       driver: bridge
+    landing-page-isis_default:
+      external: true
