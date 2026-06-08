@@ -8,8 +8,8 @@ services:
       - .env
     environment:
       - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=personal_blog;Username=${DB_USER};Password=${DB_PASSWORD}
-      - AdminSettings__Email=${ADMIN_EMAIL:-admin@trashtechhub.com}
-      - AdminSettings__Password=${ADMIN_PASSWORD:-admin}
+      - AdminSettings__Email=${AdminUser__Email:-admin@trashtechhub.com}
+      - AdminSettings__Password=${AdminUser__Password:-admin}
       - ASPNETCORE_ENVIRONMENT=Production
     depends_on:
       db:
