@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using TrashTechHub.Web.Common.MockData;
 using TrashTechHub.Infrastructure.Data;
@@ -35,6 +36,7 @@ public static class AppExtension
 
     public static void UseSecurity(this WebApplication app)
     {
+        app.UseForwardedHeaders();
         app.UseAuthentication();
         app.UseAuthorization();
     }

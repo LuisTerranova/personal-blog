@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.HttpOverrides;
 using TrashTechHub.Application.Services;
 using TrashTechHub.Core.Services;
 using TrashTechHub.Infrastructure;
@@ -8,6 +9,13 @@ public static class BuilderExtension
 {
     public static void AddSecurity(this WebApplicationBuilder builder)
     {
+        builder.Services.Configure<ForwardedHeadersOptions>(options =>
+        {
+            options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            options.KnownNetworks.Clear();
+            options.KnownProxies.Clear();
+        });
+
         builder.Services.AddAuthorization(options =>
         {
             options.AddPolicy("AdminPolicy", policy => 
