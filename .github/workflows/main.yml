@@ -57,7 +57,34 @@ jobs:
       - name: Build and Restart Docker
         run: |
           cd src
-          docker compose -f docker-compose-prod.yml -p src build
+
+          # Try the docker compose build up to 3 times with increasing delay.
+          attempt=1
+          max_attempts=3
+          build_succeeded=0
+
+          until [ $attempt -gt $max_attempts ]; do
+            echo "Attempt $attempt/$max_attempts: docker compose build..."
+            if docker compose -f docker-compose-prod.yml -p src build; then
+              build_succeeded=1
+              echo "Docker build succeeded on attempt $attempt."
+              break
+            fi
+
+            echo "Docker build failed on attempt $attempt."
+            if [ $attempt -lt $max_attempts ]; then
+              sleep_seconds=$((attempt * 10))
+              echo "Sleeping ${sleep_seconds}s before retry..."
+              sleep $sleep_seconds
+            fi
+            attempt=$((attempt + 1))
+          done
+
+          if [ $build_succeeded -ne 1 ]; then
+            echo "ERROR: Docker build failed after ${max_attempts} attempts." >&2
+            exit 1
+          fi
+
           docker compose -f docker-compose-prod.yml -p src up -d
 
       - name: Clean up .env file
