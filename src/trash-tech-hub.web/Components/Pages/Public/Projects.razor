@@ -70,7 +70,7 @@
                             </MudButton>
                             @if (!string.IsNullOrEmpty(project.RepoLink))
                             {
-                                <MudButton Href="@project.RepoLink"
+                                <MudButton Href="@UrlHelper.EnsureAbsoluteUrl(project.RepoLink)"
                                            Variant="Variant.Outlined"
                                            Color="Color.Primary"
                                            Target="_blank"

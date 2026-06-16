@@ -13,4 +13,5 @@ public interface IProjectService
     Task<ProjectDto> CreateAsync(CreateProjectRequest request);
     Task<ProjectDto?> UpdateAsync(UpdateProjectRequest request);
     Task<bool> DeleteAsync(DeleteProjectRequest request);
+    Task<PagedResult<ProjectDto>> GetFeaturedAsync(GetFeaturedProjectsRequest request);
 }

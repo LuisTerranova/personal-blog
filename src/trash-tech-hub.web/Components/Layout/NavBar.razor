@@ -1,7 +1,12 @@
+@inject ThemeState ThemeState
+@inject IJSRuntime JSRuntime
+@implements IDisposable
+
 <MudAppBar Elevation="2" Fixed="true" Style="background-color: var(--mud-palette-appbar-background); border-bottom: 2px solid var(--mud-palette-primary); z-index: 1100;">
     <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="d-flex align-center w-100 px-0">
-        <a href="/" class="d-flex align-center cursor-pointer" style="gap: 12px; cursor: pointer; text-decoration: none;">
-            <MudImage Src="Images/trash-tech-hub-logo-bg-removed.png" Alt="Logo" Width="40" Height="40" />
+        <!-- Logo and brand title -->
+        <a href="/" class="d-flex align-center cursor-pointer" style="gap: 12px; text-decoration: none;">
+            <MudImage Src="Images/trash-tech-hub-logo-bg-removed.png" Alt="Logo" Width="40" Height="40" Class="navbar-logo" />
             <MudText Typo="Typo.h6" Class="font-weight-bold" Color="Color.Primary" Style="letter-spacing: 1px;">
                 TRASH TECH HUB
             </MudText>
@@ -19,17 +24,93 @@
 
         <MudDivider Vertical="true" FlexItem="true" Class="mx-4 my-2 d-none d-md-block" Style="background-color: var(--mud-palette-divider);" />
 
+        <!-- Social Icons + Theme Toggle -->
         <div class="d-flex align-center" style="gap: 4px;">
-            <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Href="https://github.com/LuisTerranova/" Target="_blank" Color="Color.Inherit" />
-            <MudIconButton Icon="@Icons.Custom.Brands.LinkedIn" Href="https://www.linkedin.com/in/luis-magno-brito-6270941b8/" Target="_blank" Color="Color.Inherit" />
+            <div class="d-none d-md-flex" style="gap: 4px;">
+                <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Href="https://github.com/LuisTerranova/" Target="_blank" Color="Color.Inherit" />
+                <MudIconButton Icon="@Icons.Custom.Brands.LinkedIn" Href="https://www.linkedin.com/in/luis-magno-brito-6270941b8/" Target="_blank" Color="Color.Inherit" />
+            </div>
+
+            <!-- Light/Dark Mode Switcher -->
+            <MudIconButton Icon="@(ThemeState.IsDarkMode ? Icons.Material.Filled.WbSunny : Icons.Material.Filled.NightsStay)" 
+                           OnClick="ToggleTheme" 
+                           Color="Color.Inherit" 
+                           title="@(ThemeState.IsDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode")" />
+
+            <!-- Hamburger Button for Mobile Drawer -->
+            <MudIconButton Icon="@Icons.Material.Filled.Menu" 
+                           Color="Color.Inherit" 
+                           Edge="Edge.End" 
+                           Class="d-flex d-md-none" 
+                           OnClick="ToggleDrawer" />
         </div>
     </MudContainer>
 </MudAppBar>
 
-<!-- Mobile Navigation Sub-Bar (Fixed at top, below main navbar) -->
-<div class="d-flex d-md-none justify-space-around py-2 w-100" style="background-color: var(--mud-palette-surface); border-bottom: 1px solid var(--mud-palette-lines-default); position: fixed; top: 64px; left: 0; z-index: 1000; height: 40px; align-items: center;">
-    <MudLink Href="/" Color="Color.Inherit" Underline="Underline.None" Class="px-2 py-1 font-weight-medium" Style="font-size: 0.9rem;">Home</MudLink>
-    <MudLink Href="/blog" Color="Color.Inherit" Underline="Underline.None" Class="px-2 py-1 font-weight-medium" Style="font-size: 0.9rem;">Blog</MudLink>
-    <MudLink Href="/projects" Color="Color.Inherit" Underline="Underline.None" Class="px-2 py-1 font-weight-medium" Style="font-size: 0.9rem;">Projects</MudLink>
-    <MudLink Href="/about" Color="Color.Inherit" Underline="Underline.None" Class="px-2 py-1 font-weight-medium" Style="font-size: 0.9rem;">About</MudLink>
-</div>
+<!-- Collapsible Navigation Drawer for Mobile -->
+<MudDrawer @bind-Open="_drawerOpen" Anchor="Anchor.End" Elevation="4" Variant="DrawerVariant.Temporary" Style="background-color: var(--mud-palette-drawer-background);">
+    <MudDrawerHeader Class="d-flex align-center justify-space-between py-6">
+        <a href="/" class="d-flex align-center" style="gap: 12px; text-decoration: none;" @onclick="CloseDrawer">
+            <MudImage Src="Images/trash-tech-hub-logo-bg-removed.png" Alt="Logo" Width="32" Height="32" Class="navbar-logo" />
+            <MudText Typo="Typo.subtitle1" Class="font-weight-bold" Color="Color.Primary" Style="letter-spacing: 1px;">
+                TRASH TECH HUB
+            </MudText>
+        </a>
+        <MudIconButton Icon="@Icons.Material.Filled.Close" Color="Color.Inherit" OnClick="ToggleDrawer" Size="Size.Small" />
+    </MudDrawerHeader>
+    <MudNavMenu Class="px-2">
+        <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home" OnClick="CloseDrawer">Home</MudNavLink>
+        <MudNavLink Href="/blog" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Article" OnClick="CloseDrawer">Blog</MudNavLink>
+        <MudNavLink Href="/projects" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Code" OnClick="CloseDrawer">Projects</MudNavLink>
+        <MudNavLink Href="/about" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Person" OnClick="CloseDrawer">About</MudNavLink>
+    </MudNavMenu>
+    <MudDivider Class="my-4 mx-4" Style="background-color: var(--mud-palette-divider);" />
+    <!-- Mobile social buttons at bottom of drawer -->
+    <div class="d-flex justify-center px-4 py-2" style="gap: 16px;">
+        <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Href="https://github.com/LuisTerranova/" Target="_blank" Color="Color.Inherit" />
+        <MudIconButton Icon="@Icons.Custom.Brands.LinkedIn" Href="https://www.linkedin.com/in/luis-magno-brito-6270941b8/" Target="_blank" Color="Color.Inherit" />
+    </div>
+</MudDrawer>
+
+@code {
+    private bool _drawerOpen;
+
+    protected override void OnInitialized()
+    {
+        ThemeState.OnChange += StateHasChanged;
+    }
+
+    private void ToggleDrawer()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+    private void CloseDrawer()
+    {
+        _drawerOpen = false;
+    }
+
+    private async Task ToggleTheme()
+    {
+        var isDark = await JSRuntime.InvokeAsync<bool>("themeHelper.toggleTheme");
+        ThemeState.IsDarkMode = isDark;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var isDark = await JSRuntime.InvokeAsync<bool>("themeHelper.isDark");
+            if (isDark != ThemeState.IsDarkMode)
+            {
+                ThemeState.IsDarkMode = isDark;
+                StateHasChanged();
+            }
+        }
+    }
+
+    public void Dispose()
+    {
+        ThemeState.OnChange -= StateHasChanged;
+    }
+}

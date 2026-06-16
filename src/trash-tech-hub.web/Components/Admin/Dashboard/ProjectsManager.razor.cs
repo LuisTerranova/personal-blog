@@ -69,7 +69,8 @@ public partial class ProjectsManager
                     Description = project.Description,
                     Summary = project.Summary,
                     ImageUrl = project.ImageUrl,
-                    RepoLink = project.RepoLink
+                    RepoLink = project.RepoLink,
+                    IsFeatured = project.IsFeatured
                 };
 
                 parameters.Add("InitialUpdateModel", updateModel);

@@ -56,6 +56,7 @@ public class ProjectService(
             Summary = request.Summary,
             ImageUrl = imageUrl,
             RepoLink = request.RepoLink,
+            IsFeatured = request.IsFeatured,
             Slug = string.IsNullOrWhiteSpace(request.Slug) ? GenerateSlug(request.Title) : request.Slug
         };
 
@@ -86,6 +87,7 @@ public class ProjectService(
         existing.Summary = request.Summary;
         existing.ImageUrl = imageUrl;
         existing.RepoLink = request.RepoLink;
+        existing.IsFeatured = request.IsFeatured;
         existing.Slug = string.IsNullOrWhiteSpace(request.Slug) ? GenerateSlug(request.Title) : request.Slug;
 
         await repository.UpdateAsync(existing);
@@ -104,6 +106,18 @@ public class ProjectService(
         slug = System.Text.RegularExpressions.Regex.Replace(slug, @"\s+", "-");
         slug = System.Text.RegularExpressions.Regex.Replace(slug, @"-+", "-");
         return slug.Trim('-');
+    }
+
+    public async Task<PagedResult<ProjectDto>> GetFeaturedAsync(GetFeaturedProjectsRequest request)
+    {
+        var (projects, totalCount) = await repository.GetFeaturedAsync(request.PageSize);
+        return new PagedResult<ProjectDto>
+        {
+            Items = mapper.Map<List<ProjectDto>>(projects),
+            TotalCount = totalCount,
+            PageNumber = 1,
+            PageSize = request.PageSize
+        };
     }
 
     public async Task<bool> DeleteAsync(DeleteProjectRequest request)

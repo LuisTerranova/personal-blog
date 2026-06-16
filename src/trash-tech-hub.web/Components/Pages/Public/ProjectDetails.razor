@@ -101,7 +101,7 @@
                 <div class="d-flex justify-space-between align-center flex-wrap gap-4">
                     @if (!string.IsNullOrEmpty(_project.RepoLink))
                     {
-                        <MudButton Href="@_project.RepoLink"
+                        <MudButton Href="@UrlHelper.EnsureAbsoluteUrl(_project.RepoLink)"
                                    Variant="Variant.Filled"
                                    Color="Color.Primary"
                                    Target="_blank"

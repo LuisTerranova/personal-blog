@@ -11,4 +11,5 @@ public interface IProjectRepository
     Task<Project> CreateAsync(Project project);
     Task<Project> UpdateAsync(Project project);
     Task<bool> DeleteAsync(int id);
+    Task<(List<Project> Projects, int TotalCount)> GetFeaturedAsync(int pageSize);
 }

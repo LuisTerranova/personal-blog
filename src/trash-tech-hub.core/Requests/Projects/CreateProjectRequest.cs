@@ -17,5 +17,6 @@ public class CreateProjectRequest : ProjectRequestWithImageBase
 
     [Required(ErrorMessage = "Your project needs a Repo Link")]
     public string RepoLink { get; set; } = string.Empty;
+    public bool IsFeatured { get; set; }
     public string? Slug { get; set; }
 }

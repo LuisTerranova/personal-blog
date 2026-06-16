@@ -1,0 +1,79 @@
+<footer class="app-footer">
+    <!-- Gradient accent line at top -->
+    <div class="footer-top-line"></div>
+    
+    <MudContainer MaxWidth="MaxWidth.Large" Class="footer-container py-12 px-6">
+        <MudGrid Spacing="4">
+            <!-- Column 1: Brand & Description -->
+            <MudItem xs="12" md="4" Class="d-flex flex-column" Style="gap: 16px;">
+                <a href="/" class="footer-brand d-flex align-center" style="gap: 12px; text-decoration: none;">
+                    <img src="Images/trash-tech-hub-logo-bg-removed.png" alt="Trash Tech Hub Logo" class="footer-logo" />
+                    <span class="footer-title">TRASH TECH HUB</span>
+                </a>
+                <MudText Typo="Typo.body2" Class="footer-tagline">
+                    Luis Magno Terranova's software engineering journal. Focusing on ASP.NET Core, Blazor, Clean Architecture, and designing highly scalable backend systems.
+                </MudText>
+            </MudItem>
+
+            <!-- Column 2: Quick Links -->
+            <MudItem xs="6" sm="4" md="2" Class="d-flex flex-column" Style="gap: 16px;">
+                <span class="footer-column-title">Explore</span>
+                <ul class="footer-links-list">
+                    <li><a href="/" class="footer-link">Home</a></li>
+                    <li><a href="/blog" class="footer-link">Blog</a></li>
+                    <li><a href="/projects" class="footer-link">Projects</a></li>
+                    <li><a href="/about" class="footer-link">About</a></li>
+                </ul>
+            </MudItem>
+
+            <!-- Column 3: Tech Stack -->
+            <MudItem xs="6" sm="4" md="3" Class="d-flex flex-column" Style="gap: 16px;">
+                <span class="footer-column-title">Built With</span>
+                <div class="footer-tech-stack">
+                    <span class="tech-badge">.NET 10</span>
+                    <span class="tech-badge">ASP.NET Core</span>
+                    <span class="tech-badge">Blazor Web App</span>
+                    <span class="tech-badge">MudBlazor</span>
+                    <span class="tech-badge">PostgreSQL</span>
+                    <span class="tech-badge">Docker</span>
+                </div>
+            </MudItem>
+
+            <!-- Column 4: Stay Connected -->
+            <MudItem xs="12" sm="4" md="3" Class="d-flex flex-column" Style="gap: 16px;">
+                <span class="footer-column-title">Connect</span>
+                <MudText Typo="Typo.body2" Class="footer-tagline">
+                    Reach out for collaborations, system architecture reviews, or just to say hi!
+                </MudText>
+                <div class="footer-social-icons">
+                    <a href="https://github.com/LuisTerranova/" target="_blank" class="social-button github" title="GitHub">
+                        <MudIcon Icon="@Icons.Custom.Brands.GitHub" Class="mr-2" />
+                        <span>GitHub</span>
+                    </a>
+                    <a href="https://www.linkedin.com/in/luis-magno-brito-6270941b8/" target="_blank" class="social-button linkedin" title="LinkedIn">
+                        <MudIcon Icon="@Icons.Custom.Brands.LinkedIn" Class="mr-2" />
+                        <span>LinkedIn</span>
+                    </a>
+                </div>
+            </MudItem>
+        </MudGrid>
+
+        <!-- Divider line -->
+        <div class="footer-divider"></div>
+
+        <!-- Bottom bar -->
+        <div class="footer-bottom">
+            <div class="footer-copyright">
+                &copy; @DateTime.Now.Year Trash Tech Hub. All rights reserved.
+            </div>
+            <div class="footer-meta">
+                <span>Made with precision &amp; passion.</span>
+            </div>
+            <!-- Back to top button -->
+            <button onclick="window.scrollTo({ top: 0, behavior: 'smooth' })" class="back-to-top-btn" aria-label="Back to top">
+                <MudIcon Icon="@Icons.Material.Filled.ArrowUpward" Size="Size.Small" />
+                <span>Top</span>
+            </button>
+        </div>
+    </MudContainer>
+</footer>

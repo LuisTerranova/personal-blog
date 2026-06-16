@@ -31,6 +31,9 @@ public class ProjectMap : IEntityTypeConfiguration<Project>
             .HasMaxLength(2000)
             .IsRequired();
 
+        builder.Property(p => p.IsFeatured)
+            .HasDefaultValue(false);
+
         builder.Property(p => p.Slug)
             .IsRequired()
             .HasMaxLength(200);

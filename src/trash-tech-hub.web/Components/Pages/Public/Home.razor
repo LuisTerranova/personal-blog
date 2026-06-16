@@ -43,11 +43,11 @@
     <div class="hero-section pa-8 pa-md-12 rounded-lg mb-12" style="background-color: var(--mud-palette-surface); border: 1px solid var(--mud-palette-primary);">
         <MudGrid Class="align-center">
             <MudItem xs="12" md="8">
-                <MudText Typo="Typo.h2" HtmlTag="h1" Color="Color.Primary" Class="font-weight-800 mb-4" Style="line-height: 1.1;">
+                <MudText Typo="Typo.h1" HtmlTag="h1" Color="Color.Primary" Class="font-weight-800 mb-4" Style="line-height: 1.05; font-size: clamp(2.2rem, 5vw, 3.5rem);">
                     Welcome to the<br />Trash Tech Hub
                 </MudText>
-                <MudText Typo="Typo.h6" Style="color: var(--mud-palette-text-primary);" Class="mb-6 font-weight-regular">
-                    Hi, I'm Luis Magno Terranova. I build highly-scalable backend systems and modern frontend applications using ASP.NET Core, Blazor, and cloud technologies. Here I share my projects, thoughts on software architecture, and coding tutorials.
+                <MudText Style="color: var(--mud-palette-text-primary); font-size: clamp(0.95rem, 1.5vw, 1.1rem);" Class="mb-6 font-weight-regular">
+                    Hi, I'm Luis Magno. Here is my central space for software architecture, backend engineering, and modern web development. Here, I break down how I build distributed solutions with ASP.NET Core, Blazor, and cloud infrastructure, while sharing the real-world engineering behind my projects.
                 </MudText>
                 <div class="d-flex flex-wrap gap-4">
                     <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Href="/projects" Style="font-weight: bold;">
@@ -63,24 +63,45 @@
                     <div class="trash-can-wrapper">
                         <img src="Images/trash-tech-hub-tampa.png" alt="Lid" class="trash-lid" />
                         <img src="Images/trash-tech-hub-lata.png" alt="Trash Can" class="trash-bin" />
-                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-lifter" style="left: -4%; --delay: 0s;" />
-                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-lifter" style="left: 8%; --delay: 0.05s;" />
-                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-lifter" style="left: 20%; --delay: 0.1s;" />
-                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-lifter" style="left: 32%; --delay: 0.15s;" />
-                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-lifter" style="left: 44%; --delay: 0.2s;" />
-                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-lifter" style="left: 56%; --delay: 0.25s;" />
-                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-lifter" style="left: 68%; --delay: 0.3s;" />
-                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-lifter" style="left: 80%; --delay: 0.35s;" />
-                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ejector-left" style="left: 0%; --delay: 2.3s;" />
-                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ejector-left" style="left: 18%; --delay: 2.4s;" />
-                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ejector-left" style="left: 36%; --delay: 2.5s;" />
-                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ejector-right" style="left: 46%; --delay: 2.3s;" />
-                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ejector-right" style="left: 64%; --delay: 2.4s;" />
-                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ejector-right" style="left: 82%; --delay: 2.5s;" />
-                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-dribbler" style="left: 4%; --delay: 2.6s;" />
-                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-dribbler" style="left: 36%; --delay: 2.7s;" />
-                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-dribbler" style="left: 58%; --delay: 2.8s;" />
-                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-dribbler" style="left: 88%; --delay: 2.9s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ball trash-boil" style="left: 20%; --delay: 0s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ball trash-boil" style="left: 40%; --delay: 0.1s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ball trash-boil" style="left: 60%; --delay: 0.2s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ball trash-boil" style="left: 30%; --delay: 0.3s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ball trash-boil" style="left: 50%; --delay: 0.4s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ball trash-boil" style="left: 25%; --delay: 0.15s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ball trash-boil" style="left: 45%; --delay: 0.25s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ball trash-boil" style="left: 55%; --delay: 0.35s;" />
+                        
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ball trash-exp-1" style="--delay: 0s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ball trash-exp-2" style="--delay: 0.05s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ball trash-exp-3" style="--delay: 0.1s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ball trash-exp-4" style="--delay: 0.02s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ball trash-exp-5" style="--delay: 0.08s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ball trash-exp-6" style="--delay: 0.15s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ball trash-exp-7" style="--delay: 0.04s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ball trash-exp-8" style="--delay: 0.03s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ball trash-exp-9" style="--delay: 0.09s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ball trash-exp-10" style="--delay: 0.12s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ball trash-exp-11" style="--delay: 0.01s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ball trash-exp-12" style="--delay: 0.06s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ball trash-exp-13" style="--delay: 0.11s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ball trash-exp-14" style="--delay: 0.07s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ball trash-exp-15" style="--delay: 0.14s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ball trash-exp-16" style="--delay: 0.02s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ball trash-exp-17" style="--delay: 0.09s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ball trash-exp-18" style="--delay: 0.06s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ball trash-exp-19" style="--delay: 0.11s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ball trash-exp-20" style="--delay: 0.03s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ball trash-exp-21" style="--delay: 0.08s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ball trash-exp-22" style="--delay: 0.13s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ball trash-exp-23" style="--delay: 0.05s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ball trash-exp-24" style="--delay: 0.1s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ball trash-exp-25" style="--delay: 0.01s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ball trash-exp-26" style="--delay: 0.14s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ball trash-exp-27" style="--delay: 0.07s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ball trash-exp-28" style="--delay: 0.12s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ball trash-exp-29" style="--delay: 0.04s;" />
+                        <img src="Images/trash-tech-hub-trash.png" alt="Trash" class="trash-ball trash-exp-30" style="--delay: 0.15s;" />
                     </div>
                     <img src="Images/trash-tech-hub-name.png" alt="Trash Tech Hub" class="trash-name" />
                 </div>
@@ -92,9 +113,12 @@
     <MudGrid>
         <!-- Recent Blog Posts -->
         <MudItem xs="12" md="7">
-            <div class="mb-4">
-                <MudText Typo="Typo.h4" Color="Color.Primary" Class="font-weight-700 mb-2">Latest Articles</MudText>
-                <MudDivider Style="background-color: var(--mud-palette-divider);" />
+            <!-- Section header -->
+            <div class="d-flex align-center mb-5" style="gap: 12px;">
+                <div style="width: 4px; height: 28px; background: linear-gradient(180deg, var(--mud-palette-primary), #FF9A6C); border-radius: 2px; flex-shrink: 0;"></div>
+                <MudText Typo="Typo.h5" Class="font-weight-bold">Latest Articles</MudText>
+                <MudSpacer />
+                <MudLink Href="/blog" Color="Color.Primary" Underline="Underline.None" Class="font-weight-bold" Style="font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase;">All Posts →</MudLink>
             </div>
 
             @if (_isLoadingPosts)
@@ -111,35 +135,40 @@
             }
             else
             {
-                <div class="d-flex flex-column gap-6">
+                <div class="d-flex flex-column gap-4">
                     @foreach (var post in _posts)
                     {
-                        <a href="/blog/@post.Slug" class="post-preview-card pa-6 rounded-lg d-block" 
-                           style="background-color: var(--mud-palette-surface); border-left: 4px solid var(--mud-palette-primary); transition: transform 0.2s, box-shadow 0.2s; text-decoration: none; color: inherit;">
-                            <div class="d-flex justify-space-between align-center mb-2">
-                                <MudChip T="string" Color="Color.Tertiary" Variant="Variant.Outlined" Size="Size.Small" Class="font-weight-bold">
-                                    @(post.Category?.Title ?? "General")
-                                </MudChip>
-                                <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary);">@post.Created.ToString("MMMM dd, yyyy")</MudText>
-                            </div>
-                            <MudText Typo="Typo.h5" Class="font-weight-bold mb-2" Style="color: var(--mud-palette-text-primary);">@post.Title</MudText>
-                            <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary); line-height: 1.5;" Class="mb-3">
-                                @post.Body
-                            </MudText>
-                            <MudText Color="Color.Primary" Style="font-weight: 600; text-decoration: none;">
-                                Read More &rarr;
-                            </MudText>
+                        <a href="/blog/@post.Slug" class="featured-post-link">
+                            <MudPaper Elevation="0" Class="pa-5 rounded-lg"
+                                      Style="background-color: var(--mud-palette-surface); border: 1px solid var(--mud-palette-lines-default); transition: border-color 0.2s, box-shadow 0.2s;">
+                                <div class="d-flex justify-space-between align-center mb-2">
+                                    <MudChip T="string" Color="Color.Primary" Variant="Variant.Text" Size="Size.Small"
+                                             Class="font-weight-bold ma-0 pa-0"
+                                             Style="font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; height: auto; background: transparent;">
+                                        @(post.Category?.Title ?? "General")
+                                    </MudChip>
+                                    <MudText Typo="Typo.caption" Color="Color.Default">@post.Created.ToString("MMM dd, yyyy")</MudText>
+                                </div>
+                                <MudText Typo="Typo.h6" Class="font-weight-bold mb-2" Style="line-height: 1.3;">@post.Title</MudText>
+                                <MudText Typo="Typo.body2" Color="Color.Default" Class="mb-3" Style="line-height: 1.55;">
+                                    @(string.IsNullOrWhiteSpace(post.Excerpt) ? (post.Body.Length > 150 ? post.Body[..147] + "..." : post.Body) : post.Excerpt)
+                                </MudText>
+                                <MudText Color="Color.Primary" Class="font-weight-bold" Style="font-size: 0.8rem; letter-spacing: 0.05em;">Read More →</MudText>
+                            </MudPaper>
                         </a>
                     }
                 </div>
             }
         </MudItem>
 
-        <!-- Featured ProjectDto Card -->
+        <!-- Featured Project -->
         <MudItem xs="12" md="5">
-            <div class="mb-4">
-                <MudText Typo="Typo.h4" Color="Color.Primary" Class="font-weight-700 mb-2">Featured Project</MudText>
-                <MudDivider Style="background-color: var(--mud-palette-divider);" />
+            <!-- Section header -->
+            <div class="d-flex align-center mb-5" style="gap: 12px;">
+                <div style="width: 4px; height: 28px; background: linear-gradient(180deg, var(--mud-palette-primary), #FF9A6C); border-radius: 2px; flex-shrink: 0;"></div>
+                <MudText Typo="Typo.h5" Class="font-weight-bold">Featured Projects</MudText>
+                <MudSpacer />
+                <MudLink Href="/projects" Color="Color.Primary" Underline="Underline.None" Class="font-weight-bold" Style="font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase;">All Projects →</MudLink>
             </div>
 
             @if (_isLoadingProjects)
@@ -148,7 +177,7 @@
                     <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
                 </div>
             }
-            else if (_featuredProject == null)
+            else if (_featuredProjects == null || !_featuredProjects.Any())
             {
                 <MudAlert Severity="Severity.Normal" Variant="Variant.Outlined" Class="mud-theme-primary">
                     No projects listed yet.
@@ -156,44 +185,41 @@
             }
             else
             {
-                <MudCard Style="background-color: var(--mud-palette-surface); border: 1px solid var(--mud-palette-lines-default); border-radius: 8px; overflow: hidden;">
-                    @if (!string.IsNullOrEmpty(_featuredProject.ImageUrl))
+                <div class="d-flex flex-column gap-4">
+                    @foreach (var project in _featuredProjects)
                     {
-                        <MudCardMedia Image="@_featuredProject.ImageUrl" Height="200" />
+                        <a href="/projects/@project.Slug" class="featured-spotlight-link">
+                            <div class="featured-spotlight rounded-lg d-flex flex-column">
+                                <div class="pa-5 d-flex flex-column gap-2 h-100">
+                                    <div class="d-flex align-center gap-3 mb-2">
+                                        <div class="spotlight-icon-wrapper d-flex align-center justify-center rounded-lg">
+                                            <MudIcon Icon="@Icons.Material.Filled.AutoAwesome" Style="font-size: 1.3rem; color: white;" />
+                                        </div>
+                                        <MudText Typo="Typo.h6" Class="font-weight-bold mb-0" Style="line-height: 1.3; flex: 1;">@project.Title</MudText>
+                                    </div>
+
+                                    <MudText Typo="Typo.body2" Color="Color.Default" Style="line-height: 1.55;" Class="spotlight-summary">
+                                        @project.Summary
+                                    </MudText>
+
+                                    <MudText Color="Color.Primary" Class="font-weight-bold d-flex align-center" Style="font-size: 0.8rem; letter-spacing: 0.05em; gap: 4px; margin-top: auto;">
+                                        View Project
+                                        <MudIcon Icon="@Icons.Material.Filled.ArrowForward" Size="Size.Small" />
+                                    </MudText>
+                                </div>
+                            </div>
+                        </a>
                     }
-                    else
-                    {
-                        <div class="d-flex align-center justify-center" style="height: 200px; background-color: var(--mud-palette-secondary); border-bottom: 1px solid var(--mud-palette-lines-default);">
-                            <MudIcon Icon="@Icons.Material.Filled.Code" Style="font-size: 5rem; color: var(--mud-palette-primary);" />
-                        </div>
-                    }
-                    <MudCardContent Class="flex-grow-1">
-                        <MudText Typo="Typo.h5" Class="font-weight-bold mb-2" Style="color: var(--mud-palette-text-primary);">@_featuredProject.Title</MudText>
-                        <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary); line-height: 1.6;" Class="mb-4 project-summary">
-                            @_featuredProject.Summary
-                        </MudText>
-                    </MudCardContent>
-                    <MudCardActions Style="border-top: 1px solid var(--mud-palette-lines-default);" Class="pa-4">
-                        <MudButton Href="@($"/projects/{_featuredProject.Slug}")" Variant="Variant.Text" Color="Color.Primary" Style="font-weight: bold;">
-                            View Details
-                        </MudButton>
-                        <MudSpacer />
-                        @if (!string.IsNullOrEmpty(_featuredProject.RepoLink))
-                        {
-                            <MudButton Href="@_featuredProject.RepoLink" Target="_blank" Variant="Variant.Outlined" Color="Color.Primary" Style="font-weight: bold; border-width: 2px;">
-                                GitHub
-                            </MudButton>
-                        }
-                    </MudCardActions>
-                </MudCard>
+                </div>
             }
         </MudItem>
     </MudGrid>
+
 </MudContainer>
 
 @code {
     private List<PostDto> _posts = [];
-    private ProjectDto? _featuredProject;
+    private List<ProjectDto> _featuredProjects = [];
     private bool _isLoadingPosts = true;
     private bool _isLoadingProjects = true;
 
@@ -217,14 +243,14 @@
 
         try
         {
-            var projectsRequest = new GetAllProjectsRequest { PageNumber = 1, PageSize = 1 };
-            var result = await ProjectService.GetAllAsync(projectsRequest);
-            _featuredProject = result.Items.FirstOrDefault();
+            var projectsRequest = new GetFeaturedProjectsRequest { PageSize = 3 };
+            var result = await ProjectService.GetFeaturedAsync(projectsRequest);
+            _featuredProjects = result.Items;
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, "Failed to load featured project");
-            _featuredProject = null;
+            Logger.LogError(ex, "Failed to load featured projects");
+            _featuredProjects = [];
         }
         finally
         {

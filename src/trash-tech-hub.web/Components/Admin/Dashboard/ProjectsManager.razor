@@ -13,12 +13,17 @@
     <HeaderContent>
         <MudTh Class="pa-5">Id</MudTh>
         <MudTh Class="pa-5">Title</MudTh>
+        <MudTh>Featured</MudTh>
         <MudTh>RepoLink</MudTh>
         <MudTh>Created</MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Id">@context.Id</MudTd>   
         <MudTd DataLabel="Title">@context.Title</MudTd>   
+        <MudTd DataLabel="Featured">
+            <MudIcon Icon="@(context.IsFeatured ? Icons.Material.Filled.Star : Icons.Material.Outlined.StarOutline)"
+                     Color="@(context.IsFeatured ? Color.Warning : Color.Default)" />
+        </MudTd>
         <MudTd DataLabel="RepoLink">@context.RepoLink</MudTd>   
         <MudTd DataLabel="CreatedDate">@context.Created</MudTd>   
         <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-4 ma-2" Size="Size.Medium"

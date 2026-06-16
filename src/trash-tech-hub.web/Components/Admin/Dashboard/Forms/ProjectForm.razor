@@ -15,6 +15,10 @@
                       Class="mb-3"/>
         <MudTextField @bind-Value="Model.RepoLink" Label="Repolink"
                       Variant="Variant.Outlined" Class="mb-3"/>
+        <MudSwitch T="bool" @bind-Value="Model.IsFeatured"
+                   Label="Featured Project"
+                   Color="Color.Warning"
+                   Class="mt-3"/>
 
         @if (!string.IsNullOrEmpty(Model.ImageUrl))
         {
@@ -79,7 +83,8 @@
             Summary = Model.Summary,
             RepoLink = Model.RepoLink,
             ImageUrl = Model.ImageUrl,
-            ImageFile = Model.ImageFile
+            ImageFile = Model.ImageFile,
+            IsFeatured = Model.IsFeatured
         };
         DialogInstance.Close(DialogResult.Ok(createRequest));
     }

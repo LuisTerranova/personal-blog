@@ -31,6 +31,7 @@ public static class BuilderExtension
         builder.Services.AddScoped<ICategoryService, CategoryService>();
         builder.Services.AddScoped<IPostService, PostService>();
         builder.Services.AddScoped<IProjectService, ProjectService>();
+        builder.Services.AddScoped<ThemeState>();
         builder.Services.AddAutoMapper(cfg => cfg.AddProfile<TrashTechHub.Application.Mappings.MappingProfile>());
     }
 

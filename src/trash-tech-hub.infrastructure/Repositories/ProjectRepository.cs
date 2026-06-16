@@ -59,6 +59,30 @@ public class ProjectRepository(AppDbContext context, ILogger<ProjectRepository> 
         return Task.FromResult(project);
     }
 
+    public async Task<(List<Project> Projects, int TotalCount)> GetFeaturedAsync(int pageSize)
+    {
+        var query = context.Projects
+            .AsNoTracking()
+            .Where(p => p.IsFeatured)
+            .OrderByDescending(p => p.Created);
+
+        var totalCount = await query.CountAsync();
+
+        var featured = await query.Take(pageSize).ToListAsync();
+
+        if (featured.Count == 0)
+        {
+            var fallbackQuery = context.Projects
+                .AsNoTracking()
+                .OrderByDescending(p => p.Created);
+
+            totalCount = await fallbackQuery.CountAsync();
+            featured = await fallbackQuery.Take(pageSize).ToListAsync();
+        }
+
+        return (featured, totalCount);
+    }
+
     public async Task<bool> DeleteAsync(int id)
     {
         var project = await context.Projects.FirstOrDefaultAsync(p => p.Id == id);
